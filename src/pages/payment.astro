@@ -170,7 +170,7 @@ const description = "Choose your payment method";
                                 class="flex-shrink-0 w-16 h-16 rounded-xl bg-[#F3BA2F]/20 flex items-center justify-center border border-[#F3BA2F]/30"
                             >
                                 <img
-                                    src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png"
+                                    src="/src/assets/binance-icon-yellow.svg"
                                     alt="Binance"
                                     class="w-10 h-10 object-contain"
                                 />
@@ -227,19 +227,20 @@ const description = "Choose your payment method";
                     >
                         <div class="flex items-start gap-4">
                             <div
-                                class="flex-shrink-0 w-16 h-16 rounded-xl bg-[#F7931A]/20 flex items-center justify-center border border-[#F7931A]/30"
+                                class="flex-shrink-0 w-16 h-16 rounded-xl bg-[#F7931A]/20 flex items-center justify-center border border-[#F7931A]/30 overflow-hidden"
                             >
-                                <span
-                                    class="material-symbols-outlined text-[#F7931A] text-3xl"
-                                    >currency_bitcoin</span
-                                >
+                                <img
+                                    src="/src/assets/Cryptomus_icon.svg"
+                                    alt="Cryptomus"
+                                    class="w-10 h-10 object-contain"
+                                />
                             </div>
                             <div class="flex-1">
                                 <div
                                     class="flex items-center justify-between mb-2"
                                 >
                                     <h3 class="text-white font-bold text-xl">
-                                        Cryptocurrency
+                                        Cryptomus
                                     </h3>
                                     <div
                                         class="payment-radio w-6 h-6 rounded-full border-2 border-border-dark group-hover:border-[#F7931A] flex items-center justify-center transition-colors"
@@ -251,14 +252,28 @@ const description = "Choose your payment method";
                                     </div>
                                 </div>
                                 <p class="text-text-muted text-sm mb-3">
-                                    Pay with Bitcoin, USDT, or other
-                                    cryptocurrencies.
+                                    Paga con Criptomonedas o Tarjeta de
+                                    Débito/Crédito.
                                 </p>
                                 <div class="flex flex-wrap gap-2">
                                     <span
                                         class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/10 text-orange-400 text-xs font-medium"
                                     >
-                                        Network Fees Apply
+                                        Bitcoin, USDT & more
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 text-blue-400 text-xs font-medium"
+                                    >
+                                        <span
+                                            class="material-symbols-outlined text-[14px]"
+                                            >payments</span
+                                        >
+                                        Visa / Mastercard
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-500/10 text-green-400 text-xs font-medium"
+                                    >
+                                        Global
                                     </span>
                                 </div>
                             </div>
@@ -322,7 +337,10 @@ const description = "Choose your payment method";
                                             class="text-primary font-black text-2xl"
                                             >S/ 0.00</span
                                         >
-                                        <p class="text-xs text-text-muted">
+                                        <p
+                                            id="order-currency"
+                                            class="text-xs text-text-muted"
+                                        >
                                             PEN
                                         </p>
                                     </div>
@@ -631,7 +649,7 @@ const description = "Choose your payment method";
                             class="w-10 h-10 rounded-lg bg-[#F3BA2F]/20 flex items-center justify-center border border-[#F3BA2F]/30"
                         >
                             <img
-                                src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png"
+                                src="/src/assets/binance-icon-yellow.svg"
                                 alt="Binance"
                                 class="w-6 h-6 object-contain"
                             />
@@ -940,14 +958,20 @@ const description = "Choose your payment method";
 
     let selectedMethod: string | null = null;
 
-    function renderOrderSummary() {
+    function renderOrderSummary(method = "yape") {
         const items = cartItems.get();
         const orderItemsList = document.getElementById("order-items-list");
         const orderTotal = document.getElementById("order-total");
+        const orderCurrency = document.getElementById("order-currency");
 
         if (!orderItemsList) return;
 
-        const total = cartTotal.get();
+        const totalPEN = cartTotal.get();
+        const isUSD = method === "binance" || method === "crypto";
+        const rate = 3.8;
+        const total = isUSD ? totalPEN / rate : totalPEN;
+        const symbol = isUSD ? "$" : "S/";
+        const currencyText = isUSD ? "USD" : "PEN";
 
         // Render items
         orderItemsList.innerHTML = items
@@ -960,7 +984,7 @@ const description = "Choose your payment method";
         <div class="flex-1 min-w-0">
           <h4 class="text-white font-bold text-sm leading-tight truncate">${item.title}</h4>
           <p class="text-text-muted text-xs mt-0.5">Qty: ${item.quantity}</p>
-          <p class="text-white font-bold text-sm mt-1">S/ ${(item.price * item.quantity).toFixed(2)}</p>
+          <p class="text-white font-bold text-sm mt-1">${symbol} ${(isUSD ? (item.price * item.quantity) / rate : item.price * item.quantity).toFixed(2)}</p>
         </div>
       </div>
     `,
@@ -969,7 +993,10 @@ const description = "Choose your payment method";
 
         // Update total
         if (orderTotal) {
-            orderTotal.textContent = `S/ ${total.toFixed(2)}`;
+            orderTotal.textContent = `${symbol} ${total.toFixed(2)}`;
+        }
+        if (orderCurrency) {
+            orderCurrency.textContent = currencyText;
         }
     }
 
@@ -999,8 +1026,11 @@ const description = "Choose your payment method";
             });
 
             // Add selected state to clicked option
-            const method = option.getAttribute("data-method");
+            const method = option.getAttribute("data-method") || "yape";
             selectedMethod = method;
+
+            // Re-render summary with new currency if needed
+            renderOrderSummary(method);
 
             if (method === "yape") {
                 option.classList.remove("border-border-dark");
@@ -1039,8 +1069,10 @@ const description = "Choose your payment method";
             } else if (selectedMethod === "binance") {
                 openBinanceModal();
             } else if (selectedMethod === "crypto") {
+                const totalPEN = cartTotal.get();
+                const totalUSD = (totalPEN / 3.8).toFixed(2);
                 alert(
-                    "🎉 Redirecting to Cryptomus...\n\nYou will be able to pay with Bitcoin, USDT, or other cryptocurrencies.",
+                    `🎉 Redirigiendo a Cryptomus...\n\nMonto a pagar: $ ${totalUSD} USD (Tasa: 3.8)\n\nPodrás pagar con Bitcoin, USDT, otras criptomonedas o Tarjeta de Crédito/Débito.`,
                 );
             }
         });
@@ -1126,8 +1158,14 @@ const description = "Choose your payment method";
 
     function openBinanceModal() {
         if (binanceModal && binanceAmount) {
-            const total = cartTotal.get();
-            binanceAmount.textContent = `S/ ${total.toFixed(2)}`;
+            const totalPEN = cartTotal.get();
+            const totalUSD = (totalPEN / 3.8).toFixed(2);
+            binanceAmount.innerHTML = `
+                <div class="flex flex-col items-center">
+                    <span class="text-xs text-text-muted line-through">S/ ${totalPEN.toFixed(2)}</span>
+                    <span>$ ${totalUSD} USD</span>
+                </div>
+            `;
             binanceModal.classList.remove("hidden");
             document.body.style.overflow = "hidden";
             binanceTimeLeft = 15 * 60;

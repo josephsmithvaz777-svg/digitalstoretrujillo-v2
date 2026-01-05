@@ -170,15 +170,16 @@ const description =
 							Secure Payments Accepted
 						</h2>
 						<p class="text-[#bc9b9a] max-w-lg">
-							We accept local payments via Yape for Peru and
-							Cryptomus for international crypto transactions.
-							Instant verification.
+							Aceptamos pagos locales vía Yape, y pagos
+							internacionales mediante Binance Pay y Cryptomus
+							(Tarjetas y Cripto). Verificación instantánea.
 						</p>
 						<div
 							class="flex flex-wrap justify-center gap-4 mt-4 w-full"
 						>
+							<!-- Yape -->
 							<div
-								class="flex h-14 min-w-[140px] items-center justify-center gap-3 rounded-xl bg-[#6f00ff] px-6 transition-transform hover:scale-105 cursor-pointer shadow-lg shadow-purple-900/20"
+								class="flex h-14 min-w-[140px] items-center justify-center gap-3 rounded-xl bg-[#722F91] px-6 transition-transform hover:scale-105 cursor-pointer shadow-lg shadow-purple-900/20"
 							>
 								<span
 									class="material-symbols-outlined text-white"
@@ -188,13 +189,30 @@ const description =
 									>Yape</span
 								>
 							</div>
+
+							<!-- Binance Pay -->
 							<div
-								class="flex h-14 min-w-[140px] items-center justify-center gap-3 rounded-xl bg-slate-800 px-6 transition-transform hover:scale-105 cursor-pointer shadow-lg shadow-black/30 border border-slate-700"
+								class="flex h-14 min-w-[140px] items-center justify-center gap-3 rounded-xl bg-[#F3BA2F] px-6 transition-transform hover:scale-105 cursor-pointer shadow-lg shadow-yellow-900/20"
 							>
-								<span
-									class="material-symbols-outlined text-orange-400"
-									>currency_bitcoin</span
+								<img
+									src="/src/assets/binance-icon-black.svg"
+									alt="Binance"
+									class="w-7 h-7 object-contain"
+								/>
+								<span class="text-black font-bold text-lg"
+									>Binance Pay</span
 								>
+							</div>
+
+							<!-- Cryptomus -->
+							<div
+								class="flex h-14 min-w-[140px] items-center justify-center gap-3 rounded-xl bg-[#1e293b] px-6 transition-transform hover:scale-105 cursor-pointer shadow-lg shadow-black/30 border border-slate-700"
+							>
+								<img
+									src="/src/assets/Cryptomus_icon.svg"
+									alt="Cryptomus"
+									class="w-6 h-6 object-contain"
+								/>
 								<span class="text-white font-bold text-lg"
 									>Cryptomus</span
 								>
