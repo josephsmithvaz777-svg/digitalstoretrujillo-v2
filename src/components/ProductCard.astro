@@ -1,0 +1,189 @@
+---
+interface Props {
+    title: string;
+    price: number;
+    originalPrice?: number;
+    renewablePrice?: number;
+    image: string;
+    discount?: string;
+    badge?: string;
+    category?: string;
+    seller?: string;
+    rating?: number;
+    reviewCount?: number;
+    inStock?: boolean;
+    productUrl?: string;
+}
+
+const {
+    title,
+    price,
+    originalPrice,
+    renewablePrice,
+    image,
+    discount,
+    badge,
+    category = "Digital Product",
+    seller = "DigitalStore",
+    rating = 5,
+    reviewCount = 0,
+    inStock = true,
+    productUrl = "/product",
+} = Astro.props;
+
+// Calculate discount percentage if not provided
+const discountPercent =
+    discount ||
+    (originalPrice
+        ? `-${Math.round((1 - price / originalPrice) * 100)}%`
+        : null);
+---
+
+<div
+    class:list={[
+        "group flex flex-col bg-[#1a1a1a] rounded-2xl overflow-hidden hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-primary/20",
+        !inStock && "opacity-75",
+    ]}
+>
+    <!-- Badges Container -->
+    <div class="absolute top-3 left-3 z-10 flex gap-2">
+        {
+            discountPercent && inStock && (
+                <span class="bg-primary text-white text-xs font-black px-3 py-1.5 rounded-lg shadow-lg">
+                    {discountPercent}
+                </span>
+            )
+        }
+        {
+            badge && (
+                <span class="bg-[#FFD700] text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-lg">
+                    {badge}
+                </span>
+            )
+        }
+        {
+            !inStock && (
+                <span class="bg-gray-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
+                    AGOTADO
+                </span>
+            )
+        }
+    </div>
+
+    <!-- Product Image -->
+    <div
+        class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900"
+    >
+        <img
+            src={image}
+            alt={title}
+            class:list={[
+                "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110",
+                !inStock && "grayscale",
+            ]}
+        />
+        {
+            inStock && (
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            )
+        }
+    </div>
+
+    <!-- Product Info -->
+    <div class="p-4 flex flex-col gap-3 bg-[#1a1a1a]">
+        <!-- Seller/Category -->
+        <div class="flex items-center gap-2 text-xs">
+            <span class="text-text-muted uppercase tracking-wider"
+                >{seller}</span
+            >
+            <span class="text-border-dark">•</span>
+            <span class="text-text-muted flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm"
+                    >inventory_2</span
+                >
+                {reviewCount}
+            </span>
+        </div>
+
+        <!-- Title -->
+        <h3
+            class:list={[
+                "font-bold text-base leading-tight line-clamp-2 min-h-[2.5rem]",
+                inStock ? "text-white" : "text-gray-400",
+            ]}
+        >
+            {title}
+        </h3>
+
+        <!-- Rating -->
+        {
+            inStock && (
+                <div class="flex items-center gap-2">
+                    <div class="flex text-[#FFD700]">
+                        {[...Array(5)].map((_, i) => (
+                            <span class="material-symbols-outlined text-sm fill-1">
+                                {i < rating ? "star" : "star_outline"}
+                            </span>
+                        ))}
+                    </div>
+                    {reviewCount > 0 && (
+                        <span class="text-xs text-text-muted">
+                            ({reviewCount}){" "}
+                            <a href="#" class="text-primary hover:underline">
+                                Dejar reseña
+                            </a>
+                        </span>
+                    )}
+                </div>
+            )
+        }
+
+        <!-- Pricing -->
+        <div class="flex flex-col gap-1">
+            {
+                originalPrice && inStock && (
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-text-muted line-through">
+                            ${originalPrice.toFixed(2)}
+                        </span>
+                    </div>
+                )
+            }
+            {
+                renewablePrice && inStock && (
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500 text-sm">
+                            autorenew
+                        </span>
+                        <span class="text-sm text-green-400 font-semibold">
+                            Renovable: ${renewablePrice.toFixed(2)}
+                        </span>
+                    </div>
+                )
+            }
+            <div class="flex items-baseline gap-2">
+                <span
+                    class:list={[
+                        "text-2xl font-black",
+                        inStock ? "text-white" : "text-gray-500",
+                    ]}
+                >
+                    S/ {price.toFixed(2)}
+                </span>
+            </div>
+        </div>
+
+        <!-- CTA Button -->
+        <a
+            href={inStock ? productUrl : "#"}
+            class:list={[
+                "w-full py-3 rounded-lg font-black text-sm uppercase tracking-wide transition-all duration-300 transform active:scale-95 shadow-lg text-center block",
+                inStock
+                    ? "bg-primary hover:bg-red-700 text-white hover:shadow-xl hover:shadow-primary/50"
+                    : "bg-gray-700 text-gray-400 cursor-not-allowed pointer-events-none",
+            ]}
+        >
+            {inStock ? "COMPRAR AHORA" : "NOTIFICARME"}
+        </a>
+    </div>
+</div>

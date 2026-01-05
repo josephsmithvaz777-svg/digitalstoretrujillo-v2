@@ -1,0 +1,273 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ProductCard from "../../components/ProductCard.astro";
+
+const title = "Premium Security Suite 2024 - DigitalStoreTrujillo";
+const description =
+    "Complete protection for your digital life. Includes antivirus, VPN, and password manager for up to 5 devices.";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="layout-container flex h-full grow flex-col">
+        <div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
+            <div
+                class="layout-content-container flex flex-col max-w-[1200px] flex-1"
+            >
+                <!-- Breadcrumbs -->
+                <div class="flex flex-wrap gap-2 p-4 mb-4">
+                    <a
+                        class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal"
+                        href="/">Home</a
+                    >
+                    <span
+                        class="text-text-muted text-sm font-medium leading-normal"
+                        >/</span
+                    >
+                    <a
+                        class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal"
+                        href="/products">Software</a
+                    >
+                    <span
+                        class="text-text-muted text-sm font-medium leading-normal"
+                        >/</span
+                    >
+                    <span class="text-white text-sm font-medium leading-normal"
+                        >Security Suite 2024</span
+                    >
+                </div>
+
+                <!-- Product Detail Section -->
+                <div
+                    class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 px-4 pb-12"
+                >
+                    <!-- Left Column: Images -->
+                    <div class="lg:col-span-7 flex flex-col gap-4">
+                        <div
+                            class="relative w-full aspect-[16/10] overflow-hidden rounded-xl bg-card-dark border border-border-dark group"
+                        >
+                            <div
+                                class="absolute inset-0 bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDE2Bm5_mxZP4XTmm_DToRTt8-5c6IPyVXn98aTPwwnY-ufje5JEUvB5kWfOc2czCNYkaU7nMHoyIp0D6g6eYr2mwai4Lu6CAmrt1i-2OnsMUt27D9yaBEbsGEARfTcS6LCkBHJtvGkJI8CTcpQxBvNV0_F8ihDQd5Zaqco70RE_cg6y7K-AH5Nf8pbVizA8ePouTmTrgha_CptChAVtyhQ7k3-1NXXY-Bdc8s90vZh_d2HsWlLpTfWxqs2Vm05qv0esO9CRLZzbQ");'
+                            >
+                            </div>
+                            <div class="absolute top-4 left-4">
+                                <span
+                                    class="bg-primary/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg"
+                                    >Global Key</span
+                                >
+                            </div>
+                        </div>
+                        <!-- Thumbnails -->
+                        <div class="flex gap-4 overflow-x-auto pb-2">
+                            <button
+                                class="w-24 h-24 flex-shrink-0 rounded-lg border-2 border-primary overflow-hidden relative"
+                            >
+                                <div
+                                    class="w-full h-full bg-center bg-cover"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCbTMdLLO3fjMoB3eAqMq_Q0cUN2IkmqkRT5ipudtmKTrnuyxhV1dqafa6Ni2hop2svM0cNZXY3d6Kwks32VpvAOUgpz9YfiZndNeUVa5_CLTowoKU6dMMzZjTY8CG9rryyjZNnD56tZOoPACeZJAcVmFe3-8rZvdp6DpRDsijXUBh16Nf1kUqCBtOtwln5E76wWFpqN8N0nsPzvZN2RqFbbBD61kTzrQWlQiHCgeH1-QLnz5Ka-N4eF36uCxvDd8-15B0roBsNxQ");'
+                                >
+                                </div>
+                            </button>
+                            <button
+                                class="w-24 h-24 flex-shrink-0 rounded-lg border border-border-dark hover:border-text-muted overflow-hidden relative opacity-70 hover:opacity-100 transition-all"
+                            >
+                                <div
+                                    class="w-full h-full bg-center bg-cover"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCavJ4UxTiCFpBLG8J78EQ4sJoWP2AwHc3bUqLRX5pav4kKFQAFY_fo377_0Cz0KOeNILIVTbgWNDCTEmfO4pkA0AYQbY9b4KDb273ZzMMwD1Lwgq-TQUNwcSNudNqRHZC0L6Z02vumuxuM-yaMvR0gTlsYx5QsrdSrtSEcsBwW7bfILPNhaBC-aq3zV7kctsNotyTl8obWPcVywmcHbyL8xuPP98cbfMFi1EkltY7N3X5paYZwgSVaG4-2_IWaHos-SA_wyKpkMg");'
+                                >
+                                </div>
+                            </button>
+                            <button
+                                class="w-24 h-24 flex-shrink-0 rounded-lg border border-border-dark hover:border-text-muted overflow-hidden relative opacity-70 hover:opacity-100 transition-all"
+                            >
+                                <div
+                                    class="w-full h-full bg-center bg-cover"
+                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDeC0xHt972UE783FMof6zw3vTnCWr22OIjfB02AB_HMo7yszTTBGL8KxXmfDoSzA_yoV6wmOaBwHVzC3Ar0rIn8GyThpUN07u0irY0pVYOsQFoJk3h8WpVEKiPFSbJhbfCkXhRMtLH0SxmpJPHR2m7HZxNyC0R1b5VNZVPqXVGFP5V62QdFZCSX40DknpQ4HUjfux_-52iQv8-HD6EnsnYsEuFa0xh2J3I2Q62lKle7H7zSbxHmyoKJh9lqvWrBjFec_GMYaVSsA");'
+                                >
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Details & Purchase -->
+                    <div class="lg:col-span-5 flex flex-col gap-6">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span
+                                    class="material-symbols-outlined text-yellow-500 text-lg fill-1"
+                                    >star</span
+                                >
+                                <span class="text-white font-bold text-sm"
+                                    >4.8</span
+                                >
+                                <span class="text-text-muted text-sm"
+                                    >(124 reviews)</span
+                                >
+                            </div>
+                            <h1
+                                class="text-white text-3xl md:text-4xl font-bold leading-tight mb-2"
+                            >
+                                Premium Security Suite 2024
+                            </h1>
+                            <p
+                                class="text-text-muted text-base leading-relaxed"
+                            >
+                                Complete protection for your digital life.
+                                Includes antivirus, VPN, and password manager
+                                for up to 5 devices.
+                            </p>
+                        </div>
+
+                        <!-- Price and Stock -->
+                        <div
+                            class="p-5 rounded-xl bg-card-dark border border-border-dark"
+                        >
+                            <div class="flex items-end gap-3 mb-4">
+                                <p class="text-4xl font-bold text-white">
+                                    $24.99
+                                </p>
+                                <p
+                                    class="text-xl text-text-muted line-through mb-1"
+                                >
+                                    $49.99
+                                </p>
+                                <span
+                                    class="mb-1 ml-auto bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30"
+                                >
+                                    IN STOCK
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center gap-2 text-sm text-text-muted mb-6"
+                            >
+                                <span
+                                    class="material-symbols-outlined text-primary text-lg"
+                                    >bolt</span
+                                >
+                                <span>Instant delivery via email</span>
+                            </div>
+                            <div class="flex flex-col gap-4">
+                                <!-- Quantity -->
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-white"
+                                        >Quantity</span
+                                    >
+                                    <div
+                                        class="flex items-center rounded-lg bg-background-dark border border-border-dark h-10"
+                                    >
+                                        <button
+                                            class="w-10 h-full flex items-center justify-center text-text-muted hover:text-white hover:bg-border-dark rounded-l-lg transition-colors"
+                                        >
+                                            <span
+                                                class="material-symbols-outlined text-sm"
+                                                >remove</span
+                                            >
+                                        </button>
+                                        <input
+                                            class="w-12 h-full bg-transparent border-none text-center text-white focus:ring-0 p-0 text-sm font-bold"
+                                            readonly
+                                            type="text"
+                                            value="1"
+                                        />
+                                        <button
+                                            class="w-10 h-full flex items-center justify-center text-text-muted hover:text-white hover:bg-border-dark rounded-r-lg transition-colors"
+                                        >
+                                            <span
+                                                class="material-symbols-outlined text-sm"
+                                                >add</span
+                                            >
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Action Buttons -->
+                                <button
+                                    class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3.5 rounded-lg transition-all transform active:scale-[0.98] shadow-[0_0_15px_rgba(224,7,0,0.3)] flex items-center justify-center gap-2"
+                                >
+                                    <span class="material-symbols-outlined"
+                                        >shopping_cart</span
+                                    >
+                                    Add to Cart
+                                </button>
+                                <button
+                                    class="w-full bg-transparent border-2 border-border-dark hover:border-white text-white font-bold py-3.5 rounded-lg transition-colors"
+                                >
+                                    Buy Now
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Payment Methods -->
+                        <div class="flex flex-col gap-3">
+                            <p
+                                class="text-xs font-bold text-text-muted uppercase tracking-wider"
+                            >
+                                Secure Payment with
+                            </p>
+                            <div class="flex gap-3">
+                                <div
+                                    class="h-10 px-4 rounded bg-white flex items-center justify-center"
+                                    title="Yape"
+                                >
+                                    <div
+                                        class="h-6 w-16 bg-contain bg-center bg-no-repeat"
+                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCGTay_kOkazbhr5g491a1PtGFnLoZtD_0KALusbHv0EAvxk6yi40W76KSVB6xtksJAyjSrZ0IXElKAP_ZDfNsT4fukAdqTHCQ6x6HJmB8t1WTOnp2GHX9Z8UQT-C6PT76Hu406_3aKi6O8wdM0Ts2X5TQg7qlF2kFXo9fpbnDKGswaQQZFsMwBonMMooEqHNTE40f-wHNgrtoW8Cj2wl-jo9udSbsSHZDfNMp2waLVpEsQiQd5xDVjhE_GyPRJ7XEpF1oi50C58Q'); background-size: contain;"
+                                    >
+                                    </div>
+                                </div>
+                                <div
+                                    class="h-10 px-4 rounded bg-[#1f1f1f] border border-border-dark flex items-center justify-center gap-2"
+                                    title="Cryptomus"
+                                >
+                                    <span
+                                        class="material-symbols-outlined text-white"
+                                        >currency_bitcoin</span
+                                    >
+                                    <span class="text-white font-bold text-sm"
+                                        >Crypto</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Products -->
+                <div class="px-4 py-12">
+                    <h2 class="text-2xl font-bold text-white mb-6">
+                        Related Products
+                    </h2>
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                    >
+                        <ProductCard
+                            title="Office Suite Pro 2024"
+                            price={35.0}
+                            image="https://lh3.googleusercontent.com/aida-public/AB6AXuBzUsbUNMqEmcT3-tfPG5HQlWqOzy7S1Y65jJNsW2sNoGoG_tEf6oGdeZRcKcKowmhlYURWW4frPFWG7gn1b2d8IA9rB639n54Y-7oNI50z4KQpHp0OHJS_AZ8uDpObfEHnQnnEeHgcdp2-IqOKC-DKTkyKnZmRG_JLbRta7HLQ6-xC8i7O9Qlq56ITEAiZ9HOhO4CWRguD2nU1e7EE7Ay_QO3IkNM8bo-PJaNrgaSJCk4nWqZYBOE01T1kUplWdDADOdt_VF8cEw"
+                        />
+                        <ProductCard
+                            title="FastVPN - 1 Year"
+                            price={19.99}
+                            image="https://lh3.googleusercontent.com/aida-public/AB6AXuD3FjjF_S1b0QEMwWGiFsxCHpqxxIDUcT1bLioCG6etTuUc81JDuq2jLFzZSVZPuAc66kxZ3xb_yOxwcnISkZ0jhrewoDGRC98GJbtBsgtgZHGCd7GNMhtze_U_A_gJzeUs3sz5gxC-Aa0dZ1rSkqO9I9EZNZIjWu-GHusSFqWs_V930dhwvxuX4qmvE5M8OsbnrutVS0Tnivl4VUYF2ofUdeU_-HEY6S5aK9gw8_eY96ozJ5InTfo63XHgCM85V3yu68H6RINORg"
+                        />
+                        <ProductCard
+                            title="Steam Gift Card $50"
+                            price={50.0}
+                            image="https://lh3.googleusercontent.com/aida-public/AB6AXuDfYzSgjvVKl_tA35H3vBz9bPdgAK360U6TJQH6SJAhceegxlINm1rVhasibh-8404jLkjYsn2Elg13SCcu7E-joEuMaHlD9zpTT0OAaqyni_MGPOh2gYXaLfVjFog0eAcKjFHVoxhR4g2Qmq5IHGenxEe8pkesZMUwyBtuVQASU-y3Y67j8nx1GHIpHtry7pEZfVSpk4YBlheUch2INPDFzaISyNcopXRlm58POct_QU-mgHr_sd7qV0KhdZYZPx80qheykSn-Ww"
+                        />
+                        <ProductCard
+                            title="Cloud Space 2TB"
+                            price={89.99}
+                            image="https://lh3.googleusercontent.com/aida-public/AB6AXuCOPF4k11GiskHlXeRRjEpOGC2Xb5Iprh6UgsGbztJP_2GFapXKE7yQgWBXixuXH6im7pPi2U3seP9yQ-wcUGiD4GFuQT980QtxnLOKqI_UJ8FY4i4QXh2C9Xjd98_7GxJI2pn_oTN1t1q4XhjS6fVhmzzbVk_ywWL5J4ApvoOyf6ALHo75QZMOFc0LGRovcIlNrKXGQRbLNSxDUkZbd560UWP8X4hXFWr-3MOBXXVBIhQ2fVM-nOQwPQuUXrorfYih78zej8M5ZA"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>

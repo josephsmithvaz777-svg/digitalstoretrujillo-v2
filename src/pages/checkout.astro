@@ -1,0 +1,431 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "Checkout - DigitalStoreTrujillo";
+const description = "Complete your purchase securely";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main
+        class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
+    >
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+            <!-- Left Column: Form -->
+            <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-8">
+                <!-- Progress Stepper -->
+                <nav aria-label="Progress">
+                    <ol class="flex items-center" role="list">
+                        <li class="relative pr-8 sm:pr-20">
+                            <div
+                                aria-hidden="true"
+                                class="absolute inset-0 flex items-center"
+                            >
+                                <div class="h-0.5 w-full bg-primary"></div>
+                            </div>
+                            <a
+                                class="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary hover:bg-red-700"
+                                href="/cart"
+                            >
+                                <span
+                                    class="material-symbols-outlined text-white text-sm font-bold"
+                                    >check</span
+                                >
+                            </a>
+                            <span
+                                class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs font-medium text-white"
+                                >Cart</span
+                            >
+                        </li>
+                        <li class="relative pr-8 sm:pr-20">
+                            <div
+                                aria-hidden="true"
+                                class="absolute inset-0 flex items-center"
+                            >
+                                <div class="h-0.5 w-full bg-border-dark"></div>
+                            </div>
+                            <a
+                                aria-current="step"
+                                class="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background-dark"
+                                href="#"
+                            >
+                                <span
+                                    class="h-2.5 w-2.5 rounded-full bg-primary"
+                                ></span>
+                            </a>
+                            <span
+                                class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs font-bold text-primary"
+                                >Info</span
+                            >
+                        </li>
+                        <li class="relative">
+                            <a
+                                class="group relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-border-dark bg-background-dark hover:border-gray-400"
+                                href="#"
+                            >
+                                <span
+                                    class="h-2.5 w-2.5 rounded-full bg-transparent group-hover:bg-gray-300"
+                                ></span>
+                            </a>
+                            <span
+                                class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs font-medium text-text-muted"
+                                >Payment</span
+                            >
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Page Header -->
+                <div class="mt-4">
+                    <h1
+                        class="text-3xl md:text-4xl font-black text-white tracking-tight"
+                    >
+                        Buyer Information
+                    </h1>
+                    <p class="text-text-muted mt-2 text-base">
+                        Please enter your details to receive your digital
+                        product immediately.
+                    </p>
+                </div>
+
+                <!-- Form -->
+                <form id="checkout-form" class="flex flex-col gap-6 mt-2">
+                    <!-- Section: Contact -->
+                    <div
+                        class="p-6 rounded-xl bg-card-dark border border-border-dark"
+                    >
+                        <h3
+                            class="text-white font-bold text-lg mb-6 flex items-center gap-2"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >contact_mail</span
+                            >
+                            Contact Details
+                        </h3>
+                        <div class="grid gap-6">
+                            <!-- Email Field -->
+                            <label class="flex flex-col gap-2">
+                                <span class="text-white text-sm font-medium"
+                                    >Email Address <span class="text-primary"
+                                        >*</span
+                                    ></span
+                                >
+                                <div class="relative flex items-center">
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-11 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                        placeholder="you@example.com"
+                                        type="email"
+                                        required
+                                    />
+                                    <span
+                                        class="material-symbols-outlined absolute left-3 text-text-muted pointer-events-none"
+                                        >mail</span
+                                    >
+                                </div>
+                                <p
+                                    class="text-xs text-text-muted flex items-center gap-1"
+                                >
+                                    <span
+                                        class="material-symbols-outlined text-[16px]"
+                                        >info</span
+                                    >
+                                    Product link will be sent here.
+                                </p>
+                            </label>
+
+                            <!-- Phone Field -->
+                            <label class="flex flex-col gap-2">
+                                <span class="text-white text-sm font-medium"
+                                    >Phone Number</span
+                                >
+                                <div class="relative flex items-center">
+                                    <div
+                                        class="absolute left-0 top-0 bottom-0 flex items-center pl-3 pr-2 border-r border-border-dark"
+                                    >
+                                        <span
+                                            class="text-text-muted text-sm font-medium"
+                                            >+51</span
+                                        >
+                                    </div>
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-16 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                        placeholder="987 654 321"
+                                        type="tel"
+                                    />
+                                    <span
+                                        class="material-symbols-outlined absolute right-3 text-text-muted pointer-events-none"
+                                        >call</span
+                                    >
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Section: Personal Info -->
+                    <div
+                        class="p-6 rounded-xl bg-card-dark border border-border-dark"
+                    >
+                        <h3
+                            class="text-white font-bold text-lg mb-6 flex items-center gap-2"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >person</span
+                            >
+                            Personal Information
+                        </h3>
+                        <div class="grid gap-6 md:grid-cols-2">
+                            <!-- First Name -->
+                            <label class="flex flex-col gap-2">
+                                <span class="text-white text-sm font-medium"
+                                    >First Name <span class="text-primary"
+                                        >*</span
+                                    ></span
+                                >
+                                <input
+                                    id="firstName"
+                                    name="firstName"
+                                    class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                    placeholder="Juan"
+                                    type="text"
+                                    required
+                                />
+                            </label>
+
+                            <!-- Last Name -->
+                            <label class="flex flex-col gap-2">
+                                <span class="text-white text-sm font-medium"
+                                    >Last Name <span class="text-primary"
+                                        >*</span
+                                    ></span
+                                >
+                                <input
+                                    id="lastName"
+                                    name="lastName"
+                                    class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                    placeholder="Perez"
+                                    type="text"
+                                    required
+                                />
+                            </label>
+
+                            <!-- Account Toggle -->
+                            <div
+                                class="md:col-span-2 flex items-start gap-3 pt-2"
+                            >
+                                <div class="flex h-6 items-center">
+                                    <input
+                                        class="h-5 w-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary focus:ring-offset-background-dark"
+                                        id="create-account"
+                                        type="checkbox"
+                                    />
+                                </div>
+                                <div class="text-sm leading-6">
+                                    <label
+                                        class="font-medium text-white"
+                                        for="create-account"
+                                        >Create an account for faster checkout</label
+                                    >
+                                    <p class="text-text-muted">
+                                        Save your details for future purchases
+                                        securely.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex justify-end pt-4">
+                        <button
+                            type="submit"
+                            class="w-full md:w-auto bg-primary hover:bg-red-700 text-white font-bold py-3.5 px-8 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
+                        >
+                            Continue to Payment
+                            <span class="material-symbols-outlined"
+                                >arrow_forward</span
+                            >
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Column: Order Summary -->
+            <div class="lg:col-span-5 xl:col-span-4">
+                <div class="sticky top-24 flex flex-col gap-6">
+                    <!-- Summary Card -->
+                    <div
+                        class="bg-card-dark border border-border-dark rounded-xl overflow-hidden shadow-2xl"
+                    >
+                        <div
+                            class="p-5 border-b border-border-dark bg-[#1f1515]"
+                        >
+                            <h3 class="text-white font-bold text-lg">
+                                Order Summary
+                            </h3>
+                        </div>
+                        <div class="p-5 flex flex-col gap-6" id="order-items">
+                            <!-- Items will be inserted here by JavaScript -->
+                        </div>
+
+                        <!-- Trust & Payment Icons footer of card -->
+                        <div class="bg-[#1f1515] p-4 flex flex-col gap-3">
+                            <p class="text-xs text-center text-text-muted">
+                                We accept
+                            </p>
+                            <div class="flex justify-center gap-3">
+                                <div
+                                    class="h-6 px-3 rounded bg-[#722F91]/20 flex items-center justify-center text-[10px] text-[#722F91] font-bold border border-[#722F91]/30"
+                                >
+                                    Yape
+                                </div>
+                                <div
+                                    class="h-6 px-3 rounded bg-[#F7931A]/20 flex items-center justify-center text-[10px] text-[#F7931A] font-bold border border-[#F7931A]/30"
+                                >
+                                    Crypto
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center justify-center gap-2 mt-2"
+                            >
+                                <span
+                                    class="material-symbols-outlined text-green-500 text-sm"
+                                    >lock</span
+                                >
+                                <span class="text-[10px] text-text-muted"
+                                    >SSL Encrypted Payment</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Help Box -->
+                    <div
+                        class="rounded-lg border border-border-dark bg-transparent p-4 flex gap-3 items-start"
+                    >
+                        <div
+                            class="p-2 rounded-full bg-card-dark text-text-muted"
+                        >
+                            <span class="material-symbols-outlined text-xl"
+                                >support_agent</span
+                            >
+                        </div>
+                        <div>
+                            <h4 class="text-white text-sm font-bold">
+                                Need Help?
+                            </h4>
+                            <p
+                                class="text-text-muted text-xs mt-1 leading-relaxed"
+                            >
+                                Having trouble with your order? Contact our
+                                support team via WhatsApp or Email.
+                            </p>
+                            <a
+                                class="text-primary text-xs font-bold mt-2 inline-block hover:underline"
+                                href="#">Contact Support</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<script>
+    import { cartItems, cartTotal } from "../stores/cart";
+
+    function renderOrderSummary() {
+        const items = cartItems.get();
+        const orderItemsContainer = document.getElementById("order-items");
+
+        if (!orderItemsContainer) return;
+
+        const total = cartTotal.get();
+
+        orderItemsContainer.innerHTML = `
+      ${items
+          .map(
+              (item) => `
+        <div class="flex gap-4">
+          <div class="h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden border border-border-dark">
+            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" />
+          </div>
+          <div class="flex flex-col justify-between py-1">
+            <div>
+              <h4 class="text-white font-bold text-sm leading-tight">${item.title}</h4>
+              <p class="text-text-muted text-xs mt-1">Quantity: ${item.quantity}</p>
+            </div>
+            <p class="text-white font-bold">S/ ${(item.price * item.quantity).toFixed(2)}</p>
+          </div>
+        </div>
+      `,
+          )
+          .join('<hr class="border-border-dark"/>')}
+      
+      <hr class="border-border-dark"/>
+      
+      <!-- Calculation -->
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between text-sm">
+          <span class="text-text-muted">Subtotal</span>
+          <span class="text-white">S/ ${total.toFixed(2)}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-text-muted">Tax</span>
+          <span class="text-white">Included</span>
+        </div>
+        <div class="flex justify-between text-sm text-green-500">
+          <span>Discount</span>
+          <span>-S/ 0.00</span>
+        </div>
+      </div>
+      
+      <hr class="border-border-dark"/>
+      
+      <!-- Total -->
+      <div class="flex justify-between items-center">
+        <span class="text-white font-bold text-lg">Total</span>
+        <div class="text-right">
+          <span class="text-primary font-black text-2xl">S/ ${total.toFixed(2)}</span>
+          <p class="text-xs text-text-muted">PEN</p>
+        </div>
+      </div>
+    `;
+    }
+
+    // Initial render
+    renderOrderSummary();
+
+    // Handle form submission
+    const form = document.getElementById("checkout-form");
+    if (form) {
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(form as HTMLFormElement);
+            const data = Object.fromEntries(formData);
+
+            // Validate required fields
+            if (!data.email || !data.firstName || !data.lastName) {
+                alert("Please fill in all required fields");
+                return;
+            }
+
+            // Save buyer info to localStorage
+            localStorage.setItem("buyerInfo", JSON.stringify(data));
+
+            // Redirect to payment page
+            window.location.href = "/payment";
+        });
+    }
+</script>

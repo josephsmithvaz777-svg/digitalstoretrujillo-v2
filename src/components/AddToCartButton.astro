@@ -1,0 +1,86 @@
+---
+interface Props {
+    productId: string;
+    productTitle: string;
+    productPrice: number;
+    productImage: string;
+    productSeller?: string;
+    className?: string;
+}
+
+const {
+    productId,
+    productTitle,
+    productPrice,
+    productImage,
+    productSeller,
+    className = "",
+} = Astro.props;
+---
+
+<button
+    class:list={["add-to-cart-btn", className]}
+    data-product-id={productId}
+    data-product-title={productTitle}
+    data-product-price={productPrice}
+    data-product-image={productImage}
+    data-product-seller={productSeller}
+>
+    <span class="material-symbols-outlined">shopping_cart</span>
+    <span class="btn-text">Add to Cart</span>
+    <span class="btn-text-added hidden">✓ Added!</span>
+</button>
+
+<script>
+    import { addToCart } from "../stores/cart";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll(".add-to-cart-btn");
+
+        buttons.forEach((button) => {
+            button.addEventListener("click", (e) => {
+                e.preventDefault();
+
+                const btn = e.currentTarget as HTMLButtonElement;
+                const productId = btn.dataset.productId!;
+                const productTitle = btn.dataset.productTitle!;
+                const productPrice = parseFloat(btn.dataset.productPrice!);
+                const productImage = btn.dataset.productImage!;
+                const productSeller = btn.dataset.productSeller;
+
+                // Add to cart
+                addToCart({
+                    id: productId,
+                    title: productTitle,
+                    price: productPrice,
+                    image: productImage,
+                    seller: productSeller,
+                });
+
+                // Visual feedback
+                const btnText = btn.querySelector(".btn-text");
+                const btnTextAdded = btn.querySelector(".btn-text-added");
+
+                if (btnText && btnTextAdded) {
+                    btnText.classList.add("hidden");
+                    btnTextAdded.classList.remove("hidden");
+
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        btnText.classList.remove("hidden");
+                        btnTextAdded.classList.add("hidden");
+                    }, 2000);
+                }
+
+                // Dispatch custom event for cart update
+                window.dispatchEvent(new CustomEvent("cart-updated"));
+            });
+        });
+    });
+</script>
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>

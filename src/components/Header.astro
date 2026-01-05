@@ -1,0 +1,66 @@
+---
+import CartIcon from "./CartIcon.astro";
+// Header component for DigitalStoreTrujillo
+---
+
+<header
+    class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-dark px-4 lg:px-40 py-3 bg-background-dark sticky top-0 z-50"
+>
+    <div class="flex items-center gap-8 w-full">
+        <div class="flex items-center gap-4 text-white">
+            <div class="size-8 text-primary">
+                <span class="material-symbols-outlined text-4xl"
+                    >local_mall</span
+                >
+            </div>
+            <h2
+                class="text-white text-lg font-bold leading-tight tracking-[-0.015em] hidden sm:block"
+            >
+                DigitalStoreTrujillo
+            </h2>
+        </div>
+        <label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+            <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                <div
+                    class="text-text-muted flex border-none bg-border-dark items-center justify-center pl-4 rounded-l-lg border-r-0"
+                >
+                    <span class="material-symbols-outlined text-[24px]"
+                        >search</span
+                    >
+                </div>
+                <input
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-border-dark focus:border-none h-full placeholder:text-text-muted px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+                    placeholder="Search products..."
+                />
+            </div>
+        </label>
+    </div>
+    <div class="flex flex-1 justify-end gap-4 lg:gap-8 items-center">
+        <div class="hidden lg:flex items-center gap-9">
+            <a
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                href="/">Home</a
+            >
+            <a
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                href="/products">Software</a
+            >
+            <a
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                href="/products">Games</a
+            >
+            <a
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                href="/products">Services</a
+            >
+        </div>
+        <div class="flex gap-2">
+            <button
+                class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-red-700 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]"
+            >
+                <span class="truncate">Sign In</span>
+            </button>
+            <CartIcon />
+        </div>
+    </div>
+</header>

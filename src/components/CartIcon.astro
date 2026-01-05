@@ -1,0 +1,65 @@
+---
+// Cart icon component with counter
+---
+
+<a
+    href="/cart"
+    class="relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-border-dark hover:bg-[#4a3232] transition-colors text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
+>
+    <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+    <span
+        id="cart-count"
+        class="cart-badge hidden absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+    >
+        0
+    </span>
+</a>
+
+<script>
+    import { cartCount } from "../stores/cart";
+
+    function updateCartBadge() {
+        const badge = document.getElementById("cart-count");
+        const count = cartCount.get();
+
+        if (badge) {
+            badge.textContent = count.toString();
+            if (count > 0) {
+                badge.classList.remove("hidden");
+            } else {
+                badge.classList.add("hidden");
+            }
+        }
+    }
+
+    // Initial update
+    updateCartBadge();
+
+    // Subscribe to cart changes
+    cartCount.subscribe(() => {
+        updateCartBadge();
+    });
+
+    // Listen for custom cart-updated events
+    window.addEventListener("cart-updated", () => {
+        updateCartBadge();
+    });
+</script>
+
+<style>
+    .cart-badge {
+        animation: pop 0.3s ease-out;
+    }
+
+    @keyframes pop {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
