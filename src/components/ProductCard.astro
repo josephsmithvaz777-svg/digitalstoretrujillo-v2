@@ -5,11 +5,14 @@ interface Props {
     originalPrice?: number;
     renewablePrice?: number;
     image: string;
-    discount?: string;
     badge?: string;
     badgeColor?: string;
     badgeTextColor?: string;
     showBadge?: boolean;
+    discountBadge?: string;
+    discountBadgeColor?: string;
+    discountBadgeTextColor?: string;
+    showDiscountBadge?: boolean;
     showRenewablePrice?: boolean;
     category?: string;
     seller?: string;
@@ -25,11 +28,14 @@ const {
     originalPrice,
     renewablePrice,
     image,
-    discount,
     badge,
     badgeColor,
     badgeTextColor,
     showBadge = true,
+    discountBadge,
+    discountBadgeColor,
+    discountBadgeTextColor,
+    showDiscountBadge = true,
     showRenewablePrice = true,
     category = "Digital Product",
     seller = "DigitalStore",
@@ -38,13 +44,6 @@ const {
     inStock = true,
     productUrl = "/product",
 } = Astro.props;
-
-// Calculate discount percentage if not provided
-const discountPercent =
-    discount ||
-    (originalPrice
-        ? `-${Math.round((1 - price / originalPrice) * 100)}%`
-        : null);
 ---
 
 <div
@@ -56,9 +55,12 @@ const discountPercent =
     <!-- Badges Container -->
     <div class="absolute top-3 left-3 z-10 flex gap-2">
         {
-            discountPercent && inStock && (
-                <span class="bg-primary text-white text-xs font-black px-3 py-1.5 rounded-lg shadow-lg">
-                    {discountPercent}
+            discountBadge && showDiscountBadge && inStock && (
+                <span
+                    class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg"
+                    style={`background-color: ${discountBadgeColor || "var(--color-primary)"}; color: ${discountBadgeTextColor || "white"}`}
+                >
+                    {discountBadge}
                 </span>
             )
         }

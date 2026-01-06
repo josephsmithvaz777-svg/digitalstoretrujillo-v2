@@ -128,6 +128,17 @@ const products = await getFeaturedProducts(8);
 									product.badge_text_color ?? undefined
 								}
 								showBadge={product.show_badge}
+								discountBadge={
+									product.discount_badge ?? undefined
+								}
+								discountBadgeColor={
+									product.discount_badge_color ?? undefined
+								}
+								discountBadgeTextColor={
+									product.discount_badge_text_color ??
+									undefined
+								}
+								showDiscountBadge={product.show_discount_badge}
 								showRenewablePrice={
 									product.show_renewable_price
 								}

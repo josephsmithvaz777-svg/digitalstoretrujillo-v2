@@ -27,6 +27,10 @@ export interface Product {
   badge_color: string | null;
   badge_text_color: string | null;
   show_badge: boolean;
+  discount_badge: string | null;
+  discount_badge_color: string | null;
+  discount_badge_text_color: string | null;
+  show_discount_badge: boolean;
   show_renewable_price: boolean;
   rating: number;
   review_count: number;

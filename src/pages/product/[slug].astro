@@ -68,18 +68,31 @@ const description = product.description || "";
                                 style={`background-image: url("${product.image}");`}
                             >
                             </div>
-                            {
-                                product.badge && product.show_badge && (
-                                    <div class="absolute top-4 left-4">
+                            <div
+                                class="absolute top-4 left-4 flex flex-wrap gap-2"
+                            >
+                                {
+                                    product.discount_badge &&
+                                        product.show_discount_badge && (
+                                            <span
+                                                class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg uppercase tracking-wider"
+                                                style={`background-color: ${product.discount_badge_color || "#E00700"}; color: ${product.discount_badge_text_color || "#FFFFFF"}`}
+                                            >
+                                                {product.discount_badge}
+                                            </span>
+                                        )
+                                }
+                                {
+                                    product.badge && product.show_badge && (
                                         <span
-                                            class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg"
-                                            style={`background-color: ${product.badge_color || "#FFD700"}; color: ${product.badge_text_color || (product.badge_color ? (parseInt(product.badge_color.replace("#", ""), 16) > 0xffffff / 2 ? "black" : "white") : "black")}`}
+                                            class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg uppercase tracking-wider"
+                                            style={`background-color: ${product.badge_color || "#FFD700"}; color: ${product.badge_text_color || "#000000"}`}
                                         >
                                             {product.badge}
                                         </span>
-                                    </div>
-                                )
-                            }
+                                    )
+                                }
+                            </div>
                         </div>
                         <!-- Thumbnails -->
                         <div class="flex gap-4 overflow-x-auto pb-2">
@@ -138,7 +151,8 @@ const description = product.description || "";
                                 {
                                     product.original_price && (
                                         <p class="text-xl text-text-muted line-through mb-1">
-                                            ${product.original_price.toFixed(2)}
+                                            S/{" "}
+                                            {product.original_price.toFixed(2)}
                                         </p>
                                     )
                                 }
