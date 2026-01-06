@@ -323,25 +323,11 @@ export async function isAdmin(): Promise<boolean> {
  * Create a new product (admin only)
  */
 export async function createProduct(productData: Partial<Product>): Promise<Product | null> {
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from('products')
     .insert(productData)
     .select()
     .single();
-
-  if (error) {
-    if (error.code === '42703' || error.message?.includes('badge_color')) {
-      console.warn('Column badge_color might be missing. Retrying insert without it...');
-      const { badge_color, ...safeData } = productData;
-      const response = await supabase
-        .from('products')
-        .insert(safeData)
-        .select()
-        .single();
-      data = response.data;
-      error = response.error;
-    }
-  }
 
   if (error) {
     console.error('Error creating product:', error);
@@ -361,19 +347,6 @@ export async function updateProduct(id: string, productData: Partial<Product>): 
     .eq('id', id);
 
   if (error) {
-    // If the error is because a column doesn't exist (likely badge_color)
-    if (error.code === '42703' || error.message?.includes('badge_color')) {
-      console.warn('Column badge_color might be missing. Retrying update without it...');
-      const { badge_color, ...safeData } = productData;
-      const { error: retryError } = await supabase
-        .from('products')
-        .update(safeData)
-        .eq('id', id);
-
-      if (!retryError) return true;
-      console.error('Retry failed:', retryError);
-    }
-
     console.error('Error updating product:', error);
     if (error.message) console.error('Supabase Error Message:', error.message);
     if (error.details) console.error('Supabase Error Details:', error.details);
