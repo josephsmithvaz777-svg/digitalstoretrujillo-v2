@@ -1070,9 +1070,9 @@ const description = "Choose your payment method";
                 openBinanceModal();
             } else if (selectedMethod === "crypto") {
                 const totalPEN = cartTotal.get();
-                const totalUSD = (totalPEN / 3.8).toFixed(2);
+                const totalUSD = (totalPEN / 3).toFixed(2);
                 alert(
-                    `🎉 Redirigiendo a Cryptomus...\n\nMonto a pagar: $ ${totalUSD} USD (Tasa: 3.8)\n\nPodrás pagar con Bitcoin, USDT, otras criptomonedas o Tarjeta de Crédito/Débito.`,
+                    `🎉 Redirigiendo a Cryptomus...\n\nMonto a pagar: $ ${totalUSD} USD (Tasa: 3)\n\nPodrás pagar con Bitcoin, USDT, otras criptomonedas o Tarjeta de Crédito/Débito.`,
                 );
             }
         });
@@ -1159,7 +1159,7 @@ const description = "Choose your payment method";
     function openBinanceModal() {
         if (binanceModal && binanceAmount) {
             const totalPEN = cartTotal.get();
-            const totalUSD = (totalPEN / 3.8).toFixed(2);
+            const totalUSD = (totalPEN / 3).toFixed(2);
             binanceAmount.innerHTML = `
                 <div class="flex flex-col items-center">
                     <span class="text-xs text-text-muted line-through">S/ ${totalPEN.toFixed(2)}</span>
