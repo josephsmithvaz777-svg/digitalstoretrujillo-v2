@@ -558,15 +558,18 @@ if (!product) {
 			`;
 
             try {
-                const success = await updateProduct(productId, productData);
+                const response = await updateProduct(productId, productData);
 
-                if (!success) {
-                    throw new Error("Error al actualizar el producto");
+                if (response === false) {
+                    throw new Error(
+                        "Error al actualizar el producto. Revisa la consola para más detalles.",
+                    );
                 }
 
                 // Success - redirect
                 window.location.href = "/admin/products";
             } catch (error: any) {
+                console.error("FULL ERROR:", error);
                 alert(error.message || "Error al actualizar el producto");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `
