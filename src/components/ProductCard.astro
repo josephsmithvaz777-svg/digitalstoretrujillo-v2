@@ -8,6 +8,9 @@ interface Props {
     discount?: string;
     badge?: string;
     badgeColor?: string;
+    badgeTextColor?: string;
+    showBadge?: boolean;
+    showRenewablePrice?: boolean;
     category?: string;
     seller?: string;
     rating?: number;
@@ -25,6 +28,9 @@ const {
     discount,
     badge,
     badgeColor,
+    badgeTextColor,
+    showBadge = true,
+    showRenewablePrice = true,
     category = "Digital Product",
     seller = "DigitalStore",
     rating = 5,
@@ -57,10 +63,10 @@ const discountPercent =
             )
         }
         {
-            badge && (
+            badge && showBadge && (
                 <span
                     class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg"
-                    style={`background-color: ${badgeColor || "#FFD700"}; color: ${badgeColor ? (parseInt(badgeColor.replace("#", ""), 16) > 0xffffff / 2 ? "black" : "white") : "black"}`}
+                    style={`background-color: ${badgeColor || "#FFD700"}; color: ${badgeTextColor || (badgeColor ? (parseInt(badgeColor.replace("#", ""), 16) > 0xffffff / 2 ? "black" : "white") : "black")}`}
                 >
                     {badge}
                 </span>
@@ -155,7 +161,7 @@ const discountPercent =
                 )
             }
             {
-                renewablePrice && inStock && (
+                renewablePrice && inStock && showRenewablePrice && (
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-green-500 text-sm">
                             autorenew

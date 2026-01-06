@@ -95,6 +95,13 @@ const description = `Explora nuestra selección de ${displayCategory} al mejor p
                                     badgeColor={
                                         product.badge_color ?? undefined
                                     }
+                                    badgeTextColor={
+                                        product.badge_text_color ?? undefined
+                                    }
+                                    showBadge={product.show_badge}
+                                    showRenewablePrice={
+                                        product.show_renewable_price
+                                    }
                                     seller={product.seller ?? undefined}
                                     rating={product.rating}
                                     reviewCount={product.review_count}

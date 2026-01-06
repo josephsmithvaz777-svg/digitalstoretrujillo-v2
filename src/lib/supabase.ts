@@ -25,6 +25,9 @@ export interface Product {
   seller: string | null;
   badge: string | null;
   badge_color: string | null;
+  badge_text_color: string | null;
+  show_badge: boolean;
+  show_renewable_price: boolean;
   rating: number;
   review_count: number;
   in_stock: boolean;
