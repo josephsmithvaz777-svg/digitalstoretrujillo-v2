@@ -1,0 +1,531 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { getProductById } from "../../../lib/supabase";
+
+const { id } = Astro.params;
+
+if (!id) {
+    return Astro.redirect("/admin/products");
+}
+
+const product = await getProductById(id);
+
+if (!product) {
+    return Astro.redirect("/admin/products");
+}
+---
+
+<AdminLayout title={`Editar: ${product.title}`} activePage="products">
+    <!-- Header -->
+    <div class="mb-6">
+        <a
+            href="/admin/products"
+            class="inline-flex items-center gap-2 text-text-muted hover:text-primary transition-colors mb-4"
+        >
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span
+            >
+            Volver a productos
+        </a>
+        <h1 class="text-white text-2xl font-bold">Editar Producto</h1>
+        <p class="text-text-muted text-sm mt-1">ID: {product.id}</p>
+    </div>
+
+    <!-- Product Form -->
+    <form id="product-form" class="max-w-4xl" data-product-id={product.id}>
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-6"
+        >
+            <!-- Basic Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    <label
+                        for="title"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Título del Producto *
+                    </label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={product.title}
+                        required
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="Ej: Windows 11 Pro Key"
+                    />
+                </div>
+
+                <div class="md:col-span-2">
+                    <label
+                        for="slug"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Slug (URL) *
+                    </label>
+                    <input
+                        type="text"
+                        id="slug"
+                        name="slug"
+                        value={product.slug}
+                        required
+                        pattern="[a-z0-9-]+"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="windows-11-pro"
+                    />
+                    <p class="text-text-muted text-xs mt-1">
+                        Solo letras minúsculas, números y guiones
+                    </p>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label
+                        for="description"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Descripción
+                    </label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="3"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                        placeholder="Descripción del producto..."
+                        >{product.description}</textarea
+                    >
+                </div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label
+                        for="price"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Precio (S/) *
+                    </label>
+                    <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        value={product.price}
+                        required
+                        step="0.01"
+                        min="0"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="15.00"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="original_price"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Precio Original (S/)
+                    </label>
+                    <input
+                        type="number"
+                        id="original_price"
+                        name="original_price"
+                        value={product.original_price}
+                        step="0.01"
+                        min="0"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="18.75"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="renewable_price"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Precio Renovable (S/)
+                    </label>
+                    <input
+                        type="number"
+                        id="renewable_price"
+                        name="renewable_price"
+                        value={product.renewable_price}
+                        step="0.01"
+                        min="0"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="1.00"
+                    />
+                </div>
+            </div>
+
+            <!-- Category & Stock -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label
+                        for="category"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Categoría *
+                    </label>
+                    <input
+                        type="text"
+                        id="category"
+                        name="category"
+                        value={product.category}
+                        required
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="Software"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="stock_quantity"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Stock *
+                    </label>
+                    <input
+                        type="number"
+                        id="stock_quantity"
+                        name="stock_quantity"
+                        value={product.stock_quantity}
+                        required
+                        min="0"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="100"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="seller"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Vendedor
+                    </label>
+                    <input
+                        type="text"
+                        id="seller"
+                        name="seller"
+                        value={product.seller}
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="DERIAN MEJIA"
+                    />
+                </div>
+            </div>
+
+            <!-- Images -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label
+                        for="image"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        URL de Imagen Principal *
+                    </label>
+                    <input
+                        type="url"
+                        id="image"
+                        name="image"
+                        value={product.image}
+                        required
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="https://..."
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="badge"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Badge
+                    </label>
+                    <input
+                        type="text"
+                        id="badge"
+                        name="badge"
+                        value={product.badge}
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        placeholder="Oferta, Nuevo, etc."
+                    />
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div>
+                <label class="block text-sm font-medium text-white mb-2">
+                    Características
+                </label>
+                <div id="features-container" class="space-y-2">
+                    {
+                        product.features && product.features.length > 0 ? (
+                            product.features.map((feature) => (
+                                <div class="flex gap-2">
+                                    <input
+                                        type="text"
+                                        class="feature-input flex-1 px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        placeholder="Característica del producto..."
+                                        value={feature}
+                                    />
+                                    <button
+                                        type="button"
+                                        class="remove-feature px-4 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all"
+                                    >
+                                        <span class="material-symbols-outlined">
+                                            close
+                                        </span>
+                                    </button>
+                                </div>
+                            ))
+                        ) : (
+                            <div class="flex gap-2">
+                                <input
+                                    type="text"
+                                    class="feature-input flex-1 px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    placeholder="Característica del producto..."
+                                />
+                                <button
+                                    type="button"
+                                    class="remove-feature px-4 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all hidden"
+                                >
+                                    <span class="material-symbols-outlined">
+                                        close
+                                    </span>
+                                </button>
+                            </div>
+                        )
+                    }
+                </div>
+                <button
+                    type="button"
+                    id="add-feature"
+                    class="mt-2 flex items-center gap-2 text-primary hover:text-red-600 text-sm font-medium"
+                >
+                    <span class="material-symbols-outlined text-[18px]"
+                        >add</span
+                    >
+                    Agregar característica
+                </button>
+            </div>
+
+            <!-- Rating -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label
+                        for="rating"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Rating (1-5) *
+                    </label>
+                    <input
+                        type="number"
+                        id="rating"
+                        name="rating"
+                        value={product.rating}
+                        required
+                        min="1"
+                        max="5"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                </div>
+
+                <div>
+                    <label
+                        for="review_count"
+                        class="block text-sm font-medium text-white mb-2"
+                    >
+                        Número de Reviews
+                    </label>
+                    <input
+                        type="number"
+                        id="review_count"
+                        name="review_count"
+                        value={product.review_count}
+                        min="0"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="flex items-center gap-6">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        id="is_active"
+                        name="is_active"
+                        checked={product.is_active}
+                        class="w-5 h-5 bg-background-dark border-2 border-border-dark rounded checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-card-dark transition-all"
+                    />
+                    <span class="text-white font-medium">Producto Activo</span>
+                </label>
+
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        id="in_stock"
+                        name="in_stock"
+                        checked={product.in_stock}
+                        class="w-5 h-5 bg-background-dark border-2 border-border-dark rounded checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-card-dark transition-all"
+                    />
+                    <span class="text-white font-medium">En Stock</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-4 mt-6">
+            <button
+                type="submit"
+                id="submit-btn"
+                class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+            >
+                <span class="material-symbols-outlined">save</span>
+                Guardar Cambios
+            </button>
+            <a
+                href="/admin/products"
+                class="flex items-center gap-2 px-6 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+            >
+                Cancelar
+            </a>
+        </div>
+    </form>
+
+    <script>
+        import { updateProduct } from "../../../lib/supabase";
+
+        // Auto-generate slug from title
+        const titleInput = document.getElementById("title") as HTMLInputElement;
+        const slugInput = document.getElementById("slug") as HTMLInputElement;
+
+        titleInput?.addEventListener("input", () => {
+            if (
+                !slugInput.value ||
+                slugInput.value ===
+                    titleInput.value.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+            ) {
+                slugInput.value = titleInput.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/^-+|-+$/g, "");
+            }
+        });
+
+        // Features management
+        const featuresContainer = document.getElementById("features-container");
+        const addFeatureBtn = document.getElementById("add-feature");
+
+        // Add remove functionality to existing featured inputs
+        document.querySelectorAll(".remove-feature").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const target = e.currentTarget as HTMLElement;
+                target.parentElement?.remove();
+            });
+        });
+
+        addFeatureBtn?.addEventListener("click", () => {
+            const featureDiv = document.createElement("div");
+            featureDiv.className = "flex gap-2";
+            featureDiv.innerHTML = `
+				<input
+					type="text"
+					class="feature-input flex-1 px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+					placeholder="Característica del producto..."
+				/>
+				<button
+					type="button"
+					class="remove-feature px-4 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all"
+				>
+					<span class="material-symbols-outlined">close</span>
+				</button>
+			`;
+            featuresContainer?.appendChild(featureDiv);
+
+            // Add remove functionality
+            featureDiv
+                .querySelector(".remove-feature")
+                ?.addEventListener("click", () => {
+                    featureDiv.remove();
+                });
+        });
+
+        // Form submission
+        const form = document.getElementById("product-form") as HTMLFormElement;
+        const submitBtn = document.getElementById(
+            "submit-btn",
+        ) as HTMLButtonElement;
+        const productId = form.dataset.productId;
+
+        form?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            if (!productId) return;
+
+            const formData = new FormData(form);
+
+            // Collect features
+            const features: string[] = [];
+            document.querySelectorAll(".feature-input").forEach((input) => {
+                const value = (input as HTMLInputElement).value.trim();
+                if (value) features.push(value);
+            });
+
+            // Prepare product data
+            const productData = {
+                title: formData.get("title") as string,
+                slug: formData.get("slug") as string,
+                description: (formData.get("description") as string) || null,
+                price: parseFloat(formData.get("price") as string),
+                original_price: formData.get("original_price")
+                    ? parseFloat(formData.get("original_price") as string)
+                    : null,
+                renewable_price: formData.get("renewable_price")
+                    ? parseFloat(formData.get("renewable_price") as string)
+                    : null,
+                image: formData.get("image") as string,
+                category: formData.get("category") as string,
+                seller: (formData.get("seller") as string) || null,
+                badge: (formData.get("badge") as string) || null,
+                rating: parseInt(formData.get("rating") as string),
+                review_count:
+                    parseInt(formData.get("review_count") as string) || 0,
+                stock_quantity: parseInt(
+                    formData.get("stock_quantity") as string,
+                ),
+                features,
+                is_active: (
+                    document.getElementById("is_active") as HTMLInputElement
+                ).checked,
+                in_stock: (
+                    document.getElementById("in_stock") as HTMLInputElement
+                ).checked,
+            };
+
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+				<span class="material-symbols-outlined animate-spin">progress_activity</span>
+				Guardando...
+			`;
+
+            try {
+                const success = await updateProduct(productId, productData);
+
+                if (!success) {
+                    throw new Error("Error al actualizar el producto");
+                }
+
+                // Success - redirect
+                window.location.href = "/admin/products";
+            } catch (error: any) {
+                alert(error.message || "Error al actualizar el producto");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+					<span class="material-symbols-outlined">save</span>
+					Guardar Cambios
+				`;
+            }
+        });
+    </script>
+</AdminLayout>

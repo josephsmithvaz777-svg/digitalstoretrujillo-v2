@@ -100,6 +100,24 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 /**
+ * Get a single product by ID
+ */
+export async function getProductById(id: string): Promise<Product | null> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching product by ID:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
  * Get featured products (for homepage)
  */
 export async function getFeaturedProducts(limit: number = 4): Promise<Product[]> {
