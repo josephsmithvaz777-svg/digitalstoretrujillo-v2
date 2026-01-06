@@ -68,12 +68,18 @@ const description = product.description || "";
                                 style={`background-image: url("${product.image}");`}
                             >
                             </div>
-                            <div class="absolute top-4 left-4">
-                                <span
-                                    class="bg-primary/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg"
-                                    >Global Key</span
-                                >
-                            </div>
+                            {
+                                product.badge && product.show_badge && (
+                                    <div class="absolute top-4 left-4">
+                                        <span
+                                            class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg"
+                                            style={`background-color: ${product.badge_color || "#FFD700"}; color: ${product.badge_text_color || (product.badge_color ? (parseInt(product.badge_color.replace("#", ""), 16) > 0xffffff / 2 ? "black" : "white") : "black")}`}
+                                        >
+                                            {product.badge}
+                                        </span>
+                                    </div>
+                                )
+                            }
                         </div>
                         <!-- Thumbnails -->
                         <div class="flex gap-4 overflow-x-auto pb-2">
@@ -143,17 +149,20 @@ const description = product.description || "";
                                 </span>
                             </div>
                             {
-                                product.renewable_price && (
-                                    <div class="flex items-center gap-2 text-sm mb-4">
-                                        <span class="material-symbols-outlined text-green-500 text-lg">
-                                            autorenew
-                                        </span>
-                                        <span class="text-green-400 font-semibold">
-                                            Renovable: $
-                                            {product.renewable_price.toFixed(2)}
-                                        </span>
-                                    </div>
-                                )
+                                product.renewable_price &&
+                                    product.show_renewable_price && (
+                                        <div class="flex items-center gap-2 text-sm mb-4">
+                                            <span class="material-symbols-outlined text-green-500 text-lg">
+                                                autorenew
+                                            </span>
+                                            <span class="text-green-400 font-semibold">
+                                                Renovable: S/
+                                                {product.renewable_price.toFixed(
+                                                    2,
+                                                )}
+                                            </span>
+                                        </div>
+                                    )
                             }
                             <div
                                 class="flex items-center gap-2 text-sm text-text-muted mb-6"
