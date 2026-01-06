@@ -1,6 +1,6 @@
 ---
-import AdminLayout from "../../../layouts/AdminLayout.astro";
-import { getProductById } from "../../../lib/supabase";
+import AdminLayout from "../../../../layouts/AdminLayout.astro";
+import { getProductById } from "../../../../lib/supabase";
 
 const { id } = Astro.params;
 
@@ -393,7 +393,7 @@ if (!product) {
     </form>
 
     <script>
-        import { updateProduct } from "../../../lib/supabase";
+        import { updateProduct } from "../../../../lib/supabase";
 
         // Auto-generate slug from title
         const titleInput = document.getElementById("title") as HTMLInputElement;
