@@ -348,6 +348,9 @@ export async function updateProduct(id: string, productData: Partial<Product>): 
 
   if (error) {
     console.error('Error updating product:', error);
+    if (error.message) console.error('Supabase Error Message:', error.message);
+    if (error.details) console.error('Supabase Error Details:', error.details);
+    if (error.hint) console.error('Supabase Error Hint:', error.hint);
     return false;
   }
 
