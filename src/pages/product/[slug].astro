@@ -4,29 +4,13 @@ import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import ProductCard from "../../components/ProductCard.astro";
 import AddToCartButton from "../../components/AddToCartButton.astro";
-import { getAllProductSlugs, getProductBySlug } from "../../lib/supabase";
+import { getProductBySlug } from "../../lib/supabase";
 
-// Fetch all products from Supabase for static path generation
-export async function getStaticPaths() {
-    const slugs = await getAllProductSlugs();
+// Get the slug from the URL params
+const { slug } = Astro.params;
 
-    const paths = await Promise.all(
-        slugs.map(async (slug) => {
-            const product = await getProductBySlug(slug);
-            if (!product) return null;
-
-            return {
-                params: { slug },
-                props: { product },
-            };
-        }),
-    );
-
-    // Filter out any null values
-    return paths.filter(Boolean);
-}
-
-const { product } = Astro.props;
+// Fetch product data dynamically
+const product = slug ? await getProductBySlug(slug) : null;
 
 if (!product) {
     return Astro.redirect("/404");
@@ -216,7 +200,7 @@ const description = product.description || "";
                                     productTitle={product.title}
                                     productPrice={product.price}
                                     productImage={product.image}
-                                    productSeller={product.seller}
+                                    productSeller={product.seller ?? undefined}
                                     className="w-full bg-primary hover:bg-red-700 text-white font-bold py-3.5 rounded-lg transition-all transform active:scale-[0.98] shadow-[0_0_15px_rgba(224,7,0,0.3)] flex items-center justify-center gap-2"
                                 />
                                 <button
@@ -225,7 +209,8 @@ const description = product.description || "";
                                     data-product-title={product.title}
                                     data-product-price={product.price}
                                     data-product-image={product.image}
-                                    data-product-seller={product.seller}
+                                    data-product-seller={product.seller ??
+                                        undefined}
                                     class="w-full bg-transparent border-2 border-border-dark hover:border-white text-white font-bold py-3.5 rounded-lg transition-colors"
                                 >
                                     Buy Now
