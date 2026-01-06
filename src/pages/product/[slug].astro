@@ -10,10 +10,12 @@ import { getProductBySlug } from "../../lib/supabase";
 const { slug } = Astro.params;
 
 // Fetch product data dynamically
-const product = slug ? await getProductBySlug(slug) : null;
+// We explicitly check the slug and search by it
+const product = await getProductBySlug(slug as string);
 
 if (!product) {
-    return Astro.redirect("/404");
+    console.error(`Product not found for slug: ${slug}`);
+    return Astro.redirect("/");
 }
 
 const title = `${product.title} - DigitalStoreTrujillo`;
