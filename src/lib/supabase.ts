@@ -24,6 +24,7 @@ export interface Product {
   category: string;
   seller: string | null;
   badge: string | null;
+  badge_color: string | null;
   rating: number;
   review_count: number;
   in_stock: boolean;

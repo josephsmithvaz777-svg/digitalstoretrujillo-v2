@@ -7,6 +7,7 @@ interface Props {
     image: string;
     discount?: string;
     badge?: string;
+    badgeColor?: string;
     category?: string;
     seller?: string;
     rating?: number;
@@ -23,6 +24,7 @@ const {
     image,
     discount,
     badge,
+    badgeColor,
     category = "Digital Product",
     seller = "DigitalStore",
     rating = 5,
@@ -56,7 +58,10 @@ const discountPercent =
         }
         {
             badge && (
-                <span class="bg-[#FFD700] text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-lg">
+                <span
+                    class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg"
+                    style={`background-color: ${badgeColor || "#FFD700"}; color: ${badgeColor ? (parseInt(badgeColor.replace("#", ""), 16) > 0xffffff / 2 ? "black" : "white") : "black"}`}
+                >
                     {badge}
                 </span>
             )
