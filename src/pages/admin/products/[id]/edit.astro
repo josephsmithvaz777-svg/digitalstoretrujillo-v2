@@ -9,7 +9,6 @@ if (!id) {
 }
 
 const product = await getProductById(id);
-console.log("Fetched Product:", product);
 
 if (!product) {
     return Astro.redirect("/admin/products");
