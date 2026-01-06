@@ -1,0 +1,330 @@
+---
+import { getAdminUser } from "../lib/supabase";
+import "../styles/global.css";
+
+// Get user info - if null, client-side script will redirect
+const user = await getAdminUser();
+
+interface Props {
+    title: string;
+    activePage?: string;
+}
+
+const { title, activePage = "dashboard" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{title}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+    </head>
+    <body class="bg-background-dark min-h-screen">
+        <!-- Auth Check Script - Checks Supabase session on client -->
+        <script>
+            import { supabase } from "../lib/supabase";
+
+            // Check if user is authenticated
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (!session) {
+                    window.location.href = "/admin/login";
+                }
+            });
+        </script>
+
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside
+                class="hidden lg:flex lg:flex-col lg:w-64 bg-card-dark border-r border-border-dark"
+            >
+                <!-- Logo -->
+                <div
+                    class="h-16 flex items-center px-6 border-b border-border-dark"
+                >
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"
+                        >
+                            <span
+                                class="material-symbols-outlined text-white text-xl"
+                                >store</span
+                            >
+                        </div>
+                        <span class="text-white font-bold text-lg"
+                            >DST Admin</span
+                        >
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                    <a
+                        href="/admin"
+                        class={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                            activePage === "dashboard"
+                                ? "bg-primary text-white"
+                                : "text-text-muted hover:bg-background-dark hover:text-white"
+                        }`}
+                    >
+                        <span class="material-symbols-outlined text-xl"
+                            >dashboard</span
+                        >
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+
+                    <a
+                        href="/admin/products"
+                        class={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                            activePage === "products"
+                                ? "bg-primary text-white"
+                                : "text-text-muted hover:bg-background-dark hover:text-white"
+                        }`}
+                    >
+                        <span class="material-symbols-outlined text-xl"
+                            >inventory_2</span
+                        >
+                        <span class="font-medium">Productos</span>
+                    </a>
+
+                    <a
+                        href="/admin/orders"
+                        class={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                            activePage === "orders"
+                                ? "bg-primary text-white"
+                                : "text-text-muted hover:bg-background-dark hover:text-white"
+                        }`}
+                    >
+                        <span class="material-symbols-outlined text-xl"
+                            >receipt_long</span
+                        >
+                        <span class="font-medium">Órdenes</span>
+                    </a>
+                </nav>
+
+                <!-- User Info -->
+                <div class="p-4 border-t border-border-dark">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >person</span
+                            >
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white text-sm font-medium truncate">
+                                {user?.email || "Admin"}
+                            </p>
+                            <p class="text-text-muted text-xs">Administrador</p>
+                        </div>
+                    </div>
+                    <button
+                        id="logout-btn"
+                        class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-background-dark hover:bg-red-500/10 text-text-muted hover:text-red-400 rounded-lg transition-colors"
+                    >
+                        <span class="material-symbols-outlined text-[18px]"
+                            >logout</span
+                        >
+                        <span class="text-sm font-medium">Cerrar Sesión</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="flex-1 flex flex-col overflow-hidden">
+                <!-- Header -->
+                <header
+                    class="h-16 bg-card-dark border-b border-border-dark flex items-center justify-between px-6"
+                >
+                    <div class="flex items-center gap-4">
+                        <!-- Mobile Menu Button -->
+                        <button
+                            id="mobile-menu-btn"
+                            class="lg:hidden text-white"
+                        >
+                            <span class="material-symbols-outlined">menu</span>
+                        </button>
+
+                        <h1 class="text-white text-xl font-bold">
+                            {title}
+                        </h1>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <!-- Back to Store -->
+                        <a
+                            href="/"
+                            class="flex items-center gap-2 text-text-muted hover:text-primary transition-colors"
+                            target="_blank"
+                        >
+                            <span class="material-symbols-outlined text-[20px]"
+                                >storefront</span
+                            >
+                            <span class="hidden sm:inline text-sm"
+                                >Ver Tienda</span
+                            >
+                        </a>
+                    </div>
+                </header>
+
+                <!-- Page Content -->
+                <main class="flex-1 overflow-y-auto p-6">
+                    <slot />
+                </main>
+            </div>
+        </div>
+
+        <!-- Mobile Sidebar Overlay -->
+        <div
+            id="mobile-sidebar"
+            class="fixed inset-0 bg-black/50 z-50 lg:hidden hidden"
+        >
+            <aside
+                class="w-64 h-full bg-card-dark border-r border-border-dark flex flex-col"
+            >
+                <!-- Same content as desktop sidebar -->
+                <div
+                    class="h-16 flex items-center justify-between px-6 border-b border-border-dark"
+                >
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"
+                        >
+                            <span
+                                class="material-symbols-outlined text-white text-xl"
+                                >store</span
+                            >
+                        </div>
+                        <span class="text-white font-bold text-lg"
+                            >DST Admin</span
+                        >
+                    </div>
+                    <button id="close-mobile-menu" class="text-white">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                    <a
+                        href="/admin"
+                        class={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                            activePage === "dashboard"
+                                ? "bg-primary text-white"
+                                : "text-text-muted hover:bg-background-dark hover:text-white"
+                        }`}
+                    >
+                        <span class="material-symbols-outlined text-xl"
+                            >dashboard</span
+                        >
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+
+                    <a
+                        href="/admin/products"
+                        class={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                            activePage === "products"
+                                ? "bg-primary text-white"
+                                : "text-text-muted hover:bg-background-dark hover:text-white"
+                        }`}
+                    >
+                        <span class="material-symbols-outlined text-xl"
+                            >inventory_2</span
+                        >
+                        <span class="font-medium">Productos</span>
+                    </a>
+
+                    <a
+                        href="/admin/orders"
+                        class={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                            activePage === "orders"
+                                ? "bg-primary text-white"
+                                : "text-text-muted hover:bg-background-dark hover:text-white"
+                        }`}
+                    >
+                        <span class="material-symbols-outlined text-xl"
+                            >receipt_long</span
+                        >
+                        <span class="font-medium">Órdenes</span>
+                    </a>
+                </nav>
+
+                <div class="p-4 border-t border-border-dark">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >person</span
+                            >
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white text-sm font-medium truncate">
+                                {user?.email || "Admin"}
+                            </p>
+                            <p class="text-text-muted text-xs">Administrador</p>
+                        </div>
+                    </div>
+                    <button
+                        id="logout-btn-mobile"
+                        class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-background-dark hover:bg-red-500/10 text-text-muted hover:text-red-400 rounded-lg transition-colors"
+                    >
+                        <span class="material-symbols-outlined text-[18px]"
+                            >logout</span
+                        >
+                        <span class="text-sm font-medium">Cerrar Sesión</span>
+                    </button>
+                </div>
+            </aside>
+        </div>
+
+        <script>
+            import { signOutAdmin } from "../lib/supabase";
+
+            // Logout functionality
+            const logoutBtn = document.getElementById("logout-btn");
+            const logoutBtnMobile =
+                document.getElementById("logout-btn-mobile");
+
+            async function handleLogout() {
+                const success = await signOutAdmin();
+                if (success) {
+                    window.location.href = "/admin/login";
+                }
+            }
+
+            logoutBtn?.addEventListener("click", handleLogout);
+            logoutBtnMobile?.addEventListener("click", handleLogout);
+
+            // Mobile menu
+            const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+            const mobileSidebar = document.getElementById("mobile-sidebar");
+            const closeMobileMenu =
+                document.getElementById("close-mobile-menu");
+
+            mobileMenuBtn?.addEventListener("click", () => {
+                mobileSidebar?.classList.remove("hidden");
+            });
+
+            closeMobileMenu?.addEventListener("click", () => {
+                mobileSidebar?.classList.add("hidden");
+            });
+
+            mobileSidebar?.addEventListener("click", (e) => {
+                if (e.target === mobileSidebar) {
+                    mobileSidebar.classList.add("hidden");
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,293 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { getAllOrders } from "../../../lib/supabase";
+
+const orders = await getAllOrders();
+---
+
+<AdminLayout title="Órdenes" activePage="orders">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-white text-2xl font-bold mb-1">Órdenes</h1>
+        <p class="text-text-muted text-sm">
+            Gestiona todas las órdenes de compra
+        </p>
+    </div>
+
+    <!-- Orders Table -->
+    <div
+        class="bg-card-dark border border-border-dark rounded-xl overflow-hidden"
+    >
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-background-dark border-b border-border-dark">
+                    <tr>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Orden
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Cliente
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Total
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Pago
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Estado
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Fecha
+                        </th>
+                        <th
+                            class="px-6 py-4 text-right text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border-dark">
+                    {
+                        orders.length === 0 ? (
+                            <tr>
+                                <td colspan="7" class="px-6 py-12 text-center">
+                                    <span class="material-symbols-outlined text-text-muted text-5xl mb-4 block">
+                                        receipt_long
+                                    </span>
+                                    <p class="text-text-muted">
+                                        No hay órdenes aún
+                                    </p>
+                                </td>
+                            </tr>
+                        ) : (
+                            orders.map((order) => (
+                                <tr class="hover:bg-background-dark/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <p class="text-white font-bold">
+                                                {order.order_number}
+                                            </p>
+                                            <p class="text-text-muted text-xs">
+                                                {order.payment_method === "yape"
+                                                    ? "Yape"
+                                                    : order.payment_method ===
+                                                        "binance"
+                                                      ? "Binance Pay"
+                                                      : "Cryptomus"}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <p class="text-white font-medium">
+                                                {order.customer_name}
+                                            </p>
+                                            <p class="text-text-muted text-sm">
+                                                {order.customer_email}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-white font-bold">
+                                            S/ {Number(order.total).toFixed(2)}
+                                        </p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${
+                                                order.payment_status ===
+                                                "verified"
+                                                    ? "bg-green-500/20 text-green-400"
+                                                    : order.payment_status ===
+                                                        "failed"
+                                                      ? "bg-red-500/20 text-red-400"
+                                                      : "bg-yellow-500/20 text-yellow-400"
+                                            }`}
+                                        >
+                                            {order.payment_status === "verified"
+                                                ? "Verificado"
+                                                : order.payment_status ===
+                                                    "failed"
+                                                  ? "Fallido"
+                                                  : "Pendiente"}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${
+                                                order.status === "completed"
+                                                    ? "bg-green-500/20 text-green-400"
+                                                    : order.status ===
+                                                        "processing"
+                                                      ? "bg-blue-500/20 text-blue-400"
+                                                      : order.status ===
+                                                          "cancelled"
+                                                        ? "bg-red-500/20 text-red-400"
+                                                        : "bg-yellow-500/20 text-yellow-400"
+                                            }`}
+                                        >
+                                            {order.status === "completed"
+                                                ? "Completado"
+                                                : order.status === "processing"
+                                                  ? "Procesando"
+                                                  : order.status === "cancelled"
+                                                    ? "Cancelado"
+                                                    : "Pendiente"}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-white text-sm">
+                                            {new Date(
+                                                order.created_at,
+                                            ).toLocaleDateString("es-PE")}
+                                        </p>
+                                        <p class="text-text-muted text-xs">
+                                            {new Date(
+                                                order.created_at,
+                                            ).toLocaleTimeString("es-PE", {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}
+                                        </p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <button
+                                                class="update-status-btn p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
+                                                data-order-id={order.id}
+                                                data-current-status={
+                                                    order.status
+                                                }
+                                                title="Actualizar Estado"
+                                            >
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    edit
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Update Status Modal -->
+    <div
+        id="status-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-md w-full p-6"
+        >
+            <h2 class="text-white text-xl font-bold mb-4">Actualizar Estado</h2>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-white mb-2">
+                        Estado de la Orden
+                    </label>
+                    <select
+                        id="order-status"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                        <option value="pending">Pendiente</option>
+                        <option value="processing">Procesando</option>
+                        <option value="completed">Completado</option>
+                        <option value="cancelled">Cancelado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button
+                    id="cancel-update"
+                    class="flex-1 px-4 py-2 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+                >
+                    Cancelar
+                </button>
+                <button
+                    id="confirm-update"
+                    class="flex-1 px-4 py-2 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all"
+                >
+                    Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import { updateOrderStatus } from "../../../lib/supabase";
+
+        const statusModal = document.getElementById("status-modal");
+        const orderStatusSelect = document.getElementById(
+            "order-status",
+        ) as HTMLSelectElement;
+        const cancelBtn = document.getElementById("cancel-update");
+        const confirmBtn = document.getElementById("confirm-update");
+        let orderToUpdate: string | null = null;
+
+        // Open status modal
+        document.querySelectorAll(".update-status-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const orderId = btn.getAttribute("data-order-id");
+                const currentStatus = btn.getAttribute("data-current-status");
+
+                if (orderId && currentStatus && orderStatusSelect) {
+                    orderToUpdate = orderId;
+                    orderStatusSelect.value = currentStatus;
+                    statusModal?.classList.remove("hidden");
+                }
+            });
+        });
+
+        // Cancel update
+        cancelBtn?.addEventListener("click", () => {
+            statusModal?.classList.add("hidden");
+            orderToUpdate = null;
+        });
+
+        // Confirm update
+        confirmBtn?.addEventListener("click", async () => {
+            if (!orderToUpdate || !orderStatusSelect) return;
+
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = "Actualizando...";
+
+            const newStatus = orderStatusSelect.value as any;
+            const success = await updateOrderStatus(orderToUpdate, newStatus);
+
+            if (success) {
+                window.location.reload();
+            } else {
+                alert("Error al actualizar el estado");
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = "Actualizar";
+            }
+        });
+
+        // Close modal on backdrop click
+        statusModal?.addEventListener("click", (e) => {
+            if (e.target === statusModal) {
+                statusModal.classList.add("hidden");
+                orderToUpdate = null;
+            }
+        });
+    </script>
+</AdminLayout>

@@ -1,0 +1,311 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { getProducts } from "../../../lib/supabase";
+
+const products = await getProducts();
+---
+
+<AdminLayout title="Productos" activePage="products">
+    <!-- Header with Actions -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-white text-2xl font-bold mb-1">Productos</h1>
+            <p class="text-text-muted text-sm">
+                Gestiona tu inventario de productos
+            </p>
+        </div>
+        <a
+            href="/admin/products/new"
+            class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+        >
+            <span class="material-symbols-outlined">add</span>
+            Nuevo Producto
+        </a>
+    </div>
+
+    <!-- Products Table -->
+    <div
+        class="bg-card-dark border border-border-dark rounded-xl overflow-hidden"
+    >
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-background-dark border-b border-border-dark">
+                    <tr>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Producto
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Categoría
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Precio
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Stock
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Estado
+                        </th>
+                        <th
+                            class="px-6 py-4 text-right text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border-dark">
+                    {
+                        products.length === 0 ? (
+                            <tr>
+                                <td colspan="6" class="px-6 py-12 text-center">
+                                    <span class="material-symbols-outlined text-text-muted text-5xl mb-4 block">
+                                        inventory_2
+                                    </span>
+                                    <p class="text-text-muted">
+                                        No hay productos aún
+                                    </p>
+                                    <a
+                                        href="/admin/products/new"
+                                        class="inline-flex items-center gap-2 mt-4 text-primary hover:text-red-600 font-medium"
+                                    >
+                                        <span class="material-symbols-outlined text-[18px]">
+                                            add
+                                        </span>
+                                        Crear primer producto
+                                    </a>
+                                </td>
+                            </tr>
+                        ) : (
+                            products.map((product) => (
+                                <tr class="hover:bg-background-dark/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img
+                                                src={product.image}
+                                                alt={product.title}
+                                                class="w-12 h-12 object-cover rounded-lg"
+                                            />
+                                            <div>
+                                                <p class="text-white font-medium">
+                                                    {product.title}
+                                                </p>
+                                                <p class="text-text-muted text-sm">
+                                                    {product.slug}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-white">
+                                            {product.category}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <p class="text-white font-bold">
+                                                S/ {product.price.toFixed(2)}
+                                            </p>
+                                            {product.original_price && (
+                                                <p class="text-text-muted text-sm line-through">
+                                                    S/{" "}
+                                                    {product.original_price.toFixed(
+                                                        2,
+                                                    )}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${
+                                                product.stock_quantity === 0
+                                                    ? "bg-red-500/20 text-red-400"
+                                                    : product.stock_quantity < 5
+                                                      ? "bg-yellow-500/20 text-yellow-400"
+                                                      : "bg-green-500/20 text-green-400"
+                                            }`}
+                                        >
+                                            {product.stock_quantity === 0 ? (
+                                                <>
+                                                    <span class="material-symbols-outlined text-[14px]">
+                                                        block
+                                                    </span>
+                                                    Agotado
+                                                </>
+                                            ) : product.stock_quantity < 5 ? (
+                                                <>
+                                                    <span class="material-symbols-outlined text-[14px]">
+                                                        warning
+                                                    </span>
+                                                    {product.stock_quantity}{" "}
+                                                    unidades
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span class="material-symbols-outlined text-[14px]">
+                                                        check_circle
+                                                    </span>
+                                                    {product.stock_quantity}{" "}
+                                                    unidades
+                                                </>
+                                            )}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${
+                                                product.is_active &&
+                                                product.in_stock
+                                                    ? "bg-green-500/20 text-green-400"
+                                                    : "bg-gray-500/20 text-gray-400"
+                                            }`}
+                                        >
+                                            {product.is_active &&
+                                            product.in_stock
+                                                ? "Activo"
+                                                : "Inactivo"}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <a
+                                                href={`/admin/products/${product.id}/edit`}
+                                                class="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
+                                                title="Editar"
+                                            >
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    edit
+                                                </span>
+                                            </a>
+                                            <button
+                                                class="delete-btn p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                                data-product-id={product.id}
+                                                data-product-name={
+                                                    product.title
+                                                }
+                                                title="Eliminar"
+                                            >
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    delete
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+        id="delete-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-md w-full p-6"
+        >
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center"
+                >
+                    <span
+                        class="material-symbols-outlined text-red-500 text-2xl"
+                    >
+                        warning
+                    </span>
+                </div>
+                <h2 class="text-white text-xl font-bold">Eliminar Producto</h2>
+            </div>
+            <p class="text-text-muted mb-6">
+                ¿Estás seguro de que quieres eliminar <strong
+                    id="product-name"
+                    class="text-white"></strong>? Esta acción no se puede
+                deshacer.
+            </p>
+            <div class="flex gap-3">
+                <button
+                    id="cancel-delete"
+                    class="flex-1 px-4 py-2 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+                >
+                    Cancelar
+                </button>
+                <button
+                    id="confirm-delete"
+                    class="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition-all"
+                >
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import { deleteProduct } from "../../../lib/supabase";
+
+        const deleteModal = document.getElementById("delete-modal");
+        const productNameEl = document.getElementById("product-name");
+        const cancelBtn = document.getElementById("cancel-delete");
+        const confirmBtn = document.getElementById("confirm-delete");
+        let productToDelete: string | null = null;
+
+        // Open delete modal
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const productId = btn.getAttribute("data-product-id");
+                const productName = btn.getAttribute("data-product-name");
+
+                if (productId && productName && productNameEl) {
+                    productToDelete = productId;
+                    productNameEl.textContent = productName;
+                    deleteModal?.classList.remove("hidden");
+                }
+            });
+        });
+
+        // Cancel delete
+        cancelBtn?.addEventListener("click", () => {
+            deleteModal?.classList.add("hidden");
+            productToDelete = null;
+        });
+
+        // Confirm delete
+        confirmBtn?.addEventListener("click", async () => {
+            if (!productToDelete) return;
+
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = "Eliminando...";
+
+            const success = await deleteProduct(productToDelete);
+
+            if (success) {
+                window.location.reload();
+            } else {
+                alert("Error al eliminar el producto");
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = "Eliminar";
+            }
+        });
+
+        // Close modal on backdrop click
+        deleteModal?.addEventListener("click", (e) => {
+            if (e.target === deleteModal) {
+                deleteModal.classList.add("hidden");
+                productToDelete = null;
+            }
+        });
+    </script>
+</AdminLayout>

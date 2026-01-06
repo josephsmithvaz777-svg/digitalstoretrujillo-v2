@@ -1,0 +1,269 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import {
+    getDashboardStats,
+    getAllOrders,
+    getProducts,
+} from "../../lib/supabase";
+
+const stats = await getDashboardStats();
+const recentOrders = (await getAllOrders()).slice(0, 5);
+const lowStockProducts = (await getProducts()).filter(
+    (p) => p.stock_quantity < 5,
+);
+---
+
+<AdminLayout title="Dashboard" activePage="dashboard">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Revenue -->
+        <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center"
+                >
+                    <span
+                        class="material-symbols-outlined text-green-500 text-2xl"
+                    >
+                        payments
+                    </span>
+                </div>
+                <span class="text-green-500 text-sm font-medium">+12.5%</span>
+            </div>
+            <h3 class="text-text-muted text-sm font-medium mb-1">
+                Ingresos Totales
+            </h3>
+            <p class="text-white text-3xl font-bold">
+                S/ {stats.totalRevenue.toFixed(2)}
+            </p>
+        </div>
+
+        <!-- Total Orders -->
+        <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center"
+                >
+                    <span
+                        class="material-symbols-outlined text-blue-500 text-2xl"
+                    >
+                        receipt_long
+                    </span>
+                </div>
+            </div>
+            <h3 class="text-text-muted text-sm font-medium mb-1">
+                Total Órdenes
+            </h3>
+            <p class="text-white text-3xl font-bold">{stats.totalOrders}</p>
+        </div>
+
+        <!-- Pending Orders -->
+        <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center"
+                >
+                    <span
+                        class="material-symbols-outlined text-yellow-500 text-2xl"
+                    >
+                        pending_actions
+                    </span>
+                </div>
+                {
+                    stats.pendingOrders > 0 && (
+                        <span class="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-2 py-1 rounded-full">
+                            ¡Atención!
+                        </span>
+                    )
+                }
+            </div>
+            <h3 class="text-text-muted text-sm font-medium mb-1">
+                Órdenes Pendientes
+            </h3>
+            <p class="text-white text-3xl font-bold">{stats.pendingOrders}</p>
+        </div>
+
+        <!-- Total Products -->
+        <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center"
+                >
+                    <span
+                        class="material-symbols-outlined text-purple-500 text-2xl"
+                    >
+                        inventory_2
+                    </span>
+                </div>
+            </div>
+            <h3 class="text-text-muted text-sm font-medium mb-1">
+                Total Productos
+            </h3>
+            <p class="text-white text-3xl font-bold">{stats.totalProducts}</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Orders -->
+        <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-white text-xl font-bold">Órdenes Recientes</h2>
+                <a
+                    href="/admin/orders"
+                    class="text-primary hover:text-red-600 text-sm font-medium transition-colors"
+                >
+                    Ver todas →
+                </a>
+            </div>
+
+            {
+                recentOrders.length === 0 ? (
+                    <div class="text-center py-12">
+                        <span class="material-symbols-outlined text-text-muted text-5xl mb-4">
+                            receipt_long
+                        </span>
+                        <p class="text-text-muted">No hay órdenes aún</p>
+                    </div>
+                ) : (
+                    <div class="space-y-4">
+                        {recentOrders.map((order) => (
+                            <a
+                                href={`/admin/orders/${order.id}`}
+                                class="block p-4 bg-background-dark hover:bg-background-dark/50 rounded-lg border border-border-dark hover:border-primary/30 transition-all"
+                            >
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-white font-medium">
+                                        {order.order_number}
+                                    </span>
+                                    <span
+                                        class={`text-xs font-bold px-2 py-1 rounded-full ${
+                                            order.status === "completed"
+                                                ? "bg-green-500/20 text-green-400"
+                                                : order.status === "processing"
+                                                  ? "bg-blue-500/20 text-blue-400"
+                                                  : order.status === "cancelled"
+                                                    ? "bg-red-500/20 text-red-400"
+                                                    : "bg-yellow-500/20 text-yellow-400"
+                                        }`}
+                                    >
+                                        {order.status === "completed"
+                                            ? "Completado"
+                                            : order.status === "processing"
+                                              ? "Procesando"
+                                              : order.status === "cancelled"
+                                                ? "Cancelado"
+                                                : "Pendiente"}
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-text-muted">
+                                        {order.customer_email}
+                                    </span>
+                                    <span class="text-white font-bold">
+                                        S/ {Number(order.total).toFixed(2)}
+                                    </span>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+
+        <!-- Low Stock Alert -->
+        <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-white text-xl font-bold">Alertas de Stock</h2>
+                <a
+                    href="/admin/products"
+                    class="text-primary hover:text-red-600 text-sm font-medium transition-colors"
+                >
+                    Ver productos →
+                </a>
+            </div>
+
+            {
+                lowStockProducts.length === 0 ? (
+                    <div class="text-center py-12">
+                        <span class="material-symbols-outlined text-green-500 text-5xl mb-4">
+                            check_circle
+                        </span>
+                        <p class="text-text-muted">Todo el stock está bien</p>
+                    </div>
+                ) : (
+                    <div class="space-y-4">
+                        {lowStockProducts.map((product) => (
+                            <div class="p-4 bg-background-dark rounded-lg border border-yellow-500/30">
+                                <div class="flex items-start gap-3">
+                                    <img
+                                        src={product.image}
+                                        alt={product.title}
+                                        class="w-12 h-12 object-cover rounded-lg"
+                                    />
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-white font-medium mb-1 truncate">
+                                            {product.title}
+                                        </h3>
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-yellow-500 text-[18px]">
+                                                warning
+                                            </span>
+                                            <span class="text-yellow-500 text-sm font-medium">
+                                                Stock: {product.stock_quantity}{" "}
+                                                unidades
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a
+            href="/admin/products/new"
+            class="flex items-center gap-3 p-4 bg-primary hover:bg-red-700 rounded-xl transition-all transform hover:scale-[1.02]"
+        >
+            <span class="material-symbols-outlined text-white text-2xl">
+                add_circle
+            </span>
+            <div>
+                <h3 class="text-white font-bold">Nuevo Producto</h3>
+                <p class="text-white/80 text-sm">
+                    Agregar producto a la tienda
+                </p>
+            </div>
+        </a>
+
+        <a
+            href="/admin/orders"
+            class="flex items-center gap-3 p-4 bg-card-dark border border-border-dark hover:border-primary/50 rounded-xl transition-all transform hover:scale-[1.02]"
+        >
+            <span class="material-symbols-outlined text-primary text-2xl">
+                list_alt
+            </span>
+            <div>
+                <h3 class="text-white font-bold">Ver Órdenes</h3>
+                <p class="text-text-muted text-sm">Gestionar pedidos</p>
+            </div>
+        </a>
+
+        <a
+            href="/admin/products"
+            class="flex items-center gap-3 p-4 bg-card-dark border border-border-dark hover:border-primary/50 rounded-xl transition-all transform hover:scale-[1.02]"
+        >
+            <span class="material-symbols-outlined text-primary text-2xl">
+                inventory
+            </span>
+            <div>
+                <h3 class="text-white font-bold">Gestionar Productos</h3>
+                <p class="text-text-muted text-sm">Editar inventario</p>
+            </div>
+        </a>
+    </div>
+</AdminLayout>

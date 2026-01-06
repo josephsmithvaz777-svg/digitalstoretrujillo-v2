@@ -3,10 +3,14 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ProductCard from "../components/ProductCard.astro";
+import { getFeaturedProducts } from "../lib/supabase";
 
 const title = "DigitalStoreTrujillo - Your Trusted Digital Store";
 const description =
 	"Best digital prices in Trujillo. Secure digital products delivered instantly to your inbox.";
+
+// Fetch products from Supabase
+const products = await getFeaturedProducts(4);
 ---
 
 <Layout title={title} description={description}>
@@ -108,47 +112,27 @@ const description =
 				<section
 					class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
 				>
-					<ProductCard
-						title="Windows 11 Pro Key"
-						price={15.0}
-						originalPrice={18.75}
-						renewablePrice={1.0}
-						image="https://lh3.googleusercontent.com/aida-public/AB6AXuBrDnBKDyX6dXbNw912xbyJb5tjvZ1MMnEwhzVXql26j5EQP7ZmduGGGvtHl82Cw0WVOcBngHVwdJhKkYUJW9WUTi3grooRLXyrM0cW1CPCCxrJiUDglKLA-Re6CwHrk50UUE7QIn2JdgqANsn8JPe4Rx-4_-zZ25QNMMZ9krWr7oKr6QsntgFbhac7bTYKBadZSr6M2RuANMPxhkiDf8ihvtZRo3-TG34pAQXyac8uEf17Sbg9RV6MDtoP2OmgIRiRUrnJJ8gV6w"
-						badge="Oferta"
-						seller="DERIAN MEJIA"
-						rating={5}
-						reviewCount={3}
-						productUrl="/product/windows-11-pro"
-					/>
-					<ProductCard
-						title="Netflix 1 Month 4K"
-						price={5.0}
-						originalPrice={7.5}
-						renewablePrice={0.5}
-						image="https://lh3.googleusercontent.com/aida-public/AB6AXuCN2wVU7OSmoFmIqcM8ZQh4XCjpxZlCwb82meVw-gnFdY_tvCDHaYie6LBaTUPgTBsaFBu4Qu4dF93MfwxpAK7sDnImWDR7FxSW1ouSfbaCDTdDOu8eRx5hYFDZG0WuxPFcvWjSrYzsWVcP3__oB8AC3LPw_UvP91bCKE3IVzQnXl9j6vKPeJ-cqe7XtsDZ8S10qMdIcjyMzr0U6o4c6fTyQt87dECTjee5j8tx5OVujCVzw0Pbqt8CyRoEsZPk_phIrPOTARZdiA"
-						badge="Nuevo"
-						seller="STREAMING PERU"
-						rating={5}
-						reviewCount={12}
-						productUrl="/product/netflix-1-month"
-					/>
-					<ProductCard
-						title="Spotify Premium Upgrade"
-						price={3.0}
-						originalPrice={5.0}
-						image="https://lh3.googleusercontent.com/aida-public/AB6AXuDXnvOyTxJRybhpt_eLY3Fc9xiBzyBl-1kq8WvtHGS5asEfNrpQHiBaRTgXKBrycMXK_F2w3OazMZ9B8b_u96GBGnny94vZJkPIIWUbUdbtgCp4_fM13-mGdhKwsRZtAklLWgjAanxwDaI11GSsu7TdFNYMsf73OKmOzLR_f83A_DnqqmaPeHJ3w5u_gN4Cz97bJTfdhD7DGcelsx-xJ-g88HAKs2V2Ohp0gGITncFKAjrEgUSyvMM3u-jzog-LU6tF-mD2Xu79IA"
-						seller="MUSIC STORE"
-						rating={4}
-						reviewCount={8}
-						productUrl="/product/spotify-premium"
-					/>
-					<ProductCard
-						title="Steam Gift Card $50"
-						price={50.0}
-						image="https://lh3.googleusercontent.com/aida-public/AB6AXuCNeW1DDdWaKU0WaACgpgf6zlNrp5FRJh718wNmNpS3sC4jIuHTBxJQGMbn36mInLv_581XfET4uNFYmgv-av8RDTjrCcFJXlZVL7sb9MZ7yp8KsHRYHKzHyQiO4-9Cw3GJ_6vSrcb9HiN8S0JgF37fx_zqmbX6HyxBRreqEMDYQl1rhJz6n-K1j3p3c44P2Cv6PUxHNwaFxnCtB3wB6BDsmJzsBcOAb2n_ixeVKpNBUi-wn8EIgC0RZDyyMVVi-o-933KBmdx2Zw"
-						seller="GAMING STORE"
-						inStock={false}
-					/>
+					{
+						products.map((product) => (
+							<ProductCard
+								title={product.title}
+								price={product.price}
+								originalPrice={
+									product.original_price ?? undefined
+								}
+								renewablePrice={
+									product.renewable_price ?? undefined
+								}
+								image={product.image}
+								badge={product.badge ?? undefined}
+								seller={product.seller ?? undefined}
+								rating={product.rating}
+								reviewCount={product.review_count}
+								productUrl={`/product/${product.slug}`}
+								inStock={product.in_stock}
+							/>
+						))
+					}
 				</section>
 
 				<!-- Trust / Payment Section -->

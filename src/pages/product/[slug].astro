@@ -4,104 +4,36 @@ import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import ProductCard from "../../components/ProductCard.astro";
 import AddToCartButton from "../../components/AddToCartButton.astro";
+import { getAllProductSlugs, getProductBySlug } from "../../lib/supabase";
 
-// Define los productos disponibles
+// Fetch all products from Supabase for static path generation
 export async function getStaticPaths() {
-    return [
-        {
-            params: { slug: "windows-11-pro" },
-            props: {
-                product: {
-                    id: "windows-11-pro",
-                    title: "Windows 11 Pro Key",
-                    price: 15.0,
-                    originalPrice: 18.75,
-                    renewablePrice: 1.0,
-                    rating: 5,
-                    reviewCount: 124,
-                    description:
-                        "Complete protection for your digital life. Includes antivirus, VPN, and password manager for up to 5 devices.",
-                    seller: "DERIAN MEJIA",
-                    category: "Software",
-                    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDE2Bm5_mxZP4XTmm_DToRTt8-5c6IPyVXn98aTPwwnY-ufje5JEUvB5kWfOc2czCNYkaU7nMHoyIp0D6g6eYr2mwai4Lu6CAmrt1i-2OnsMUt27D9yaBEbsGEARfTcS6LCkBHJtvGkJI8CTcpQxBvNV0_F8ihDQd5Zaqco70RE_cg6y7K-AH5Nf8pbVizA8ePouTmTrgha_CptChAVtyhQ7k3-1NXXY-Bdc8s90vZh_d2HsWlLpTfWxqs2Vm05qv0esO9CRLZzbQ",
-                    thumbnails: [
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuCbTMdLLO3fjMoB3eAqMq_Q0cUN2IkmqkRT5ipudtmKTrnuyxhV1dqafa6Ni2hop2svM0cNZXY3d6Kwks32VpvAOUgpz9YfiZndNeUVa5_CLTowoKU6dMMzZjTY8CG9rryyjZNnD56tZOoPACeZJAcVmFe3-8rZvdp6DpRDsijXUBh16Nf1kUqCBtOtwln5E76wWFpqN8N0nsPzvZN2RqFbbBD61kTzrQWlQiHCgeH1-QLnz5Ka-N4eF36uCxvDd8-15B0roBsNxQ",
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuCavJ4UxTiCFpBLG8J78EQ4sJoWP2AwHc3bUqLRX5pav4kKFQAFY_fo377_0Cz0KOeNILIVTbgWNDCTEmfO4pkA0AYQbY9b4KDb273ZzMMwD1Lwgq-TQUNwcSNudNqRHZC0L6Z02vumuxuM-yaMvR0gTlsYx5QsrdSrtSEcsBwW7bfILPNhaBC-aq3zV7kctsNotyTl8obWPcVywmcHbyL8xuPP98cbfMFi1EkltY7N3X5paYZwgSVaG4-2_IWaHos-SA_wyKpkMg",
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuDeC0xHt972UE783FMof6zw3vTnCWr22OIjfB02AB_HMo7yszTTBGL8KxXmfDoSzA_yoV6wmOaBwHVzC3Ar0rIn8GyThpUN07u0irY0pVYOsQFoJk3h8WpVEKiPFSbJhbfCkXhRMtLH0SxmpJPHR2m7HZxNyC0R1b5VNZVPqXVGFP5V62QdFZCSX40DknpQ4HUjfux_-52iQv8-HD6EnsnYsEuFa0xh2J3I2Q62lKle7H7zSbxHmyoKJh9lqvWrBjFec_GMYaVSsA",
-                    ],
-                    features: [
-                        "Real-time malware and ransomware protection.",
-                        "Secure VPN included for anonymous browsing (500MB/day).",
-                        "Password Manager to secure your credentials.",
-                        "Parental Control for safe family browsing.",
-                        "Compatible with Windows 10/11, macOS, Android, and iOS.",
-                    ],
-                },
-            },
-        },
-        {
-            params: { slug: "netflix-1-month" },
-            props: {
-                product: {
-                    id: "netflix-1-month",
-                    title: "Netflix 1 Month 4K",
-                    price: 5.0,
-                    originalPrice: 7.5,
-                    renewablePrice: 0.5,
-                    rating: 5,
-                    reviewCount: 89,
-                    description:
-                        "Enjoy unlimited streaming of movies and TV shows in stunning 4K quality. One month subscription with instant activation.",
-                    seller: "STREAMING PERU",
-                    category: "Streaming",
-                    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCN2wVU7OSmoFmIqcM8ZQh4XCjpxZlCwb82meVw-gnFdY_tvCDHaYie6LBaTUPgTBsaFBu4Qu4dF93MfwxpAK7sDnImWDR7FxSW1ouSfbaCDTdDOu8eRx5hYFDZG0WuxPFcvWjSrYzsWVcP3__oB8AC3LPw_UvP91bCKE3IVzQnXl9j6vKPeJ-cqe7XtsDZ8S10qMdIcjyMzr0U6o4c6fTyQt87dECTjee5j8tx5OVujCVzw0Pbqt8CyRoEsZPk_phIrPOTARZdiA",
-                    thumbnails: [
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuCN2wVU7OSmoFmIqcM8ZQh4XCjpxZlCwb82meVw-gnFdY_tvCDHaYie6LBaTUPgTBsaFBu4Qu4dF93MfwxpAK7sDnImWDR7FxSW1ouSfbaCDTdDOu8eRx5hYFDZG0WuxPFcvWjSrYzsWVcP3__oB8AC3LPw_UvP91bCKE3IVzQnXl9j6vKPeJ-cqe7XtsDZ8S10qMdIcjyMzr0U6o4c6fTyQt87dECTjee5j8tx5OVujCVzw0Pbqt8CyRoEsZPk_phIrPOTARZdiA",
-                    ],
-                    features: [
-                        "4K Ultra HD streaming quality",
-                        "Watch on any device",
-                        "Unlimited movies and TV shows",
-                        "Cancel anytime",
-                        "Instant activation",
-                    ],
-                },
-            },
-        },
-        {
-            params: { slug: "spotify-premium" },
-            props: {
-                product: {
-                    id: "spotify-premium",
-                    title: "Spotify Premium Upgrade",
-                    price: 3.0,
-                    originalPrice: 5.0,
-                    rating: 4,
-                    reviewCount: 56,
-                    description:
-                        "Upgrade your Spotify account to Premium. Enjoy ad-free music, offline downloads, and unlimited skips.",
-                    seller: "MUSIC STORE",
-                    category: "Music",
-                    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDXnvOyTxJRybhpt_eLY3Fc9xiBzyBl-1kq8WvtHGS5asEfNrpQHiBaRTgXKBrycMXK_F2w3OazMZ9B8b_u96GBGnny94vZJkPIIWUbUdbtgCp4_fM13-mGdhKwsRZtAklLWgjAanxwDaI11GSsu7TdFNYMsf73OKmOzLR_f83A_DnqqmaPeHJ3w5u_gN4Cz97bJTfdhD7DGcelsx-xJ-g88HAKs2V2Ohp0gGITncFKAjrEgUSyvMM3u-jzog-LU6tF-mD2Xu79IA",
-                    thumbnails: [
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuDXnvOyTxJRybhpt_eLY3Fc9xiBzyBl-1kq8WvtHGS5asEfNrpQHiBaRTgXKBrycMXK_F2w3OazMZ9B8b_u96GBGnny94vZJkPIIWUbUdbtgCp4_fM13-mGdhKwsRZtAklLWgjAanxwDaI11GSsu7TdFNYMsf73OKmOzLR_f83A_DnqqmaPeHJ3w5u_gN4Cz97bJTfdhD7DGcelsx-xJ-g88HAKs2V2Ohp0gGITncFKAjrEgUSyvMM3u-jzog-LU6tF-mD2Xu79IA",
-                    ],
-                    features: [
-                        "Ad-free music listening",
-                        "Download up to 10,000 songs",
-                        "Unlimited skips",
-                        "High quality audio",
-                        "Listen offline",
-                    ],
-                },
-            },
-        },
-    ];
+    const slugs = await getAllProductSlugs();
+
+    const paths = await Promise.all(
+        slugs.map(async (slug) => {
+            const product = await getProductBySlug(slug);
+            if (!product) return null;
+
+            return {
+                params: { slug },
+                props: { product },
+            };
+        }),
+    );
+
+    // Filter out any null values
+    return paths.filter(Boolean);
 }
 
 const { product } = Astro.props;
+
+if (!product) {
+    return Astro.redirect("/404");
+}
+
 const title = `${product.title} - DigitalStoreTrujillo`;
-const description = product.description;
+const description = product.description || "";
 ---
 
 <Layout title={title} description={description}>
@@ -187,7 +119,7 @@ const description = product.description;
                                     >{product.rating}.0</span
                                 >
                                 <span class="text-text-muted text-sm"
-                                    >({product.reviewCount} reviews)</span
+                                    >({product.review_count} reviews)</span
                                 >
                             </div>
                             <h1
@@ -211,9 +143,9 @@ const description = product.description;
                                     S/ {product.price.toFixed(2)}
                                 </p>
                                 {
-                                    product.originalPrice && (
+                                    product.original_price && (
                                         <p class="text-xl text-text-muted line-through mb-1">
-                                            ${product.originalPrice.toFixed(2)}
+                                            ${product.original_price.toFixed(2)}
                                         </p>
                                     )
                                 }
@@ -224,14 +156,14 @@ const description = product.description;
                                 </span>
                             </div>
                             {
-                                product.renewablePrice && (
+                                product.renewable_price && (
                                     <div class="flex items-center gap-2 text-sm mb-4">
                                         <span class="material-symbols-outlined text-green-500 text-lg">
                                             autorenew
                                         </span>
                                         <span class="text-green-400 font-semibold">
                                             Renovable: $
-                                            {product.renewablePrice.toFixed(2)}
+                                            {product.renewable_price.toFixed(2)}
                                         </span>
                                     </div>
                                 )
@@ -308,27 +240,46 @@ const description = product.description;
                             >
                                 Secure Payment with
                             </p>
-                            <div class="flex gap-3">
+                            <div class="flex flex-wrap gap-2">
+                                <!-- Yape -->
                                 <div
-                                    class="h-10 px-4 rounded bg-white flex items-center justify-center"
+                                    class="h-10 px-4 rounded-lg bg-[#722F91] flex items-center justify-center gap-2 shadow-md"
                                     title="Yape"
                                 >
-                                    <div
-                                        class="h-6 w-16 bg-contain bg-center bg-no-repeat"
-                                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCGTay_kOkazbhr5g491a1PtGFnLoZtD_0KALusbHv0EAvxk6yi40W76KSVB6xtksJAyjSrZ0IXElKAP_ZDfNsT4fukAdqTHCQ6x6HJmB8t1WTOnp2GHX9Z8UQT-C6PT76Hu406_3aKi6O8wdM0Ts2X5TQg7qlF2kFXo9fpbnDKGswaQQZFsMwBonMMooEqHNTE40f-wHNgrtoW8Cj2wl-jo9udSbsSHZDfNMp2waLVpEsQiQd5xDVjhE_GyPRJ7XEpF1oi50C58Q'); background-size: contain;"
-                                    >
-                                    </div>
-                                </div>
-                                <div
-                                    class="h-10 px-4 rounded bg-[#1f1f1f] border border-border-dark flex items-center justify-center gap-2"
-                                    title="Cryptomus"
-                                >
                                     <span
-                                        class="material-symbols-outlined text-white"
-                                        >currency_bitcoin</span
+                                        class="material-symbols-outlined text-white text-[18px]"
+                                        >qr_code_2</span
                                     >
                                     <span class="text-white font-bold text-sm"
-                                        >Crypto</span
+                                        >Yape</span
+                                    >
+                                </div>
+                                <!-- Binance Pay -->
+                                <div
+                                    class="h-10 px-4 rounded-lg bg-[#F3BA2F] flex items-center justify-center gap-2 shadow-md"
+                                    title="Binance Pay"
+                                >
+                                    <img
+                                        src="/src/assets/binance-icon-black.svg"
+                                        alt="Binance"
+                                        class="w-5 h-5 object-contain"
+                                    />
+                                    <span class="text-black font-bold text-sm"
+                                        >Binance</span
+                                    >
+                                </div>
+                                <!-- Cryptomus -->
+                                <div
+                                    class="h-10 px-4 rounded-lg bg-[#1e293b] border border-slate-700 flex items-center justify-center gap-2 shadow-md"
+                                    title="Cryptomus"
+                                >
+                                    <img
+                                        src="/src/assets/Cryptomus_icon.svg"
+                                        alt="Cryptomus"
+                                        class="w-4 h-4 object-contain"
+                                    />
+                                    <span class="text-white font-bold text-sm"
+                                        >Cryptomus</span
                                     >
                                 </div>
                             </div>
