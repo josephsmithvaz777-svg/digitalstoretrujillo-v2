@@ -968,7 +968,7 @@ const description = "Choose your payment method";
 
         const totalPEN = cartTotal.get();
         const isUSD = method === "binance" || method === "crypto";
-        const rate = 3.8;
+        const rate = 2.4;
         const total = isUSD ? totalPEN / rate : totalPEN;
         const symbol = isUSD ? "$" : "S/";
         const currencyText = isUSD ? "USD" : "PEN";
