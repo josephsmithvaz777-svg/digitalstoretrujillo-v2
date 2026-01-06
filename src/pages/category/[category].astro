@@ -1,0 +1,136 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import { getProductsByCategory } from "../../lib/supabase";
+
+const { category } = Astro.params;
+
+if (!category) {
+    return Astro.redirect("/");
+}
+
+// Map slug to display title and DB category name
+const categoryMap: Record<string, string> = {
+    software: "Software",
+    games: "Games",
+    services: "Services",
+    streaming: "Streaming",
+};
+
+const displayCategory =
+    categoryMap[category.toLowerCase()] ||
+    category.charAt(0).toUpperCase() + category.slice(1);
+
+// Fetch products from Supabase
+const products = await getProductsByCategory(displayCategory);
+
+const title = `${displayCategory} - DigitalStoreTrujillo`;
+const description = `Explora nuestra selección de ${displayCategory} al mejor precio en Trujillo.`;
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="layout-container flex h-full grow flex-col">
+        <div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
+            <div
+                class="layout-content-container flex flex-col max-w-[1200px] flex-1"
+            >
+                <div class="mb-8 mt-4">
+                    <nav
+                        class="flex text-sm text-text-muted mb-4 gap-2 items-center"
+                    >
+                        <a
+                            href="/"
+                            class="hover:text-primary transition-colors flex items-center gap-1"
+                        >
+                            <span class="material-symbols-outlined text-[18px]"
+                                >home</span
+                            >
+                            Home
+                        </a>
+                        <span class="text-border-dark">/</span>
+                        <span class="text-white font-medium"
+                            >{displayCategory}</span
+                        >
+                    </nav>
+                    <h1
+                        class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight"
+                    >
+                        {displayCategory}
+                    </h1>
+                    <p class="text-lg text-text-muted mt-2 max-w-2xl">
+                        Viendo todos los productos disponibles en la categoría <span
+                            class="text-primary font-bold"
+                            >{displayCategory}</span
+                        >.
+                    </p>
+                </div>
+
+                <div
+                    class="w-full h-px bg-gradient-to-r from-primary/50 via-border-dark to-transparent mb-12"
+                >
+                </div>
+
+                <!-- Product Grid -->
+                <section
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
+                >
+                    {
+                        products.length > 0 ? (
+                            products.map((product) => (
+                                <ProductCard
+                                    title={product.title}
+                                    price={product.price}
+                                    originalPrice={
+                                        product.original_price ?? undefined
+                                    }
+                                    renewablePrice={
+                                        product.renewable_price ?? undefined
+                                    }
+                                    image={product.image}
+                                    badge={product.badge ?? undefined}
+                                    badgeColor={
+                                        product.badge_color ?? undefined
+                                    }
+                                    seller={product.seller ?? undefined}
+                                    rating={product.rating}
+                                    reviewCount={product.review_count}
+                                    productUrl={`/product/${product.slug}`}
+                                    inStock={product.in_stock}
+                                />
+                            ))
+                        ) : (
+                            <div class="col-span-full py-24 text-center bg-card-dark/30 border border-border-dark rounded-3xl">
+                                <span class="material-symbols-outlined text-7xl text-border-dark mb-4 drop-shadow-lg">
+                                    inventory_2
+                                </span>
+                                <h2 class="text-2xl font-bold text-white mb-2">
+                                    No hay productos en esta categoría
+                                </h2>
+                                <p class="text-text-muted max-w-md mx-auto mb-8">
+                                    Estamos actualizando nuestro catálogo.
+                                    ¡Vuelve pronto para ver las novedades en{" "}
+                                    {displayCategory}!
+                                </p>
+                                <a
+                                    href="/"
+                                    class="inline-flex items-center gap-2 px-8 py-4 bg-primary text-white font-black rounded-xl hover:bg-red-700 transition-all transform hover:scale-105 shadow-xl shadow-primary/20"
+                                >
+                                    <span class="material-symbols-outlined">
+                                        arrow_back
+                                    </span>
+                                    VOLVER A LA TIENDA
+                                </a>
+                            </div>
+                        )
+                    }
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>

@@ -42,7 +42,8 @@ const description = product.description || "";
                     >
                     <a
                         class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal"
-                        href="/products">{product.category}</a
+                        href={`/category/${product.category.toLowerCase()}`}
+                        >{product.category}</a
                     >
                     <span
                         class="text-text-muted text-sm font-medium leading-normal"
