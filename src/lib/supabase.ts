@@ -166,6 +166,32 @@ export async function getProductsByCategory(category: string): Promise<Product[]
 }
 
 /**
+ * Search products by query
+ */
+export async function searchProducts(query: string): Promise<Product[]> {
+  if (!query || query.trim() === '') {
+    return [];
+  }
+
+  const searchTerm = `%${query.trim()}%`;
+
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('is_active', true)
+    .eq('in_stock', true)
+    .or(`title.ilike.${searchTerm},description.ilike.${searchTerm},category.ilike.${searchTerm}`)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error searching products:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
  * Get all product slugs (for static path generation)
  */
 export async function getAllProductSlugs(): Promise<string[]> {
