@@ -608,25 +608,25 @@ if (!product) {
                 </div>
             </div>
         </div>
-    </form>
 
-    <!-- Actions -->
-    <div class="flex gap-4 mt-6">
-        <button
-            type="submit"
-            id="submit-btn"
-            class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
-        >
-            <span class="material-symbols-outlined">save</span>
-            Guardar Cambios
-        </button>
-        <a
-            href="/admin/products"
-            class="flex items-center gap-2 px-6 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
-        >
-            Cancelar
-        </a>
-    </div>
+        <!-- Actions -->
+        <div class="flex gap-4 mt-6">
+            <button
+                type="submit"
+                id="submit-btn"
+                class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+            >
+                <span class="material-symbols-outlined">save</span>
+                Guardar Cambios
+            </button>
+            <a
+                href="/admin/products"
+                class="flex items-center gap-2 px-6 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+            >
+                Cancelar
+            </a>
+        </div>
+    </form>
 </AdminLayout>
 
 <!-- Cloudinary Upload Widget Script -->
@@ -946,6 +946,7 @@ if (!product) {
             review_count: parseInt(formData.get("review_count") as string) || 0,
             stock_quantity: parseInt(formData.get("stock_quantity") as string),
             features,
+            thumbnails: [],
             is_active: (
                 document.getElementById("is_active") as HTMLInputElement
             ).checked,
