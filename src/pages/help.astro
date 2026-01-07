@@ -1,0 +1,201 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Help Center - DigitalStoreTrujillo">
+    <div class="min-h-screen bg-background-dark py-12 px-4 lg:px-40">
+        <div class="max-w-[1200px] mx-auto">
+            <h1 class="text-4xl font-bold text-white mb-8">Help Center</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <!-- FAQ Section -->
+                <div
+                    class="bg-surface-dark border border-border-dark rounded-lg p-6"
+                >
+                    <div class="flex items-center gap-3 mb-4">
+                        <span
+                            class="material-symbols-outlined text-primary text-3xl"
+                            >help</span
+                        >
+                        <h2 class="text-2xl font-bold text-white">
+                            Frequently Asked Questions
+                        </h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <details class="group">
+                            <summary
+                                class="cursor-pointer text-white font-semibold py-2 hover:text-primary transition-colors"
+                            >
+                                How do I receive my digital products?
+                            </summary>
+                            <p class="text-text-muted text-sm mt-2 pl-4">
+                                After completing your purchase, you will receive
+                                an email with download links and activation keys
+                                (if applicable). You can also access your
+                                purchases from your account dashboard.
+                            </p>
+                        </details>
+
+                        <details class="group">
+                            <summary
+                                class="cursor-pointer text-white font-semibold py-2 hover:text-primary transition-colors"
+                            >
+                                What payment methods do you accept?
+                            </summary>
+                            <p class="text-text-muted text-sm mt-2 pl-4">
+                                We accept cryptocurrency payments (Bitcoin,
+                                USDT, etc.) through Cryptomus, as well as local
+                                payment methods like Yape and Binance Pay.
+                            </p>
+                        </details>
+
+                        <details class="group">
+                            <summary
+                                class="cursor-pointer text-white font-semibold py-2 hover:text-primary transition-colors"
+                            >
+                                How long does delivery take?
+                            </summary>
+                            <p class="text-text-muted text-sm mt-2 pl-4">
+                                Digital products are delivered instantly after
+                                payment confirmation. You'll receive your access
+                                within minutes.
+                            </p>
+                        </details>
+
+                        <details class="group">
+                            <summary
+                                class="cursor-pointer text-white font-semibold py-2 hover:text-primary transition-colors"
+                            >
+                                Can I get a refund?
+                            </summary>
+                            <p class="text-text-muted text-sm mt-2 pl-4">
+                                Please refer to our <a
+                                    href="/refund-policy"
+                                    class="text-primary hover:underline"
+                                    >Refund Policy</a
+                                > for detailed information about refunds and returns.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- Contact Support -->
+                <div
+                    class="bg-surface-dark border border-border-dark rounded-lg p-6"
+                >
+                    <div class="flex items-center gap-3 mb-4">
+                        <span
+                            class="material-symbols-outlined text-primary text-3xl"
+                            >support_agent</span
+                        >
+                        <h2 class="text-2xl font-bold text-white">
+                            Contact Support
+                        </h2>
+                    </div>
+
+                    <p class="text-text-muted mb-6">
+                        Can't find what you're looking for? Our support team is
+                        here to help!
+                    </p>
+
+                    <div class="space-y-4">
+                        <a
+                            href="/contact"
+                            class="flex items-center gap-3 p-4 bg-background-dark border border-border-dark rounded-lg hover:border-primary transition-colors"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >mail</span
+                            >
+                            <div>
+                                <h3 class="text-white font-semibold">
+                                    Email Support
+                                </h3>
+                                <p class="text-text-muted text-sm">
+                                    Get help via email
+                                </p>
+                            </div>
+                        </a>
+
+                        <a
+                            href="https://wa.me/51123456789"
+                            target="_blank"
+                            class="flex items-center gap-3 p-4 bg-background-dark border border-border-dark rounded-lg hover:border-primary transition-colors"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >chat</span
+                            >
+                            <div>
+                                <h3 class="text-white font-semibold">
+                                    WhatsApp
+                                </h3>
+                                <p class="text-text-muted text-sm">
+                                    Chat with us directly
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Topics -->
+            <div
+                class="bg-surface-dark border border-border-dark rounded-lg p-6"
+            >
+                <h2 class="text-2xl font-bold text-white mb-6">
+                    Popular Topics
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a
+                        href="#"
+                        class="p-4 bg-background-dark border border-border-dark rounded-lg hover:border-primary transition-colors"
+                    >
+                        <span
+                            class="material-symbols-outlined text-primary text-2xl mb-2"
+                            >download</span
+                        >
+                        <h3 class="text-white font-semibold mb-1">
+                            Download Issues
+                        </h3>
+                        <p class="text-text-muted text-sm">
+                            Troubleshoot download problems
+                        </p>
+                    </a>
+
+                    <a
+                        href="#"
+                        class="p-4 bg-background-dark border border-border-dark rounded-lg hover:border-primary transition-colors"
+                    >
+                        <span
+                            class="material-symbols-outlined text-primary text-2xl mb-2"
+                            >key</span
+                        >
+                        <h3 class="text-white font-semibold mb-1">
+                            Activation Keys
+                        </h3>
+                        <p class="text-text-muted text-sm">
+                            How to activate your products
+                        </p>
+                    </a>
+
+                    <a
+                        href="#"
+                        class="p-4 bg-background-dark border border-border-dark rounded-lg hover:border-primary transition-colors"
+                    >
+                        <span
+                            class="material-symbols-outlined text-primary text-2xl mb-2"
+                            >account_circle</span
+                        >
+                        <h3 class="text-white font-semibold mb-1">
+                            Account Management
+                        </h3>
+                        <p class="text-text-muted text-sm">
+                            Manage your account settings
+                        </p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
