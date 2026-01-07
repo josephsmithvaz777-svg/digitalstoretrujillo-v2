@@ -773,7 +773,7 @@ if (!product) {
     }}
 >
     // Toast Notification System
-    function showToast(message, type = "success") {
+    window.showToast = function (message, type = "success") {
         const container = document.getElementById("toast-container");
         const toast = document.createElement("div");
 
@@ -817,7 +817,7 @@ if (!product) {
             clearTimeout(timeoutId);
             dismissToast(toast);
         });
-    }
+    };
 
     function dismissToast(toast) {
         toast.classList.add("translate-x-[400px]", "opacity-0");
@@ -1003,7 +1003,6 @@ if (!product) {
                     manageGalleryBtn.innerHTML = originalHTML;
                 }
             }, 1000);
-
         } catch (err) {
             console.error("Error opening gallery library:", err);
             showToast("Error al conectar con Cloudinary", "error");
@@ -1340,10 +1339,14 @@ if (!product) {
             window.location.href = "/admin/products";
         } catch (error: any) {
             console.error("FULL ERROR:", error);
-            showToast(
-                error.message || "Error al actualizar el producto",
-                "error",
-            );
+            if (typeof (window as any).showToast === "function") {
+                (window as any).showToast(
+                    error.message || "Error al actualizar el producto",
+                    "error",
+                );
+            } else {
+                alert(error.message || "Error al actualizar el producto");
+            }
             submitBtns.forEach((btn: any) => {
                 btn.disabled = false;
                 btn.innerHTML = `
