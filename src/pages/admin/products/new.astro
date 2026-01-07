@@ -647,24 +647,42 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
 
         // Media Library Widget Handler (for selecting existing images)
         const mediaLibraryBtn = document.getElementById("media-library-btn");
+        let mediaLibraryConfig = null;
 
-        mediaLibraryBtn?.addEventListener("click", async () => {
+        // Pre-fetch signature to make the button responsive
+        async function initMediaLibrary() {
             try {
                 const response = await fetch("/api/cloudinary-sign");
                 const data = await response.json();
+                if (!data.error) {
+                    mediaLibraryConfig = data;
+                }
+            } catch (err) {
+                console.error("Error pre-fetching signature:", err);
+            }
+        }
+        initMediaLibrary();
 
-                if (data.error) {
-                    alert("❌ Error: " + data.error);
+        mediaLibraryBtn?.addEventListener("click", async () => {
+            try {
+                // If not yet fetched, try once more
+                if (!mediaLibraryConfig) {
+                    const response = await fetch("/api/cloudinary-sign");
+                    mediaLibraryConfig = await response.json();
+                }
+
+                if (mediaLibraryConfig.error) {
+                    alert("❌ Error: " + mediaLibraryConfig.error);
                     return;
                 }
 
                 // @ts-ignore
                 cloudinary.openMediaLibrary(
                     {
-                        cloud_name: data.cloudName,
-                        api_key: data.apiKey,
-                        timestamp: data.timestamp,
-                        signature: data.signature,
+                        cloud_name: mediaLibraryConfig.cloudName,
+                        api_key: mediaLibraryConfig.apiKey,
+                        timestamp: mediaLibraryConfig.timestamp,
+                        signature: mediaLibraryConfig.signature,
                         folder: {
                             path: "digitalstore/products",
                             resource_type: "image",
@@ -678,6 +696,8 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
                             if (data.assets && data.assets.length > 0) {
                                 const url = data.assets[0].secure_url;
                                 imageInput.value = url;
+
+                                // Visual feedback
                                 if (previewImg) {
                                     previewImg.src = url;
                                     imagePreviewDiv?.classList.remove("hidden");
@@ -688,6 +708,9 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
                                 console.log(
                                     "Image selected from library:",
                                     url,
+                                );
+                                alert(
+                                    "✅ Imagen seleccionada correctamente. No olvides guardar el nuevo producto.",
                                 );
                             }
                         },

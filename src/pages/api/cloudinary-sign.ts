@@ -9,14 +9,21 @@ export const GET: APIRoute = async () => {
     const apiKey = import.meta.env.PUBLIC_CLOUDINARY_API_KEY || import.meta.env.CLOUDINARY_API_KEY || (globalThis as any).process?.env?.PUBLIC_CLOUDINARY_API_KEY || (globalThis as any).process?.env?.CLOUDINARY_API_KEY;
     const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME || (globalThis as any).process?.env?.PUBLIC_CLOUDINARY_CLOUD_NAME;
 
+    console.log('[Cloudinary Sign] Checking credentials...', {
+        hasSecret: !!apiSecret,
+        hasKey: !!apiKey,
+        hasCloud: !!cloudName
+    });
+
     if (!apiSecret || !apiKey || !cloudName) {
         const missing = [];
         if (!apiSecret) missing.push('CLOUDINARY_API_SECRET');
-        if (!apiKey) missing.push('PUBLIC_CLOUDINARY_API_KEY/CLOUDINARY_API_KEY');
+        if (!apiKey) missing.push('PUBLIC_CLOUDINARY_API_KEY / CLOUDINARY_API_KEY');
         if (!cloudName) missing.push('PUBLIC_CLOUDINARY_CLOUD_NAME');
 
+        console.error('[Cloudinary Sign] Missing credentials:', missing);
         return new Response(JSON.stringify({
-            error: `Credenciales de Cloudinary faltantes: ${missing.join(', ')}`
+            error: `Credenciales faltantes: ${missing.join(', ')}. Revisa Coolify.`
         }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
