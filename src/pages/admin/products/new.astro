@@ -652,9 +652,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
             cloudinary.openMediaLibrary(
                 {
                     cloudName: cloudName,
-                    apiKey:
-                        import.meta.env.PUBLIC_CLOUDINARY_API_KEY ||
-                        "729164525299989",
+                    apiKey: "729164525299989",
                     folder: {
                         path: "digitalstore/products",
                         resource_type: "image",
