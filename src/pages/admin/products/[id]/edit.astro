@@ -23,23 +23,44 @@ if (!product) {
     >
     </div>
 
-    <!-- Header -->
-    <div class="mb-6">
-        <a
-            href="/admin/products"
-            class="inline-flex items-center gap-2 text-text-muted hover:text-primary transition-colors mb-4"
-        >
-            <span class="material-symbols-outlined text-[18px]">arrow_back</span
-            >
-            Volver a productos
-        </a>
-        <h1 class="text-white text-2xl font-bold">Editar Producto</h1>
-        <p class="text-text-muted text-sm mt-1">ID: {product.id}</p>
-    </div>
-
-    <!-- Product Form -->
     <!-- Product Form -->
     <form id="product-form" data-product-id={product.id}>
+        <!-- Header & Top Actions -->
+        <div
+            class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
+        >
+            <div>
+                <a
+                    href="/admin/products"
+                    class="inline-flex items-center gap-2 text-text-muted hover:text-primary transition-colors mb-2"
+                >
+                    <span class="material-symbols-outlined text-[18px]"
+                        >arrow_back</span
+                    >
+                    Volver a productos
+                </a>
+                <h1 class="text-white text-2xl font-bold">Editar Producto</h1>
+                <p class="text-text-muted text-sm mt-1">ID: {product.id}</p>
+            </div>
+
+            <!-- Top Actions (Desktop Only) -->
+            <div class="hidden lg:flex items-center gap-3">
+                <a
+                    href="/admin/products"
+                    class="px-4 py-2.5 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all border border-border-dark"
+                >
+                    Cancelar
+                </a>
+                <button
+                    type="submit"
+                    class="submit-btn flex items-center justify-center gap-2 px-8 py-2.5 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+                >
+                    <span class="material-symbols-outlined">save</span>
+                    Guardar Cambios
+                </button>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column: Main Info -->
             <div class="lg:col-span-2 space-y-6">
@@ -642,14 +663,13 @@ if (!product) {
                     </div>
                 </div>
 
-                <!-- Sticky Actions (Desktop) -->
+                <!-- Mobile Actions (Sticky Bottom) -->
                 <div
-                    class="sticky bottom-6 bg-card-dark/80 backdrop-blur-md border border-primary/30 rounded-xl p-4 flex gap-3 shadow-2xl z-40"
+                    class="lg:hidden sticky bottom-6 bg-card-dark/80 backdrop-blur-md border border-primary/30 rounded-xl p-4 flex gap-3 shadow-2xl z-40"
                 >
                     <button
                         type="submit"
-                        id="submit-btn"
-                        class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+                        class="submit-btn flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
                     >
                         <span class="material-symbols-outlined">save</span>
                         Guardar
@@ -1018,9 +1038,7 @@ if (!product) {
 
     // Form submission
     const form = document.getElementById("product-form") as HTMLFormElement;
-    const submitBtn = document.getElementById(
-        "submit-btn",
-    ) as HTMLButtonElement;
+    const submitBtns = document.querySelectorAll(".submit-btn");
     const productId = form.dataset.productId;
 
     form?.addEventListener("submit", async (e) => {
@@ -1098,12 +1116,14 @@ if (!product) {
 
         console.log("📦 DEBUG - Product data being sent:", productData);
 
-        // Disable button
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `
-				<span class="material-symbols-outlined animate-spin">progress_activity</span>
-				Guardando...
-			`;
+        // Disable buttons
+        submitBtns.forEach((btn: any) => {
+            btn.disabled = true;
+            btn.innerHTML = `
+                <span class="material-symbols-outlined animate-spin">progress_activity</span>
+                Guardando...
+            `;
+        });
 
         try {
             const response = await updateProduct(productId, productData);
@@ -1122,11 +1142,13 @@ if (!product) {
                 error.message || "Error al actualizar el producto",
                 "error",
             );
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `
-					<span class="material-symbols-outlined">save</span>
-					Guardar Cambios
-				`;
+            submitBtns.forEach((btn: any) => {
+                btn.disabled = false;
+                btn.innerHTML = `
+                    <span class="material-symbols-outlined">save</span>
+                    Guardar Cambios
+                `;
+            });
         }
     });
 </script>
