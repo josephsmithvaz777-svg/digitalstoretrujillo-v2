@@ -644,7 +644,13 @@ if (!product) {
             {
                 cloudName: cloudName,
                 uploadPreset: uploadPreset,
-                sources: ["local", "url", "camera"],
+                sources: [
+                    "local",
+                    "url",
+                    "camera",
+                    "image_search",
+                    "media_library",
+                ],
                 folder: "digitalstore/products",
                 maxFileSize: 5000000, // 5MB
                 clientAllowedFormats: ["jpg", "png", "webp", "jpeg"],
