@@ -574,7 +574,12 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     ></script>
 
     <!-- Cloudinary Media Library Widget Script -->
-    <script src="https://media-library.cloudinary.com/global/all.js" is:inline></script>
+    <script src="https://media-library.cloudinary.com/global/all.js" is:inline
+    ></script>
+
+    <!-- Cloudinary Media Library Widget Script -->
+    <script src="https://media-library.cloudinary.com/global/all.js" is:inline
+    ></script>
 
     <script
         define:vars={{
@@ -643,49 +648,61 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
         // Media Library Widget Handler (for selecting existing images)
         const mediaLibraryBtn = document.getElementById("media-library-btn");
 
-        mediaLibraryBtn?.addEventListener("click", () => {
-            if (!cloudName) {
-                alert(
-                    "⚠️ Cloudinary no está configurado. Por favor revisa el archivo CLOUDINARY_SETUP.md",
-                );
-                return;
-            }
+        mediaLibraryBtn?.addEventListener("click", async () => {
+            try {
+                const response = await fetch("/api/cloudinary-sign");
+                const data = await response.json();
 
-            // @ts-ignore
-            cloudinary.openMediaLibrary(
-                {
-                    cloudName: cloudName,
-                    apiKey: "729164525299989",
-                    folder: {
-                        path: "digitalstore/products",
-                        resource_type: "image",
+                if (data.error) {
+                    alert("❌ Error: " + data.error);
+                    return;
+                }
+
+                // @ts-ignore
+                cloudinary.openMediaLibrary(
+                    {
+                        cloud_name: data.cloudName,
+                        api_key: data.apiKey,
+                        timestamp: data.timestamp,
+                        signature: data.signature,
+                        folder: {
+                            path: "digitalstore/products",
+                            resource_type: "image",
+                        },
+                        multiple: false,
+                        max_files: 1,
+                        insert_caption: "Seleccionar",
                     },
-                    multiple: false,
-                    max_files: 1,
-                    insert_caption: "Seleccionar",
-                },
-                {
-                    insertHandler: (data) => {
-                        if (data.assets && data.assets.length > 0) {
-                            const url = data.assets[0].secure_url;
-                            imageInput.value = url;
-                            if (previewImg) {
-                                previewImg.src = url;
-                                imagePreviewDiv?.classList.remove("hidden");
+                    {
+                        insertHandler: (data) => {
+                            if (data.assets && data.assets.length > 0) {
+                                const url = data.assets[0].secure_url;
+                                imageInput.value = url;
+                                if (previewImg) {
+                                    previewImg.src = url;
+                                    imagePreviewDiv?.classList.remove("hidden");
+                                }
+                                if (currentUrlSpan) {
+                                    currentUrlSpan.textContent = url;
+                                }
+                                console.log(
+                                    "Image selected from library:",
+                                    url,
+                                );
                             }
-                            if (currentUrlSpan) {
-                                currentUrlSpan.textContent = url;
-                            }
-                            console.log("Image selected from library:", url);
-                        }
+                        },
                     },
-                },
-            );
+                );
+            } catch (err) {
+                console.error("Error opening media library:", err);
+                alert("❌ Error al conectar con Cloudinary");
+            }
         });
     </script>
 
     <!-- Cloudinary Media Library Widget Script -->
-    <script src="https://media-library.cloudinary.com/global/all.js" is:inline></script>
+    <script src="https://media-library.cloudinary.com/global/all.js" is:inline
+    ></script>
 
     <script>
         import { createProduct } from "../../../lib/supabase";
