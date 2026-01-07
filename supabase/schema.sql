@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS products (
     
     -- Metadata
     is_active BOOLEAN DEFAULT true,
+    show_gallery BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

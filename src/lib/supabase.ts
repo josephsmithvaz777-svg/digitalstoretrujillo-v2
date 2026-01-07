@@ -32,6 +32,7 @@ export interface Product {
   discount_badge_text_color: string | null;
   show_discount_badge: boolean;
   show_renewable_price: boolean;
+  show_gallery: boolean;
   rating: number;
   review_count: number;
   in_stock: boolean;
