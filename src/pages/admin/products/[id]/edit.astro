@@ -641,73 +641,145 @@ if (!product) {
     // Media Library Widget Handler
     const mediaLibraryBtn = document.getElementById("media-library-btn");
     let mediaLibraryConfig = null;
+    let mediaLibraryWidget = null;
 
-    // Pre-fetch signature to make the button responsive
+    // Pre-fetch signature and pre-initialize widget for instant loading
     async function initMediaLibrary() {
         try {
             const response = await fetch("/api/cloudinary-sign");
             const data = await response.json();
             if (!data.error) {
                 mediaLibraryConfig = data;
+
+                // Pre-initialize the widget for faster opening
+                // @ts-ignore
+                mediaLibraryWidget = cloudinary.createMediaLibrary(
+                    {
+                        cloud_name: mediaLibraryConfig.cloudName,
+                        api_key: mediaLibraryConfig.apiKey,
+                        timestamp: mediaLibraryConfig.timestamp,
+                        signature: mediaLibraryConfig.signature,
+                        folder: {
+                            path: "digitalstore/products",
+                            resource_type: "image",
+                        },
+                        multiple: false,
+                        max_files: 1,
+                        insert_caption: "Seleccionar",
+                    },
+                    {
+                        insertHandler: (data) => {
+                            if (data.assets && data.assets.length > 0) {
+                                const url = data.assets[0].secure_url;
+                                imageInput.value = url;
+
+                                // Visual feedback
+                                if (previewImg) {
+                                    previewImg.src = url;
+                                }
+                                if (currentUrlSpan) {
+                                    currentUrlSpan.textContent = url;
+                                }
+                                console.log(
+                                    "Image selected from library:",
+                                    url,
+                                );
+                                alert(
+                                    "✅ Imagen actualizada correctamente. No olvides guardar los cambios del producto.",
+                                );
+                            }
+                        },
+                    },
+                );
+                console.log("✅ Media Library pre-initialized");
             }
         } catch (err) {
-            console.error("Error pre-fetching signature:", err);
+            console.error("Error pre-initializing Media Library:", err);
         }
     }
+
+    // Initialize on page load
     initMediaLibrary();
 
     mediaLibraryBtn?.addEventListener("click", async () => {
         try {
-            // If not yet fetched, try once more
-            if (!mediaLibraryConfig) {
-                const response = await fetch("/api/cloudinary-sign");
-                mediaLibraryConfig = await response.json();
+            // Show loading state
+            const originalHTML = mediaLibraryBtn.innerHTML;
+            mediaLibraryBtn.disabled = true;
+            mediaLibraryBtn.innerHTML = `
+                <span class="material-symbols-outlined animate-spin">progress_activity</span>
+                Cargando...
+            `;
+
+            // If widget is pre-initialized, open it immediately
+            if (mediaLibraryWidget) {
+                mediaLibraryWidget.show();
+            } else {
+                // Fallback: fetch config and open
+                if (!mediaLibraryConfig) {
+                    const response = await fetch("/api/cloudinary-sign");
+                    mediaLibraryConfig = await response.json();
+                }
+
+                if (mediaLibraryConfig.error) {
+                    alert("❌ Error: " + mediaLibraryConfig.error);
+                    return;
+                }
+
+                // @ts-ignore
+                cloudinary.openMediaLibrary(
+                    {
+                        cloud_name: mediaLibraryConfig.cloudName,
+                        api_key: mediaLibraryConfig.apiKey,
+                        timestamp: mediaLibraryConfig.timestamp,
+                        signature: mediaLibraryConfig.signature,
+                        folder: {
+                            path: "digitalstore/products",
+                            resource_type: "image",
+                        },
+                        multiple: false,
+                        max_files: 1,
+                        insert_caption: "Seleccionar",
+                    },
+                    {
+                        insertHandler: (data) => {
+                            if (data.assets && data.assets.length > 0) {
+                                const url = data.assets[0].secure_url;
+                                imageInput.value = url;
+
+                                // Visual feedback
+                                if (previewImg) {
+                                    previewImg.src = url;
+                                }
+                                if (currentUrlSpan) {
+                                    currentUrlSpan.textContent = url;
+                                }
+                                console.log(
+                                    "Image selected from library:",
+                                    url,
+                                );
+                                alert(
+                                    "✅ Imagen actualizada correctamente. No olvides guardar los cambios del producto.",
+                                );
+                            }
+                        },
+                    },
+                );
             }
 
-            if (mediaLibraryConfig.error) {
-                alert("❌ Error: " + mediaLibraryConfig.error);
-                return;
-            }
-
-            // @ts-ignore
-            cloudinary.openMediaLibrary(
-                {
-                    cloud_name: mediaLibraryConfig.cloudName,
-                    api_key: mediaLibraryConfig.apiKey,
-                    timestamp: mediaLibraryConfig.timestamp,
-                    signature: mediaLibraryConfig.signature,
-                    folder: {
-                        path: "digitalstore/products",
-                        resource_type: "image",
-                    },
-                    multiple: false,
-                    max_files: 1,
-                    insert_caption: "Seleccionar",
-                },
-                {
-                    insertHandler: (data) => {
-                        if (data.assets && data.assets.length > 0) {
-                            const url = data.assets[0].secure_url;
-                            imageInput.value = url;
-
-                            // Visual feedback
-                            if (previewImg) {
-                                previewImg.src = url;
-                            }
-                            if (currentUrlSpan) {
-                                currentUrlSpan.textContent = url;
-                            }
-                            console.log("Image selected from library:", url);
-                            alert(
-                                "✅ Imagen actualizada correctamente. No olvides guardar los cambios del producto.",
-                            );
-                        }
-                    },
-                },
-            );
+            // Restore button state
+            mediaLibraryBtn.disabled = false;
+            mediaLibraryBtn.innerHTML = originalHTML;
         } catch (err) {
             console.error("Error opening media library:", err);
             alert("❌ Error al conectar con Cloudinary");
+
+            // Restore button state
+            mediaLibraryBtn.disabled = false;
+            mediaLibraryBtn.innerHTML = `
+                <span class="material-symbols-outlined">photo_library</span>
+                Gestionar Imagen
+            `;
         }
     });
 </script>
