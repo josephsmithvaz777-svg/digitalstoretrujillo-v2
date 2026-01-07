@@ -916,6 +916,14 @@ if (!product) {
 
         const formData = new FormData(form);
 
+        // DEBUG: Log the image value from different sources
+        const imageFromFormData = formData.get("image") as string;
+        const imageFromInput = (
+            document.getElementById("image") as HTMLInputElement
+        )?.value;
+        console.log("🔍 DEBUG - Image from FormData:", imageFromFormData);
+        console.log("🔍 DEBUG - Image from Input Element:", imageFromInput);
+
         // Collect features
         const features: string[] = [];
         document.querySelectorAll(".feature-input").forEach((input) => {
@@ -923,7 +931,9 @@ if (!product) {
             if (value) features.push(value);
         });
 
-        // Prepare product data
+        // Prepare product data - Use the input element value directly to ensure we get the updated value
+        const imageValue = imageFromInput || imageFromFormData;
+
         const productData = {
             title: formData.get("title") as string,
             slug: formData.get("slug") as string,
@@ -935,7 +945,7 @@ if (!product) {
             renewable_price: formData.get("renewable_price")
                 ? parseFloat(formData.get("renewable_price") as string)
                 : null,
-            image: formData.get("image") as string,
+            image: imageValue,
             category: formData.get("category") as string,
             seller: (formData.get("seller") as string) || null,
             badge: (formData.get("badge") as string) || null,
@@ -971,6 +981,8 @@ if (!product) {
                 ) as HTMLInputElement
             ).checked,
         };
+
+        console.log("📦 DEBUG - Product data being sent:", productData);
 
         // Disable button
         submitBtn.disabled = true;

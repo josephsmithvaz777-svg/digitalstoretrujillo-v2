@@ -374,6 +374,10 @@ export async function createProduct(productData: Partial<Product>): Promise<Prod
  * Update a product (admin only)
  */
 export async function updateProduct(id: string, productData: Partial<Product>): Promise<boolean> {
+  console.log('🔄 updateProduct called with ID:', id);
+  console.log('📦 Product data received:', productData);
+  console.log('🖼️ Image URL in productData:', productData.image);
+
   const { error } = await supabase
     .from('products')
     .update(productData)
@@ -387,6 +391,7 @@ export async function updateProduct(id: string, productData: Partial<Product>): 
     return false;
   }
 
+  console.log('✅ Product updated successfully');
   return true;
 }
 
