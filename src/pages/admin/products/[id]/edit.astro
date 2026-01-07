@@ -1166,13 +1166,120 @@ if (!product) {
     const submitBtns = document.querySelectorAll(".submit-btn");
     const productId = form.dataset.productId;
 
+    // Capture initial state for partial updates
+    const initialData = {
+        title: (document.getElementById("title") as HTMLInputElement)?.value,
+        slug: (document.getElementById("slug") as HTMLInputElement)?.value,
+        description:
+            (document.getElementById("description") as HTMLTextAreaElement)
+                ?.value || null,
+        price: parseFloat(
+            (document.getElementById("price") as HTMLInputElement)?.value,
+        ),
+        original_price: (
+            document.getElementById("original_price") as HTMLInputElement
+        )?.value
+            ? parseFloat(
+                  (
+                      document.getElementById(
+                          "original_price",
+                      ) as HTMLInputElement
+                  )?.value,
+              )
+            : null,
+        renewable_price: (
+            document.getElementById("renewable_price") as HTMLInputElement
+        )?.value
+            ? parseFloat(
+                  (
+                      document.getElementById(
+                          "renewable_price",
+                      ) as HTMLInputElement
+                  )?.value,
+              )
+            : null,
+        image: (document.getElementById("image") as HTMLInputElement)?.value,
+        category: (document.getElementById("category") as HTMLInputElement)
+            ?.value,
+        seller:
+            (document.getElementById("seller") as HTMLInputElement)?.value ||
+            null,
+        badge:
+            (document.getElementById("badge") as HTMLInputElement)?.value ||
+            null,
+        badge_color:
+            (document.getElementById("badge_color") as HTMLInputElement)
+                ?.value || null,
+        badge_text_color:
+            (document.getElementById("badge_text_color") as HTMLInputElement)
+                ?.value || null,
+        rating: parseInt(
+            (document.getElementById("rating") as HTMLInputElement)?.value,
+        ),
+        review_count:
+            parseInt(
+                (document.getElementById("review_count") as HTMLInputElement)
+                    ?.value,
+            ) || 0,
+        stock_quantity: parseInt(
+            (document.getElementById("stock_quantity") as HTMLInputElement)
+                ?.value,
+        ),
+        features: Array.from(document.querySelectorAll(".feature-input"))
+            .map((i) => (i as HTMLInputElement).value.trim())
+            .filter(Boolean),
+        thumbnails: Array.from(
+            document.querySelectorAll('input[name="thumbnails"]'),
+        )
+            .map((i) => (i as HTMLInputElement).value)
+            .filter(Boolean),
+        show_gallery: (
+            document.getElementById("show_gallery") as HTMLInputElement
+        ).checked,
+        is_active: (document.getElementById("is_active") as HTMLInputElement)
+            .checked,
+        in_stock: (document.getElementById("in_stock") as HTMLInputElement)
+            .checked,
+        show_badge: (document.getElementById("show_badge") as HTMLInputElement)
+            .checked,
+        discount_badge:
+            (document.getElementById("discount_badge") as HTMLInputElement)
+                ?.value || null,
+        discount_badge_color:
+            (
+                document.getElementById(
+                    "discount_badge_color",
+                ) as HTMLInputElement
+            )?.value || null,
+        discount_badge_text_color:
+            (
+                document.getElementById(
+                    "discount_badge_text_color",
+                ) as HTMLInputElement
+            )?.value || null,
+        show_discount_badge: (
+            document.getElementById("show_discount_badge") as HTMLInputElement
+        ).checked,
+        show_renewable_price: (
+            document.getElementById("show_renewable_price") as HTMLInputElement
+        ).checked,
+    };
+
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
         if (!productId) return;
 
+        console.time("🚀 Save Process");
         const formData = new FormData(form);
 
-        // Collect thumbnails
+        // Collect current features
+        const features: string[] = [];
+        document.querySelectorAll(".feature-input").forEach((input) => {
+            const value = (input as HTMLInputElement).value.trim();
+            if (value) features.push(value);
+        });
+
+        // Collect current thumbnails
         const thumbnails: string[] = [];
         document
             .querySelectorAll('input[name="thumbnails"]')
@@ -1181,14 +1288,7 @@ if (!product) {
                 if (value) thumbnails.push(value);
             });
 
-        // Collect features
-        const features: string[] = [];
-        document.querySelectorAll(".feature-input").forEach((input) => {
-            const value = (input as HTMLInputElement).value.trim();
-            if (value) features.push(value);
-        });
-
-        const productData = {
+        const currentData = {
             title: formData.get("title") as string,
             slug: formData.get("slug") as string,
             description: (formData.get("description") as string) || null,
@@ -1240,6 +1340,34 @@ if (!product) {
             ).checked,
         };
 
+        // Determine only changed fields
+        const productData: any = {};
+        Object.keys(currentData).forEach((key) => {
+            const typedKey = key as keyof typeof currentData;
+            const currentVal = currentData[typedKey];
+            const initialVal = initialData[typedKey];
+
+            // Deep comparison for arrays
+            if (Array.isArray(currentVal) && Array.isArray(initialVal)) {
+                if (JSON.stringify(currentVal) !== JSON.stringify(initialVal)) {
+                    productData[typedKey] = currentVal;
+                }
+            } else if (currentVal !== initialVal) {
+                productData[typedKey] = currentVal;
+            }
+        });
+
+        if (Object.keys(productData).length === 0) {
+            if (typeof (window as any).showToast === "function") {
+                (window as any).showToast(
+                    "No hay cambios para guardar",
+                    "info",
+                );
+            }
+            console.timeEnd("🚀 Save Process");
+            return;
+        }
+
         // Disable buttons
         submitBtns.forEach((btn: any) => {
             btn.disabled = true;
@@ -1247,13 +1375,32 @@ if (!product) {
         });
 
         try {
+            console.log("📤 Sending partial update:", productData);
+            console.time("⏱️ DB Update");
             const response = await updateProduct(productId, productData);
+            console.timeEnd("⏱️ DB Update");
+
             if (response === false) {
                 throw new Error("Error al actualizar el producto.");
             }
-            window.location.href = "/admin/products";
+
+            if (typeof (window as any).showToast === "function") {
+                (window as any).showToast(
+                    "Producto actualizado correctamente",
+                    "success",
+                );
+            }
+
+            console.log("🔄 Redirecting to product list...");
+            console.timeEnd("🚀 Save Process");
+
+            // Short delay to let toast be seen before redirect
+            setTimeout(() => {
+                window.location.href = "/admin/products";
+            }, 500);
         } catch (error: any) {
             console.error("FULL ERROR:", error);
+            console.timeEnd("🚀 Save Process");
             if (typeof (window as any).showToast === "function") {
                 (window as any).showToast(
                     error.message || "Error al actualizar el producto",
