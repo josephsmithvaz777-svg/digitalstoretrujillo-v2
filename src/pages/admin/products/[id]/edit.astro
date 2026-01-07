@@ -275,27 +275,17 @@ if (!product) {
                         )
                     }
 
-                    <!-- Action Buttons -->
-                    <div class="flex gap-3 mb-3">
-                        <button
-                            type="button"
-                            id="upload-widget-btn"
-                            class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-medium rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
-                        >
-                            <span class="material-symbols-outlined">upload</span
-                            >
-                            Subir Nueva Imagen
-                        </button>
-
+                    <!-- Action Button -->
+                    <div class="mb-3">
                         <button
                             type="button"
                             id="media-library-btn"
-                            class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-600/20"
+                            class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-600/20"
                         >
                             <span class="material-symbols-outlined"
                                 >photo_library</span
                             >
-                            Seleccionar Existente
+                            Gestionar Imagen
                         </button>
                     </div>
 
@@ -643,63 +633,12 @@ if (!product) {
         uploadPreset: import.meta.env.PUBLIC_CLOUDINARY_UPLOAD_PRESET,
     }}
 >
-    // Cloudinary Upload Widget Handler
-    const uploadBtn = document.getElementById("upload-widget-btn");
+    // Get references to DOM elements
     const imageInput = document.getElementById("image");
     const previewImg = document.getElementById("preview-img");
     const currentUrlSpan = document.getElementById("current-url");
 
-    uploadBtn?.addEventListener("click", () => {
-        if (!cloudName || !uploadPreset) {
-            alert(
-                "⚠️ Cloudinary no está configurado. Por favor revisa el archivo CLOUDINARY_SETUP.md",
-            );
-            return;
-        }
-
-        // @ts-ignore
-        cloudinary.openUploadWidget(
-            {
-                cloudName: cloudName,
-                uploadPreset: uploadPreset,
-                sources: [
-                    "local",
-                    "url",
-                    "camera",
-                    "image_search",
-                    "media_library",
-                ],
-                folder: "digitalstore/products",
-                maxFileSize: 5000000, // 5MB
-                clientAllowedFormats: ["jpg", "png", "webp", "jpeg"],
-                cropping: true,
-                croppingAspectRatio: 1,
-                showSkipCropButton: false,
-                multiple: false,
-            },
-            (error, result) => {
-                if (error) {
-                    console.error("Upload error:", error);
-                    alert("Error al subir la imagen. Intenta de nuevo.");
-                    return;
-                }
-
-                if (result.event === "success") {
-                    const url = result.info.secure_url;
-                    imageInput.value = url;
-                    if (previewImg) {
-                        previewImg.src = url;
-                    }
-                    if (currentUrlSpan) {
-                        currentUrlSpan.textContent = url;
-                    }
-                    console.log("Image uploaded successfully:", url);
-                }
-            },
-        );
-    });
-
-    // Media Library Widget Handler (for selecting existing images)
+    // Media Library Widget Handler
     const mediaLibraryBtn = document.getElementById("media-library-btn");
     let mediaLibraryConfig = null;
 
@@ -760,7 +699,7 @@ if (!product) {
                             }
                             console.log("Image selected from library:", url);
                             alert(
-                                "✅ Imagen seleccionada correctamente. No olvides guardar los cambios del producto.",
+                                "✅ Imagen actualizada correctamente. No olvides guardar los cambios del producto.",
                             );
                         }
                     },
