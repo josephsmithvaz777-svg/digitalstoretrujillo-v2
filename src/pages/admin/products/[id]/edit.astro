@@ -566,153 +566,135 @@ if (!product) {
                     />
                 </div>
             </div>
-
-            <!-- Display Options -->
-            <div class="flex flex-wrap gap-6">
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        id="show_renewable_price"
-                        name="show_renewable_price"
-                        checked={product.show_renewable_price}
-                        class="w-5 h-5 bg-background-dark border-2 border-border-dark rounded checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-card-dark transition-all"
-                    />
-                    <span class="text-white font-medium"
-                        >Mostrar Precio Renovable</span
-                    >
-                </label>
-            </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="flex gap-4 mt-6">
-            <button
-                type="submit"
-                id="submit-btn"
-                class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
-            >
-                <span class="material-symbols-outlined">save</span>
-                Guardar Cambios
-            </button>
-            <a
-                href="/admin/products"
-                class="flex items-center gap-2 px-6 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
-            >
-                Cancelar
-            </a>
         </div>
     </form>
 
-    <script>
-        import { updateProduct } from "../../../../lib/supabase";
+    <!-- Actions -->
+    <div class="flex gap-4 mt-6">
+        <button
+            type="submit"
+            id="submit-btn"
+            class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+        >
+            <span class="material-symbols-outlined">save</span>
+            Guardar Cambios
+        </button>
+        <a
+            href="/admin/products"
+            class="flex items-center gap-2 px-6 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+        >
+            Cancelar
+        </a>
+    </div>
+</AdminLayout>
 
-        // Auto-generate slug from title
-        const titleInput = document.getElementById("title") as HTMLInputElement;
-        const slugInput = document.getElementById("slug") as HTMLInputElement;
+<script>
+    import { updateProduct } from "../../../../lib/supabase";
 
-        titleInput?.addEventListener("input", () => {
-            if (
-                !slugInput.value ||
-                slugInput.value ===
-                    titleInput.value.toLowerCase().replace(/[^a-z0-9]+/g, "-")
-            ) {
-                slugInput.value = titleInput.value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, "-")
-                    .replace(/^-+|-+$/g, "");
-            }
+    // Auto-generate slug from title
+    const titleInput = document.getElementById("title") as HTMLInputElement;
+    const slugInput = document.getElementById("slug") as HTMLInputElement;
+
+    titleInput?.addEventListener("input", () => {
+        if (
+            !slugInput.value ||
+            slugInput.value ===
+                titleInput.value.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+        ) {
+            slugInput.value = titleInput.value
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "");
+        }
+    });
+
+    // Badge General color sync
+    const colorPicker = document.getElementById(
+        "badge_color_picker",
+    ) as HTMLInputElement;
+    const colorInput = document.getElementById(
+        "badge_color",
+    ) as HTMLInputElement;
+    const textColorPicker = document.getElementById(
+        "badge_text_color_picker",
+    ) as HTMLInputElement;
+    const textColorInput = document.getElementById(
+        "badge_text_color",
+    ) as HTMLInputElement;
+
+    colorPicker?.addEventListener("input", (e) => {
+        colorInput.value = (e.target as HTMLInputElement).value.toUpperCase();
+    });
+
+    colorInput?.addEventListener("input", (e) => {
+        const value = (e.target as HTMLInputElement).value;
+        if (/^#[0-9A-F]{6}$/i.test(value)) colorPicker.value = value;
+    });
+
+    textColorPicker?.addEventListener("input", (e) => {
+        textColorInput.value = (
+            e.target as HTMLInputElement
+        ).value.toUpperCase();
+    });
+
+    textColorInput?.addEventListener("input", (e) => {
+        const value = (e.target as HTMLInputElement).value;
+        if (/^#[0-9A-F]{6}$/i.test(value)) textColorPicker.value = value;
+    });
+
+    // DISCOUNT Badge color sync
+    const discountColorPicker = document.getElementById(
+        "discount_badge_color_picker",
+    ) as HTMLInputElement;
+    const discountColorInput = document.getElementById(
+        "discount_badge_color",
+    ) as HTMLInputElement;
+    const discountTextColorPicker = document.getElementById(
+        "discount_badge_text_color_picker",
+    ) as HTMLInputElement;
+    const discountTextColorInput = document.getElementById(
+        "discount_badge_text_color",
+    ) as HTMLInputElement;
+
+    discountColorPicker?.addEventListener("input", (e) => {
+        discountColorInput.value = (
+            e.target as HTMLInputElement
+        ).value.toUpperCase();
+    });
+
+    discountColorInput?.addEventListener("input", (e) => {
+        const value = (e.target as HTMLInputElement).value;
+        if (/^#[0-9A-F]{6}$/i.test(value)) discountColorPicker.value = value;
+    });
+
+    discountTextColorPicker?.addEventListener("input", (e) => {
+        discountTextColorInput.value = (
+            e.target as HTMLInputElement
+        ).value.toUpperCase();
+    });
+
+    discountTextColorInput?.addEventListener("input", (e) => {
+        const value = (e.target as HTMLInputElement).value;
+        if (/^#[0-9A-F]{6}$/i.test(value))
+            discountTextColorPicker.value = value;
+    });
+
+    // Features management
+    const featuresContainer = document.getElementById("features-container");
+    const addFeatureBtn = document.getElementById("add-feature");
+
+    // Add remove functionality to existing featured inputs
+    document.querySelectorAll(".remove-feature").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            const target = e.currentTarget as HTMLElement;
+            target.parentElement?.remove();
         });
+    });
 
-        // Badge General color sync
-        const colorPicker = document.getElementById(
-            "badge_color_picker",
-        ) as HTMLInputElement;
-        const colorInput = document.getElementById(
-            "badge_color",
-        ) as HTMLInputElement;
-        const textColorPicker = document.getElementById(
-            "badge_text_color_picker",
-        ) as HTMLInputElement;
-        const textColorInput = document.getElementById(
-            "badge_text_color",
-        ) as HTMLInputElement;
-
-        colorPicker?.addEventListener("input", (e) => {
-            colorInput.value = (
-                e.target as HTMLInputElement
-            ).value.toUpperCase();
-        });
-
-        colorInput?.addEventListener("input", (e) => {
-            const value = (e.target as HTMLInputElement).value;
-            if (/^#[0-9A-F]{6}$/i.test(value)) colorPicker.value = value;
-        });
-
-        textColorPicker?.addEventListener("input", (e) => {
-            textColorInput.value = (
-                e.target as HTMLInputElement
-            ).value.toUpperCase();
-        });
-
-        textColorInput?.addEventListener("input", (e) => {
-            const value = (e.target as HTMLInputElement).value;
-            if (/^#[0-9A-F]{6}$/i.test(value)) textColorPicker.value = value;
-        });
-
-        // DISCOUNT Badge color sync
-        const discountColorPicker = document.getElementById(
-            "discount_badge_color_picker",
-        ) as HTMLInputElement;
-        const discountColorInput = document.getElementById(
-            "discount_badge_color",
-        ) as HTMLInputElement;
-        const discountTextColorPicker = document.getElementById(
-            "discount_badge_text_color_picker",
-        ) as HTMLInputElement;
-        const discountTextColorInput = document.getElementById(
-            "discount_badge_text_color",
-        ) as HTMLInputElement;
-
-        discountColorPicker?.addEventListener("input", (e) => {
-            discountColorInput.value = (
-                e.target as HTMLInputElement
-            ).value.toUpperCase();
-        });
-
-        discountColorInput?.addEventListener("input", (e) => {
-            const value = (e.target as HTMLInputElement).value;
-            if (/^#[0-9A-F]{6}$/i.test(value))
-                discountColorPicker.value = value;
-        });
-
-        discountTextColorPicker?.addEventListener("input", (e) => {
-            discountTextColorInput.value = (
-                e.target as HTMLInputElement
-            ).value.toUpperCase();
-        });
-
-        discountTextColorInput?.addEventListener("input", (e) => {
-            const value = (e.target as HTMLInputElement).value;
-            if (/^#[0-9A-F]{6}$/i.test(value))
-                discountTextColorPicker.value = value;
-        });
-
-        // Features management
-        const featuresContainer = document.getElementById("features-container");
-        const addFeatureBtn = document.getElementById("add-feature");
-
-        // Add remove functionality to existing featured inputs
-        document.querySelectorAll(".remove-feature").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const target = e.currentTarget as HTMLElement;
-                target.parentElement?.remove();
-            });
-        });
-
-        addFeatureBtn?.addEventListener("click", () => {
-            const featureDiv = document.createElement("div");
-            featureDiv.className = "flex gap-2";
-            featureDiv.innerHTML = `
+    addFeatureBtn?.addEventListener("click", () => {
+        const featureDiv = document.createElement("div");
+        featureDiv.className = "flex gap-2";
+        featureDiv.innerHTML = `
 				<input
 					type="text"
 					class="feature-input flex-1 px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -725,118 +707,111 @@ if (!product) {
 					<span class="material-symbols-outlined">close</span>
 				</button>
 			`;
-            featuresContainer?.appendChild(featureDiv);
+        featuresContainer?.appendChild(featureDiv);
 
-            // Add remove functionality
-            featureDiv
-                .querySelector(".remove-feature")
-                ?.addEventListener("click", () => {
-                    featureDiv.remove();
-                });
+        // Add remove functionality
+        featureDiv
+            .querySelector(".remove-feature")
+            ?.addEventListener("click", () => {
+                featureDiv.remove();
+            });
+    });
+
+    // Form submission
+    const form = document.getElementById("product-form") as HTMLFormElement;
+    const submitBtn = document.getElementById(
+        "submit-btn",
+    ) as HTMLButtonElement;
+    const productId = form.dataset.productId;
+
+    form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!productId) return;
+
+        const formData = new FormData(form);
+
+        // Collect features
+        const features: string[] = [];
+        document.querySelectorAll(".feature-input").forEach((input) => {
+            const value = (input as HTMLInputElement).value.trim();
+            if (value) features.push(value);
         });
 
-        // Form submission
-        const form = document.getElementById("product-form") as HTMLFormElement;
-        const submitBtn = document.getElementById(
-            "submit-btn",
-        ) as HTMLButtonElement;
-        const productId = form.dataset.productId;
+        // Prepare product data
+        const productData = {
+            title: formData.get("title") as string,
+            slug: formData.get("slug") as string,
+            description: (formData.get("description") as string) || null,
+            price: parseFloat(formData.get("price") as string),
+            original_price: formData.get("original_price")
+                ? parseFloat(formData.get("original_price") as string)
+                : null,
+            renewable_price: formData.get("renewable_price")
+                ? parseFloat(formData.get("renewable_price") as string)
+                : null,
+            image: formData.get("image") as string,
+            category: formData.get("category") as string,
+            seller: (formData.get("seller") as string) || null,
+            badge: (formData.get("badge") as string) || null,
+            badge_color: (formData.get("badge_color") as string) || null,
+            badge_text_color:
+                (formData.get("badge_text_color") as string) || null,
+            rating: parseInt(formData.get("rating") as string),
+            review_count: parseInt(formData.get("review_count") as string) || 0,
+            stock_quantity: parseInt(formData.get("stock_quantity") as string),
+            features,
+            is_active: (
+                document.getElementById("is_active") as HTMLInputElement
+            ).checked,
+            in_stock: (document.getElementById("in_stock") as HTMLInputElement)
+                .checked,
+            show_badge: (
+                document.getElementById("show_badge") as HTMLInputElement
+            ).checked,
+            discount_badge: (formData.get("discount_badge") as string) || null,
+            discount_badge_color:
+                (formData.get("discount_badge_color") as string) || null,
+            discount_badge_text_color:
+                (formData.get("discount_badge_text_color") as string) || null,
+            show_discount_badge: (
+                document.getElementById(
+                    "show_discount_badge",
+                ) as HTMLInputElement
+            ).checked,
+            show_renewable_price: (
+                document.getElementById(
+                    "show_renewable_price",
+                ) as HTMLInputElement
+            ).checked,
+        };
 
-        form?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            if (!productId) return;
-
-            const formData = new FormData(form);
-
-            // Collect features
-            const features: string[] = [];
-            document.querySelectorAll(".feature-input").forEach((input) => {
-                const value = (input as HTMLInputElement).value.trim();
-                if (value) features.push(value);
-            });
-
-            // Prepare product data
-            const productData = {
-                title: formData.get("title") as string,
-                slug: formData.get("slug") as string,
-                description: (formData.get("description") as string) || null,
-                price: parseFloat(formData.get("price") as string),
-                original_price: formData.get("original_price")
-                    ? parseFloat(formData.get("original_price") as string)
-                    : null,
-                renewable_price: formData.get("renewable_price")
-                    ? parseFloat(formData.get("renewable_price") as string)
-                    : null,
-                image: formData.get("image") as string,
-                category: formData.get("category") as string,
-                seller: (formData.get("seller") as string) || null,
-                badge: (formData.get("badge") as string) || null,
-                badge_color: (formData.get("badge_color") as string) || null,
-                badge_text_color:
-                    (formData.get("badge_text_color") as string) || null,
-                rating: parseInt(formData.get("rating") as string),
-                review_count:
-                    parseInt(formData.get("review_count") as string) || 0,
-                stock_quantity: parseInt(
-                    formData.get("stock_quantity") as string,
-                ),
-                features,
-                is_active: (
-                    document.getElementById("is_active") as HTMLInputElement
-                ).checked,
-                in_stock: (
-                    document.getElementById("in_stock") as HTMLInputElement
-                ).checked,
-                show_badge: (
-                    document.getElementById("show_badge") as HTMLInputElement
-                ).checked,
-                discount_badge:
-                    (formData.get("discount_badge") as string) || null,
-                discount_badge_color:
-                    (formData.get("discount_badge_color") as string) || null,
-                discount_badge_text_color:
-                    (formData.get("discount_badge_text_color") as string) ||
-                    null,
-                show_discount_badge: (
-                    document.getElementById(
-                        "show_discount_badge",
-                    ) as HTMLInputElement
-                ).checked,
-                show_renewable_price: (
-                    document.getElementById(
-                        "show_renewable_price",
-                    ) as HTMLInputElement
-                ).checked,
-            };
-
-            // Disable button
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `
+        // Disable button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
 				<span class="material-symbols-outlined animate-spin">progress_activity</span>
 				Guardando...
 			`;
 
-            try {
-                const response = await updateProduct(productId, productData);
+        try {
+            const response = await updateProduct(productId, productData);
 
-                if (response === false) {
-                    throw new Error(
-                        "Error al actualizar el producto. Revisa la consola para más detalles.",
-                    );
-                }
+            if (response === false) {
+                throw new Error(
+                    "Error al actualizar el producto. Revisa la consola para más detalles.",
+                );
+            }
 
-                // Success - redirect
-                window.location.href = "/admin/products";
-            } catch (error: any) {
-                console.error("FULL ERROR:", error);
-                alert(error.message || "Error al actualizar el producto");
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `
+            // Success - redirect
+            window.location.href = "/admin/products";
+        } catch (error: any) {
+            console.error("FULL ERROR:", error);
+            alert(error.message || "Error al actualizar el producto");
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `
 					<span class="material-symbols-outlined">save</span>
 					Guardar Cambios
 				`;
-            }
-        });
-    </script>
-</AdminLayout>
+        }
+    });
+</script>
