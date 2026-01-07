@@ -573,6 +573,9 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
     <script src="https://upload-widget.cloudinary.com/global/all.js" is:inline
     ></script>
 
+    <!-- Cloudinary Media Library Widget Script -->
+    <script src="https://media-library.cloudinary.com/global/all.js" is:inline></script>
+
     <script
         define:vars={{
             cloudName: import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -680,6 +683,9 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
             );
         });
     </script>
+
+    <!-- Cloudinary Media Library Widget Script -->
+    <script src="https://media-library.cloudinary.com/global/all.js" is:inline></script>
 
     <script>
         import { createProduct } from "../../../lib/supabase";
