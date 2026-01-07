@@ -275,15 +275,29 @@ if (!product) {
                         )
                     }
 
-                    <!-- Upload Button -->
-                    <button
-                        type="button"
-                        id="upload-widget-btn"
-                        class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-medium rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 mb-3"
-                    >
-                        <span class="material-symbols-outlined">upload</span>
-                        Subir Imagen desde Cloudinary
-                    </button>
+                    <!-- Action Buttons -->
+                    <div class="flex gap-3 mb-3">
+                        <button
+                            type="button"
+                            id="upload-widget-btn"
+                            class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-medium rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+                        >
+                            <span class="material-symbols-outlined">upload</span
+                            >
+                            Subir Nueva Imagen
+                        </button>
+
+                        <button
+                            type="button"
+                            id="media-library-btn"
+                            class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-600/20"
+                        >
+                            <span class="material-symbols-outlined"
+                                >photo_library</span
+                            >
+                            Seleccionar Existente
+                        </button>
+                    </div>
 
                     <!-- Hidden input to store URL -->
                     <input
@@ -677,6 +691,50 @@ if (!product) {
                     }
                     console.log("Image uploaded successfully:", url);
                 }
+            },
+        );
+    });
+
+    // Media Library Widget Handler (for selecting existing images)
+    const mediaLibraryBtn = document.getElementById("media-library-btn");
+
+    mediaLibraryBtn?.addEventListener("click", () => {
+        if (!cloudName) {
+            alert(
+                "⚠️ Cloudinary no está configurado. Por favor revisa el archivo CLOUDINARY_SETUP.md",
+            );
+            return;
+        }
+
+        // @ts-ignore
+        cloudinary.openMediaLibrary(
+            {
+                cloudName: cloudName,
+                apiKey:
+                    import.meta.env.PUBLIC_CLOUDINARY_API_KEY ||
+                    "729164525299989",
+                folder: {
+                    path: "digitalstore/products",
+                    resource_type: "image",
+                },
+                multiple: false,
+                max_files: 1,
+                insert_caption: "Seleccionar",
+            },
+            {
+                insertHandler: (data) => {
+                    if (data.assets && data.assets.length > 0) {
+                        const url = data.assets[0].secure_url;
+                        imageInput.value = url;
+                        if (previewImg) {
+                            previewImg.src = url;
+                        }
+                        if (currentUrlSpan) {
+                            currentUrlSpan.textContent = url;
+                        }
+                        console.log("Image selected from library:", url);
+                    }
+                },
             },
         );
     });
