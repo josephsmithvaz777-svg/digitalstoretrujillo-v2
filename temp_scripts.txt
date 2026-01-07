@@ -1,6 +1,0 @@
-<!-- Cloudinary Upload Widget Script -->
-<script src="https://upload-widget.cloudinary.com/global/all.js" is:inline
-></script>
-
-<!-- Cloudinary Media Library Widget Script -->
-<script src="https://media-library.cloudinary.com/global/all.js" is:inline></script>
