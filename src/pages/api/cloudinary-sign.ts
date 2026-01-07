@@ -4,15 +4,15 @@ import { v2 as cloudinary } from 'cloudinary';
 export const GET: APIRoute = async () => {
     const timestamp = Math.round(new Date().getTime() / 1000);
 
-    // Use import.meta.env which is more reliable in Astro
-    const apiSecret = import.meta.env.CLOUDINARY_API_SECRET;
-    const apiKey = import.meta.env.CLOUDINARY_API_KEY;
-    const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME;
+    // Use both import.meta.env and process.env for maximum compatibility
+    const apiSecret = import.meta.env.CLOUDINARY_API_SECRET || (globalThis as any).process?.env?.CLOUDINARY_API_SECRET;
+    const apiKey = import.meta.env.PUBLIC_CLOUDINARY_API_KEY || import.meta.env.CLOUDINARY_API_KEY || (globalThis as any).process?.env?.PUBLIC_CLOUDINARY_API_KEY || (globalThis as any).process?.env?.CLOUDINARY_API_KEY;
+    const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME || (globalThis as any).process?.env?.PUBLIC_CLOUDINARY_CLOUD_NAME;
 
     if (!apiSecret || !apiKey || !cloudName) {
         const missing = [];
         if (!apiSecret) missing.push('CLOUDINARY_API_SECRET');
-        if (!apiKey) missing.push('CLOUDINARY_API_KEY');
+        if (!apiKey) missing.push('PUBLIC_CLOUDINARY_API_KEY/CLOUDINARY_API_KEY');
         if (!cloudName) missing.push('PUBLIC_CLOUDINARY_CLOUD_NAME');
 
         return new Response(JSON.stringify({
