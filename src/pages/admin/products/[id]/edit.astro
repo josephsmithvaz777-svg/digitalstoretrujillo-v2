@@ -965,7 +965,7 @@ if (!product) {
             }
 
             // @ts-ignore
-            cloudinary.openMediaLibrary(
+            const mlWidget = cloudinary.openMediaLibrary(
                 {
                     cloud_name: mediaLibraryConfig.cloudName,
                     api_key: mediaLibraryConfig.apiKey,
@@ -988,16 +988,28 @@ if (!product) {
                                 "success",
                             );
                         }
+                        // Restore button state after insertion
+                        manageGalleryBtn.disabled = false;
+                        manageGalleryBtn.innerHTML = originalHTML;
                     },
                 },
             );
 
-            manageGalleryBtn.disabled = false;
-            manageGalleryBtn.innerHTML = originalHTML;
+            // Restore button state when widget opens successfully
+            // This handles the case when the widget opens but user closes without selecting
+            setTimeout(() => {
+                if (manageGalleryBtn.disabled) {
+                    manageGalleryBtn.disabled = false;
+                    manageGalleryBtn.innerHTML = originalHTML;
+                }
+            }, 1000);
+
         } catch (err) {
             console.error("Error opening gallery library:", err);
             showToast("Error al conectar con Cloudinary", "error");
             manageGalleryBtn.disabled = false;
+            const originalHTML = manageGalleryBtn.innerHTML;
+            manageGalleryBtn.innerHTML = `<span class="material-symbols-outlined text-blue-400">add_to_photos</span> Añadir Imágenes a la Galería`;
         }
     });
 
