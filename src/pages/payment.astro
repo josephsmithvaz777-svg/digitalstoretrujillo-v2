@@ -1058,7 +1058,7 @@ const description = "Choose your payment method";
 
     // Continue button
     if (continueBtn) {
-        continueBtn.addEventListener("click", () => {
+        continueBtn.addEventListener("click", async () => {
             if (!selectedMethod) {
                 alert("Please select a payment method");
                 return;
@@ -1069,17 +1069,57 @@ const description = "Choose your payment method";
             } else if (selectedMethod === "binance") {
                 openBinanceModal();
             } else if (selectedMethod === "crypto") {
-                const totalPEN = cartTotal.get();
-                const totalUSD = (totalPEN / 2.4).toFixed(2);
-                alert(
-                    `🎉 Redirigiendo a Cryptomus...\n\nMonto a pagar: $ ${totalUSD} USD (Tasa: 2.4)\n\nPodrás pagar con Bitcoin, USDT, otras criptomonedas o Tarjeta de Crédito/Débito.`,
-                );
+                // Cryptomus Integration
+                const originalText = continueBtn.innerHTML;
+                try {
+                    continueBtn.disabled = true;
+                    continueBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...`;
+
+                    const buyerInfo = JSON.parse(
+                        localStorage.getItem("buyerInfo") || "{}",
+                    );
+                    const items = cartItems.get();
+                    const totalPEN = cartTotal.get();
+
+                    const response = await fetch(
+                        "/api/payments/cryptomus/create",
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                buyerInfo,
+                                cartItems: items,
+                                totalPEN,
+                            }),
+                        },
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok)
+                        throw new Error(
+                            data.error || "Failed to initiate payment",
+                        );
+
+                    // Save order ID for later tracking
+                    localStorage.setItem("lastOrderId", data.orderId);
+
+                    // Redirect to Cryptomus
+                    window.location.href = data.url;
+                } catch (error: any) {
+                    console.error("Cryptomus Error:", error);
+                    alert(
+                        `Error: ${error.message || "No se pudo iniciar el pago con Cryptomus."}`,
+                    );
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = originalText;
+                }
             }
         });
     }
 
     // Modal Helpers
-    function showSuccessModal(closeModalsCallback: () => void) {
+    function showSuccessModal(closeModalsCallback: () => void = () => {}) {
         const successModal = document.getElementById("success-modal");
         const successContent = document.getElementById("success-modal-content");
         const successCloseBtn = document.getElementById("success-close-btn");
@@ -1095,11 +1135,21 @@ const description = "Choose your payment method";
             if (successCloseBtn) {
                 successCloseBtn.addEventListener("click", () => {
                     clearCart();
+                    localStorage.removeItem("buyerInfo");
+                    localStorage.removeItem("lastOrderId");
                     window.location.href = "/";
                 });
             }
         }
     }
+
+    // Check for success status in URL (Redirect from Cryptomus)
+    window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("status") === "success") {
+            showSuccessModal();
+        }
+    });
 
     // Yape Modal Functions
     const yapeModal = document.getElementById("yape-modal");
