@@ -1,9 +1,10 @@
 import type { APIRoute } from 'astro';
-import { supabaseAdmin, getAdminUser } from '../../../../lib/supabase';
+import { supabaseAdmin, getAdminUserFromToken } from '../../../../lib/supabase';
 
 export const POST: APIRoute = async ({ request }) => {
-    // Security Check: Verify admin session
-    const user = await getAdminUser();
+    // Security Check: Verify admin session via token
+    const authHeader = request.headers.get('Authorization');
+    const user = await getAdminUserFromToken(authHeader);
     if (!user || user.email !== 'admin@digitalstoretrujillo.com') {
         return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }

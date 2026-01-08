@@ -277,6 +277,7 @@ const products = await getAllProducts();
             deleteProduct,
             getProductById,
             createProduct,
+            supabase,
         } from "../../../lib/supabase";
 
         // Toast functionality
@@ -339,9 +340,19 @@ const products = await getAllProducts();
                     if (icon) icon.textContent = "sync";
                     showToast(`Duplicando "${productName}"...`, "success");
 
+                    // Get session for auth
+                    const {
+                        data: { session },
+                    } = await supabase.auth.getSession();
+
                     // 1. Fetch original product via API (bypasses RLS)
                     const fetchRes = await fetch(
                         `/api/admin/products/${productId}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${session?.access_token}`,
+                            },
+                        },
                     );
                     if (!fetchRes.ok)
                         throw new Error(
@@ -372,7 +383,10 @@ const products = await getAllProducts();
                     // 3. Create the copy via API (bypasses RLS)
                     const createRes = await fetch("/api/admin/products", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${session?.access_token}`,
+                        },
                         body: JSON.stringify(newProduct),
                     });
 

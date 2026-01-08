@@ -356,14 +356,27 @@ export async function signOutAdmin() {
 /**
  * Get current admin user
  */
-export async function getAdminUser() {
-  const { data: { user }, error } = await supabase.auth.getUser();
+export async function getAdminUser(token?: string) {
+  const { data: { user }, error } = token
+    ? await supabase.auth.getUser(token)
+    : await supabase.auth.getUser();
 
   if (error || !user) {
     return null;
   }
 
   return user;
+}
+
+/**
+ * Helper to get admin user from a Bearer token
+ */
+export async function getAdminUserFromToken(authHeader: string | null) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  const token = authHeader.split(' ')[1];
+  return getAdminUser(token);
 }
 
 /**

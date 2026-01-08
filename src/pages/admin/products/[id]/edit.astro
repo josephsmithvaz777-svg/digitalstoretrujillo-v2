@@ -1421,10 +1421,16 @@ if (!product) {
             console.log("📤 Sending partial update via API:", productData);
             console.time("⏱️ API Update");
             // Use the API route instead of direct Supabase client
+            // Get session for auth
+            const {
+                data: { session },
+            } = await (window as any).supabase.auth.getSession();
+
             const response = await fetch(`/api/admin/products/${productId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${session?.access_token}`,
                 },
                 body: JSON.stringify(productData),
             });
