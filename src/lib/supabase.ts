@@ -3,12 +3,18 @@ import { createClient } from '@supabase/supabase-js';
 // Supabase client configuration
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Admin client for server-side operations (bypasses RLS)
+export const supabaseAdmin = supabaseServiceKey
+  ? createClient(supabaseUrl, supabaseServiceKey)
+  : null;
 
 // Types
 export interface Product {
@@ -93,7 +99,10 @@ export async function getProducts(): Promise<Product[]> {
  * Get all products (including inactive/out of stock) - For Admin
  */
 export async function getAllProducts(): Promise<Product[]> {
-  const { data, error } = await supabase
+  // Use admin client on server if available to bypass RLS
+  const client = (typeof window === 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+
+  const { data, error } = await client
     .from('products')
     .select('*')
     .order('created_at', { ascending: false });

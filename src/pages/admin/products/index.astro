@@ -347,15 +347,25 @@ const products = await getAllProducts();
                         );
 
                     // 2. Prepare new data
-                    const { id, created_at, updated_at, ...cleanData } =
-                        original;
+                    const {
+                        id,
+                        created_at,
+                        updated_at,
+                        rating,
+                        review_count,
+                        ...cleanData
+                    } = original;
                     const timestamp = Date.now();
                     const newProduct = {
                         ...cleanData,
                         title: `${original.title} (Copia)`,
-                        slug: `${original.slug}-copy-${timestamp}`,
+                        slug: `${original.slug}-copy-${Math.floor(Math.random() * 10000)}`,
                         is_active: false, // Create as inactive for safety
+                        rating: 0,
+                        review_count: 0,
                     };
+
+                    console.log("📤 Creating Duplicate:", newProduct);
 
                     // 3. Create the copy
                     const created = await createProduct(newProduct);
