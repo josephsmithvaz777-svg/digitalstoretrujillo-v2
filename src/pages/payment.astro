@@ -220,18 +220,18 @@ const description = "Choose your payment method";
                         </div>
                     </div>
 
-                    <!-- Crypto Payment (Generic) -->
+                    <!-- Whop Payment -->
                     <div
-                        class="payment-option group p-6 rounded-xl bg-card-dark border-2 border-border-dark hover:border-[#F7931A] transition-all cursor-pointer"
-                        data-method="crypto"
+                        class="payment-option group p-6 rounded-xl bg-card-dark border-2 border-border-dark hover:border-[#FF4F00] transition-all cursor-pointer"
+                        data-method="whop"
                     >
                         <div class="flex items-start gap-4">
                             <div
-                                class="flex-shrink-0 w-16 h-16 rounded-xl bg-[#F7931A]/20 flex items-center justify-center border border-[#F7931A]/30 overflow-hidden"
+                                class="flex-shrink-0 w-16 h-16 rounded-xl bg-[#FF4F00]/20 flex items-center justify-center border border-[#FF4F00]/30 overflow-hidden"
                             >
                                 <img
-                                    src="/assets/Cryptomus_icon.svg"
-                                    alt="Cryptomus"
+                                    src="https://whop.com/favicon-32x32.png"
+                                    alt="Whop"
                                     class="w-10 h-10 object-contain"
                                 />
                             </div>
@@ -240,40 +240,36 @@ const description = "Choose your payment method";
                                     class="flex items-center justify-between mb-2"
                                 >
                                     <h3 class="text-white font-bold text-xl">
-                                        Cryptomus
+                                        Whop (Card/Crypto)
                                     </h3>
                                     <div
-                                        class="payment-radio w-6 h-6 rounded-full border-2 border-border-dark group-hover:border-[#F7931A] flex items-center justify-center transition-colors"
+                                        class="payment-radio w-6 h-6 rounded-full border-2 border-border-dark group-hover:border-[#FF4F00] flex items-center justify-center transition-colors"
                                     >
                                         <div
-                                            class="w-3 h-3 rounded-full bg-[#F7931A] opacity-0 group-hover:opacity-100 transition-opacity"
+                                            class="w-3 h-3 rounded-full bg-[#FF4F00] opacity-0 group-hover:opacity-100 transition-opacity"
                                         >
                                         </div>
                                     </div>
                                 </div>
                                 <p class="text-text-muted text-sm mb-3">
-                                    Paga con Criptomonedas o Tarjeta de
-                                    Débito/Crédito.
+                                    Paga con Tarjeta, Apple Pay o Cripto a
+                                    través de Whop.
                                 </p>
                                 <div class="flex flex-wrap gap-2">
                                     <span
                                         class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/10 text-orange-400 text-xs font-medium"
                                     >
-                                        Bitcoin, USDT & more
+                                        Visa / Mastercard
                                     </span>
                                     <span
                                         class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 text-blue-400 text-xs font-medium"
                                     >
-                                        <span
-                                            class="material-symbols-outlined text-[14px]"
-                                            >payments</span
-                                        >
-                                        Visa / Mastercard
+                                        Apple Pay / Google Pay
                                     </span>
                                     <span
                                         class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-500/10 text-green-400 text-xs font-medium"
                                     >
-                                        Global
+                                        Crypto
                                     </span>
                                 </div>
                             </div>
@@ -1032,7 +1028,8 @@ const description = "Choose your payment method";
         if (!orderItemsList) return;
 
         const totalPEN = cartTotal.get();
-        const isUSD = method === "binance" || method === "crypto";
+        const isUSD =
+            method === "binance" || method === "crypto" || method === "whop";
         const rate = 2.4;
         const total = isUSD ? totalPEN / rate : totalPEN;
         const symbol = isUSD ? "$" : "S/";
@@ -1083,6 +1080,7 @@ const description = "Choose your payment method";
                     "border-[#722F91]",
                     "border-[#F3BA2F]",
                     "border-[#F7931A]",
+                    "border-[#FF4F00]",
                 );
                 opt.classList.add("border-border-dark");
                 const radio = opt.querySelector(".payment-radio div");
@@ -1106,6 +1104,9 @@ const description = "Choose your payment method";
             } else if (method === "crypto") {
                 option.classList.remove("border-border-dark");
                 option.classList.add("border-[#F7931A]");
+            } else if (method === "whop") {
+                option.classList.remove("border-border-dark");
+                option.classList.add("border-[#FF4F00]");
             }
 
             const radio = option.querySelector(".payment-radio div");
@@ -1196,6 +1197,46 @@ const description = "Choose your payment method";
                     console.error("Cryptomus Error:", error);
                     alert(
                         `Error: ${error.message || "No se pudo iniciar el pago con Cryptomus."}`,
+                    );
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = originalText;
+                }
+            } else if (selectedMethod === "whop") {
+                // Whop Integration
+                const originalText = continueBtn.innerHTML;
+                try {
+                    continueBtn.disabled = true;
+                    continueBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...`;
+
+                    const buyerInfo = JSON.parse(
+                        localStorage.getItem("buyerInfo") || "{}",
+                    );
+                    const items = cartItems.get();
+                    const totalPEN = cartTotal.get();
+
+                    const response = await fetch("/api/payments/whop/create", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            buyerInfo,
+                            cartItems: items,
+                            totalPEN,
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok)
+                        throw new Error(
+                            data.error || "Failed to initiate payment",
+                        );
+
+                    // Redirect to Whop Checkout
+                    window.location.href = data.url;
+                } catch (error: any) {
+                    console.error("Whop Error:", error);
+                    alert(
+                        `Error: ${error.message || "No se pudo iniciar el pago con Whop."}`,
                     );
                     continueBtn.disabled = false;
                     continueBtn.innerHTML = originalText;
