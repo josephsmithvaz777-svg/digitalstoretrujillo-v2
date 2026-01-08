@@ -138,7 +138,10 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
  * Get a single product by ID
  */
 export async function getProductById(id: string): Promise<Product | null> {
-  const { data, error } = await supabase
+  // Use admin client on server if available to bypass RLS
+  const client = (typeof window === 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+
+  const { data, error } = await client
     .from('products')
     .select('*')
     .eq('id', id)

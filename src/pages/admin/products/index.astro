@@ -339,12 +339,15 @@ const products = await getAllProducts();
                     if (icon) icon.textContent = "sync";
                     showToast(`Duplicando "${productName}"...`, "success");
 
-                    // 1. Fetch original product
-                    const original = await getProductById(productId);
-                    if (!original)
+                    // 1. Fetch original product via API (bypasses RLS)
+                    const fetchRes = await fetch(
+                        `/api/admin/products/${productId}`,
+                    );
+                    if (!fetchRes.ok)
                         throw new Error(
                             "No se pudo obtener el producto original",
                         );
+                    const original = await fetchRes.json();
 
                     // 2. Prepare new data
                     const {
@@ -355,7 +358,6 @@ const products = await getAllProducts();
                         review_count,
                         ...cleanData
                     } = original;
-                    const timestamp = Date.now();
                     const newProduct = {
                         ...cleanData,
                         title: `${original.title} (Copia)`,
@@ -365,16 +367,24 @@ const products = await getAllProducts();
                         review_count: 0,
                     };
 
-                    console.log("📤 Creating Duplicate:", newProduct);
+                    console.log("📤 Creating Duplicate via API:", newProduct);
 
-                    // 3. Create the copy
-                    const created = await createProduct(newProduct);
+                    // 3. Create the copy via API (bypasses RLS)
+                    const createRes = await fetch("/api/admin/products", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(newProduct),
+                    });
 
-                    if (created) {
+                    if (createRes.ok) {
+                        const created = await createRes.json();
                         showToast("Producto duplicado con éxito", "success");
                         setTimeout(() => window.location.reload(), 1000);
                     } else {
-                        throw new Error("Error al crear la copia");
+                        const errorData = await createRes.json();
+                        throw new Error(
+                            errorData.error || "Error al crear la copia",
+                        );
                     }
                 } catch (error: any) {
                     console.error("Duplication Error:", error);
