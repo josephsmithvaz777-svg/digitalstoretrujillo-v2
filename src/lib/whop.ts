@@ -47,8 +47,9 @@ export class WhopService {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error('Whop Error:', data);
-            throw new Error(data.message || 'Failed to create Whop checkout configuration');
+            console.error('Whop API Error Response:', JSON.stringify(data, null, 2));
+            const errorMessage = data.message || (data.errors ? JSON.stringify(data.errors) : 'Unknown Whop error');
+            throw new Error(`Whop API Error: ${errorMessage}`);
         }
 
         // The checkout URL for a configuration is https://whop.com/checkout/[id]
