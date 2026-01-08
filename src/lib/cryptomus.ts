@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 
-const MERCHANT_ID = process.env.CRYPTOMUS_MERCHANT_ID;
-const PAYMENT_KEY = process.env.CRYPTOMUS_PAYMENT_KEY;
+const MERCHANT_ID = import.meta.env.CRYPTOMUS_MERCHANT_ID;
+const PAYMENT_KEY = import.meta.env.CRYPTOMUS_PAYMENT_KEY;
 
 interface CreatePaymentParams {
     amount: string;
