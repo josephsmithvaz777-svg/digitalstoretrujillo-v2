@@ -1085,7 +1085,7 @@ if (!product) {
 </script>
 
 <script>
-    import { updateProduct } from "../../../../lib/supabase";
+    import { updateProduct, supabase } from "../../../../lib/supabase";
 
     // Auto-generate slug from title
     const titleInput = document.getElementById("title") as HTMLInputElement;
@@ -1424,7 +1424,7 @@ if (!product) {
             // Get session for auth
             const {
                 data: { session },
-            } = await (window as any).supabase.auth.getSession();
+            } = await supabase.auth.getSession();
 
             const response = await fetch(`/api/admin/products/${productId}`, {
                 method: "PUT",
