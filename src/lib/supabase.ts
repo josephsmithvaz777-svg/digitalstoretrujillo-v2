@@ -90,6 +90,23 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 /**
+ * Get all products (including inactive/out of stock) - For Admin
+ */
+export async function getAllProducts(): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching all products:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
  * Get a single product by slug
  */
 export async function getProductBySlug(slug: string): Promise<Product | null> {

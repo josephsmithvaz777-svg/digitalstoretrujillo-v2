@@ -1,8 +1,8 @@
 ---
 import AdminLayout from "../../../layouts/AdminLayout.astro";
-import { getProducts } from "../../../lib/supabase";
+import { getAllProducts } from "../../../lib/supabase";
 
-const products = await getProducts();
+const products = await getAllProducts();
 ---
 
 <AdminLayout title="Productos" activePage="products">
