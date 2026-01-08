@@ -6,6 +6,13 @@ const products = await getProducts();
 ---
 
 <AdminLayout title="Productos" activePage="products">
+    <!-- Toast Notification Container -->
+    <div
+        id="toast-container"
+        class="fixed top-4 right-4 z-50 flex flex-col gap-3 pointer-events-none"
+    >
+    </div>
+
     <!-- Header with Actions -->
     <div class="flex items-center justify-between mb-6">
         <div>
@@ -188,6 +195,18 @@ const products = await getProducts();
                                                 </span>
                                             </a>
                                             <button
+                                                class="duplicate-btn p-2 text-text-muted hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-all"
+                                                data-product-id={product.id}
+                                                data-product-name={
+                                                    product.title
+                                                }
+                                                title="Duplicar"
+                                            >
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    content_copy
+                                                </span>
+                                            </button>
+                                            <button
                                                 class="delete-btn p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                                                 data-product-id={product.id}
                                                 data-product-name={
@@ -254,15 +273,117 @@ const products = await getProducts();
     </div>
 
     <script>
-        import { deleteProduct } from "../../../lib/supabase";
+        import {
+            deleteProduct,
+            getProductById,
+            createProduct,
+        } from "../../../lib/supabase";
 
+        // Toast functionality
+        function showToast(
+            message: string,
+            type: "success" | "error" = "success",
+        ) {
+            const container = document.getElementById("toast-container");
+            if (!container) return;
+
+            const toast = document.createElement("div");
+            toast.className = `
+                flex items-center gap-3 px-4 py-3 rounded-xl border shadow-2xl
+                animate-slide-in pointer-events-auto min-w-[300px]
+                ${
+                    type === "success"
+                        ? "bg-green-500/10 border-green-500/20 text-green-400"
+                        : "bg-red-500/10 border-red-500/20 text-red-400"
+                }
+            `;
+
+            toast.innerHTML = `
+                <span class="material-symbols-outlined">${type === "success" ? "check_circle" : "error"}</span>
+                <span class="font-medium text-sm flex-1">${message}</span>
+                <button class="toast-close opacity-50 hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            const close = toast.querySelector(".toast-close");
+            close?.addEventListener("click", () => {
+                toast.classList.add("animate-fadeOut");
+                setTimeout(() => toast.remove(), 300);
+            });
+
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.classList.add("animate-fadeOut");
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        // Duplication Logic
+        document.querySelectorAll(".duplicate-btn").forEach((btn) => {
+            btn.addEventListener("click", async () => {
+                const productId = btn.getAttribute("data-product-id");
+                const productName = btn.getAttribute("data-product-name");
+
+                if (!productId) return;
+
+                const button = btn as HTMLButtonElement;
+                const icon = button.querySelector("span");
+
+                try {
+                    // Start loading
+                    button.disabled = true;
+                    if (icon) icon.textContent = "sync";
+                    showToast(`Duplicando "${productName}"...`, "success");
+
+                    // 1. Fetch original product
+                    const original = await getProductById(productId);
+                    if (!original)
+                        throw new Error(
+                            "No se pudo obtener el producto original",
+                        );
+
+                    // 2. Prepare new data
+                    const { id, created_at, updated_at, ...cleanData } =
+                        original;
+                    const timestamp = Date.now();
+                    const newProduct = {
+                        ...cleanData,
+                        title: `${original.title} (Copia)`,
+                        slug: `${original.slug}-copy-${timestamp}`,
+                        is_active: false, // Create as inactive for safety
+                    };
+
+                    // 3. Create the copy
+                    const created = await createProduct(newProduct);
+
+                    if (created) {
+                        showToast("Producto duplicado con éxito", "success");
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        throw new Error("Error al crear la copia");
+                    }
+                } catch (error: any) {
+                    console.error("Duplication Error:", error);
+                    showToast(error.message || "Error al duplicar", "error");
+                    button.disabled = false;
+                    if (icon) icon.textContent = "content_copy";
+                }
+            });
+        });
+
+        // Delete Logic
         const deleteModal = document.getElementById("delete-modal");
         const productNameEl = document.getElementById("product-name");
         const cancelBtn = document.getElementById("cancel-delete");
-        const confirmBtn = document.getElementById("confirm-delete");
+        const confirmBtn = document.getElementById(
+            "confirm-delete",
+        ) as HTMLButtonElement;
         let productToDelete: string | null = null;
 
-        // Open delete modal
         document.querySelectorAll(".delete-btn").forEach((btn) => {
             btn.addEventListener("click", () => {
                 const productId = btn.getAttribute("data-product-id");
@@ -276,13 +397,11 @@ const products = await getProducts();
             });
         });
 
-        // Cancel delete
         cancelBtn?.addEventListener("click", () => {
             deleteModal?.classList.add("hidden");
             productToDelete = null;
         });
 
-        // Confirm delete
         confirmBtn?.addEventListener("click", async () => {
             if (!productToDelete) return;
 
@@ -294,13 +413,12 @@ const products = await getProducts();
             if (success) {
                 window.location.reload();
             } else {
-                alert("Error al eliminar el producto");
+                showToast("Error al eliminar el producto", "error");
                 confirmBtn.disabled = false;
                 confirmBtn.textContent = "Eliminar";
             }
         });
 
-        // Close modal on backdrop click
         deleteModal?.addEventListener("click", (e) => {
             if (e.target === deleteModal) {
                 deleteModal.classList.add("hidden");
