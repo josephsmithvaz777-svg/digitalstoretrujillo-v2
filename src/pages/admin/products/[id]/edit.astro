@@ -188,7 +188,7 @@ if (!product) {
                                         type="checkbox"
                                         id="show_renewable_price"
                                         name="show_renewable_price"
-                                        checked={product.show_renewable_price}
+                                        checked={!!product.show_renewable_price}
                                         class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
                                     />
                                     <span
@@ -445,7 +445,7 @@ if (!product) {
                                 type="checkbox"
                                 id="is_active"
                                 name="is_active"
-                                checked={product.is_active}
+                                checked={!!product.is_active}
                                 class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
                             />
                         </div>
@@ -461,7 +461,7 @@ if (!product) {
                                 type="checkbox"
                                 id="in_stock"
                                 name="in_stock"
-                                checked={product.in_stock}
+                                checked={!!product.in_stock}
                                 class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
                             />
                         </div>
@@ -482,7 +482,7 @@ if (!product) {
                                 type="checkbox"
                                 id="show_gallery"
                                 name="show_gallery"
-                                checked={product.show_gallery}
+                                checked={!!product.show_gallery}
                                 class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
                             />
                         </div>
@@ -564,7 +564,7 @@ if (!product) {
                                     type="checkbox"
                                     id="show_badge"
                                     name="show_badge"
-                                    checked={product.show_badge}
+                                    checked={!!product.show_badge}
                                     class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary"
                                 />
                                 <span class="text-[10px] text-white/70"
@@ -645,7 +645,7 @@ if (!product) {
                                     type="checkbox"
                                     id="show_discount_badge"
                                     name="show_discount_badge"
-                                    checked={product.show_discount_badge}
+                                    checked={!!product.show_discount_badge}
                                     class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary"
                                 />
                                 <span class="text-[10px] text-white/70"
@@ -1264,6 +1264,7 @@ if (!product) {
             document.getElementById("show_renewable_price") as HTMLInputElement
         ).checked,
     };
+    console.log("💎 Initial State Captured:", initialData);
 
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -1339,6 +1340,7 @@ if (!product) {
                 ) as HTMLInputElement
             ).checked,
         };
+        console.log("📝 Current State on Submit:", currentData);
 
         // Determine only changed fields
         const productData: any = {};

@@ -94,23 +94,26 @@ const description = product.description || "";
                                 }
                             </div>
                         </div>
-                        <!-- Thumbnails -->
-                        <div class="flex gap-4 overflow-x-auto pb-2">
-                            {
-                                product.thumbnails.map(
-                                    (thumb: string, index: number) => (
-                                        <button
-                                            class={`w-24 h-24 flex-shrink-0 rounded-lg border overflow-hidden relative transition-all ${index === 0 ? "border-2 border-primary" : "border border-border-dark hover:border-text-muted opacity-70 hover:opacity-100"}`}
-                                        >
-                                            <div
-                                                class="w-full h-full bg-center bg-cover"
-                                                style={`background-image: url("${thumb}");`}
-                                            />
-                                        </button>
-                                    ),
+                        <!-- Thumbnails (Only if show_gallery is true) -->
+                        {
+                            product.show_gallery &&
+                                product.thumbnails.length > 0 && (
+                                    <div class="flex gap-4 overflow-x-auto pb-2">
+                                        {product.thumbnails.map(
+                                            (thumb: string, index: number) => (
+                                                <button
+                                                    class={`w-24 h-24 flex-shrink-0 rounded-lg border overflow-hidden relative transition-all ${index === 0 ? "border-2 border-primary" : "border border-border-dark hover:border-text-muted opacity-70 hover:opacity-100"}`}
+                                                >
+                                                    <div
+                                                        class="w-full h-full bg-center bg-cover"
+                                                        style={`background-image: url("${thumb}");`}
+                                                    />
+                                                </button>
+                                            ),
+                                        )}
+                                    </div>
                                 )
-                            }
-                        </div>
+                        }
                     </div>
 
                     <!-- Right Column: Details & Purchase -->
