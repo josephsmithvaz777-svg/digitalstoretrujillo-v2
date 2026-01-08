@@ -28,8 +28,8 @@ export const POST: APIRoute = async ({ request }) => {
                 const { error: updateError } = await supabaseAdmin
                     .from('orders')
                     .update({
-                        payment_status: 'paid',
-                        status: 'completed' // Or 'processing' depending on flow
+                        payment_status: 'verified',
+                        status: 'processing' // Or 'processing' depending on flow
                     })
                     .eq('id', orderId);
 
