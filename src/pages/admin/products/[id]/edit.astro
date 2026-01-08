@@ -1422,6 +1422,13 @@ if (!product) {
             console.time("⏱️ API Update");
             // Use the API route instead of direct Supabase client
             // Get session for auth
+
+            if (!supabase) {
+                throw new Error(
+                    "El cliente de Supabase no se cargó correctamente.",
+                );
+            }
+
             const {
                 data: { session },
             } = await supabase.auth.getSession();
