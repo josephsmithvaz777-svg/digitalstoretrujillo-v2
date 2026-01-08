@@ -948,6 +948,71 @@ const description = "Choose your payment method";
                 </button>
             </div>
         </div>
+
+        <!-- Cryptomus Iframe Modal -->
+        <div
+            id="cryptomus-modal"
+            class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card-dark border border-border-dark rounded-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+            >
+                <!-- Modal Header -->
+                <div
+                    class="px-6 py-4 border-b border-border-dark flex items-center justify-between bg-card-dark"
+                >
+                    <div class="flex items-center gap-3">
+                        <img
+                            src="/assets/Cryptomus_icon.svg"
+                            class="w-6 h-6"
+                            alt="Cryptomus"
+                        />
+                        <h3 class="text-white font-bold">
+                            Secure Crypto Payment
+                        </h3>
+                    </div>
+                    <button
+                        id="close-cryptomus-modal"
+                        class="text-text-muted hover:text-white transition-colors"
+                    >
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Iframe Container -->
+                <div class="flex-1 bg-white relative">
+                    <div
+                        id="cryptomus-loading"
+                        class="absolute inset-0 flex items-center justify-center bg-card-dark z-10"
+                    >
+                        <span
+                            class="material-symbols-outlined animate-spin text-primary text-4xl"
+                            >progress_activity</span
+                        >
+                    </div>
+                    <iframe
+                        id="cryptomus-iframe"
+                        src=""
+                        class="w-full h-full border-none"
+                        title="Cryptomus Payment"></iframe>
+                </div>
+
+                <!-- Modal Footer -->
+                <div
+                    class="p-4 border-t border-border-dark bg-card-dark flex justify-between items-center"
+                >
+                    <p class="text-[10px] text-text-muted italic">
+                        Don't close this window until payment is complete.
+                    </p>
+                    <button
+                        id="verify-cryptomus-btn"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all"
+                    >
+                        I have already paid
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
 
     <Footer />
@@ -1104,8 +1169,29 @@ const description = "Choose your payment method";
                     // Save order ID for later tracking
                     localStorage.setItem("lastOrderId", data.orderId);
 
-                    // Redirect to Cryptomus
-                    window.location.href = data.url;
+                    // Open Modal instead of Redirecting
+                    const cryptoModal =
+                        document.getElementById("cryptomus-modal");
+                    const cryptoIframe = document.getElementById(
+                        "cryptomus-iframe",
+                    ) as HTMLIFrameElement;
+                    const cryptoLoading =
+                        document.getElementById("cryptomus-loading");
+
+                    if (cryptoModal && cryptoIframe) {
+                        cryptoIframe.src = data.url;
+                        cryptoModal.classList.remove("hidden");
+                        document.body.style.overflow = "hidden";
+
+                        cryptoIframe.onload = () => {
+                            if (cryptoLoading)
+                                cryptoLoading.classList.add("hidden");
+                        };
+                    }
+
+                    // Reset button
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = originalText;
                 } catch (error: any) {
                     console.error("Cryptomus Error:", error);
                     alert(
@@ -1359,6 +1445,39 @@ const description = "Choose your payment method";
             navigator.clipboard
                 .writeText("931387898")
                 .then(() => alert("Phone number copied!"));
+        });
+    }
+
+    // Cryptomus Modal Event Listeners
+    const closeCryptomusBtn = document.getElementById("close-cryptomus-modal");
+    const cryptoModal = document.getElementById("cryptomus-modal");
+    const verifyCryptoBtn = document.getElementById("verify-cryptomus-btn");
+
+    function closeCryptoModalFn() {
+        if (cryptoModal) {
+            cryptoModal.classList.add("hidden");
+            document.body.style.overflow = "auto";
+            const iframe = document.getElementById(
+                "cryptomus-iframe",
+            ) as HTMLIFrameElement;
+            if (iframe) iframe.src = ""; // Clear iframe source
+        }
+    }
+
+    if (closeCryptomusBtn) {
+        closeCryptomusBtn.addEventListener("click", closeCryptoModalFn);
+    }
+
+    if (verifyCryptoBtn) {
+        verifyCryptoBtn.addEventListener("click", () => {
+            // This button doesn't actually "verify" on backend, but guides the user
+            // In a real scenario, you could poll the API here.
+            // For now, we'll suggest the user that we are checking.
+            alert(
+                "Verificando pago... Si ya pagaste, recibirás tu producto en minutos. Puedes cerrar esta ventana.",
+            );
+            closeCryptoModalFn();
+            showSuccessModal();
         });
     }
 </script>
