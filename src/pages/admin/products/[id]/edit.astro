@@ -59,810 +59,822 @@ if (!product) {
                 </a>
             </div>
         </div>
-    </form>
 
-    <!-- NEW: Status Bar at Top -->
-    <div
-        class="bg-card-dark border border-border-dark rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4"
-    >
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2">
-                <span
-                    id="status-indicator-dot"
-                    class={`w-3 h-3 rounded-full ${product.is_active ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" : "bg-gray-500"}`}
-                ></span>
-                <span
-                    id="status-indicator-text"
-                    class="text-white font-bold text-sm uppercase tracking-wider"
-                >
-                    Estado: {product.is_active ? "Activo" : "Inactivo"}
-                </span>
-            </div>
-            <div class="h-4 w-px bg-border-dark"></div>
-            <div class="flex items-center gap-2">
-                <span class="text-text-muted text-xs uppercase"
-                    >Visibilidad:</span
-                >
-                <span
-                    id="visibility-indicator-text"
-                    class="text-white text-xs font-medium"
-                    >{
-                        product.is_active && product.in_stock
-                            ? "Público"
-                            : "Oculto"
-                    }</span
-                >
-            </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <span class="text-xs font-bold text-text-muted uppercase"
-                >Interruptor de Actividad:</span
-            >
-            <label class="relative inline-flex items-center cursor-pointer">
-                <input
-                    type="checkbox"
-                    id="top_is_active"
-                    checked={!!product.is_active}
-                    class="sr-only peer"
-                />
-                <div
-                    class="w-11 h-6 bg-background-dark peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"
-                >
-                </div>
-            </label>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Left Column: Main Info, Media & Gallery -->
-        <div class="lg:col-span-2 space-y-6">
-            <!-- Basic Info & Pricing -->
-            <div
-                class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-6"
-            >
-                <h3
-                    class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3"
-                >
-                    <span class="material-symbols-outlined text-primary"
-                        >info</span
+        <!-- NEW: Status Bar at Top -->
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4"
+        >
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <span
+                        id="status-indicator-dot"
+                        class={`w-3 h-3 rounded-full ${product.is_active ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" : "bg-gray-500"}`}
+                    ></span>
+                    <span
+                        id="status-indicator-text"
+                        class="text-white font-bold text-sm uppercase tracking-wider"
                     >
-                    Información Básica
-                </h3>
+                        Estado: {product.is_active ? "Activo" : "Inactivo"}
+                    </span>
+                </div>
+                <div class="h-4 w-px bg-border-dark"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-text-muted text-xs uppercase"
+                        >Visibilidad:</span
+                    >
+                    <span
+                        id="visibility-indicator-text"
+                        class="text-white text-xs font-medium"
+                        >{
+                            product.is_active && product.in_stock
+                                ? "Público"
+                                : "Oculto"
+                        }</span
+                    >
+                </div>
+            </div>
 
-                <div class="space-y-4">
-                    <div>
-                        <label
-                            for="title"
-                            class="block text-sm font-medium text-white mb-2"
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-text-muted uppercase"
+                    >Interruptor de Actividad:</span
+                >
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input
+                        type="checkbox"
+                        id="top_is_active"
+                        checked={!!product.is_active}
+                        class="sr-only peer"
+                    />
+                    <div
+                        class="w-11 h-6 bg-background-dark peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"
+                    >
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: Main Info, Media & Gallery -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Basic Info & Pricing -->
+                <div
+                    class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-6"
+                >
+                    <h3
+                        class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3"
+                    >
+                        <span class="material-symbols-outlined text-primary"
+                            >info</span
                         >
-                            Título del Producto *
-                        </label>
-                        <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value={product.title}
-                            required
-                            class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                            placeholder="Ej: Windows 11 Pro Key"
-                        />
+                        Información Básica
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label
+                                for="title"
+                                class="block text-sm font-medium text-white mb-2"
+                            >
+                                Título del Producto *
+                            </label>
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                value={product.title}
+                                required
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="Ej: Windows 11 Pro Key"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="slug"
+                                class="block text-sm font-medium text-white mb-2"
+                            >
+                                Slug (URL) *
+                            </label>
+                            <input
+                                type="text"
+                                id="slug"
+                                name="slug"
+                                value={product.slug}
+                                required
+                                pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                                placeholder="windows-11-pro"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="description"
+                                class="block text-sm font-medium text-white mb-2"
+                            >
+                                Descripción
+                            </label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                rows="4"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                                placeholder="Descripción del producto..."
+                                >{product.description}</textarea
+                            >
+                        </div>
                     </div>
 
-                    <div>
-                        <label
-                            for="slug"
-                            class="block text-sm font-medium text-white mb-2"
-                        >
-                            Slug (URL) *
-                        </label>
-                        <input
-                            type="text"
-                            id="slug"
-                            name="slug"
-                            value={product.slug}
-                            required
-                            pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
-                            class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                            placeholder="windows-11-pro"
-                        />
-                    </div>
+                    <div class="h-px bg-border-dark my-2"></div>
 
-                    <div>
-                        <label
-                            for="description"
-                            class="block text-sm font-medium text-white mb-2"
-                        >
-                            Descripción
-                        </label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            rows="4"
-                            class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                            placeholder="Descripción del producto..."
-                            >{product.description}</textarea
-                        >
+                    <!-- Pricing Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label
+                                for="price"
+                                class="block text-sm font-medium text-white mb-2"
+                            >
+                                Precio (S/) *
+                            </label>
+                            <input
+                                type="number"
+                                id="price"
+                                name="price"
+                                value={product.price}
+                                required
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="original_price"
+                                class="block text-sm font-medium text-white mb-2"
+                            >
+                                Precio Original (S/)
+                            </label>
+                            <input
+                                type="number"
+                                id="original_price"
+                                name="original_price"
+                                value={product.original_price}
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label
+                                    for="renewable_price"
+                                    class="block text-sm font-medium text-white"
+                                >
+                                    Precio Renovable
+                                </label>
+                                <label
+                                    class="flex items-center gap-1.5 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        id="show_renewable_price"
+                                        name="show_renewable_price"
+                                        checked={!!product.show_renewable_price}
+                                        class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
+                                    />
+                                    <span
+                                        class="text-[10px] text-text-muted uppercase"
+                                        >Ver</span
+                                    >
+                                </label>
+                            </div>
+                            <input
+                                type="number"
+                                id="renewable_price"
+                                name="renewable_price"
+                                value={product.renewable_price}
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
                     </div>
                 </div>
 
-                <div class="h-px bg-border-dark my-2"></div>
-
-                <!-- Pricing Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label
-                            for="price"
-                            class="block text-sm font-medium text-white mb-2"
+                <!-- Media -->
+                <div
+                    class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-4"
+                >
+                    <h3
+                        class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3"
+                    >
+                        <span class="material-symbols-outlined text-primary"
+                            >image</span
                         >
-                            Precio (S/) *
-                        </label>
-                        <input
-                            type="number"
-                            id="price"
-                            name="price"
-                            value={product.price}
-                            required
-                            step="0.01"
-                            min="0"
-                            class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                    </div>
+                        Imagen del Producto
+                    </h3>
 
-                    <div>
-                        <label
-                            for="original_price"
-                            class="block text-sm font-medium text-white mb-2"
-                        >
-                            Precio Original (S/)
-                        </label>
-                        <input
-                            type="number"
-                            id="original_price"
-                            name="original_price"
-                            value={product.original_price}
-                            step="0.01"
-                            min="0"
-                            class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                    </div>
+                    <div
+                        class="flex flex-col md:flex-row gap-6 items-start text-center md:text-left"
+                    >
+                        {
+                            product.image && (
+                                <div class="relative group mx-auto md:mx-0">
+                                    <img
+                                        id="preview-img"
+                                        src={product.image}
+                                        alt="Preview"
+                                        class="w-48 h-48 rounded-lg border border-border-dark object-cover shadow-2xl transition-transform group-hover:scale-[1.02]"
+                                    />
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                                        <span class="text-white text-xs font-medium">
+                                            Vista Previa
+                                        </span>
+                                    </div>
+                                </div>
+                            )
+                        }
 
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label
-                                for="renewable_price"
-                                class="block text-sm font-medium text-white"
+                        <div class="flex-1 space-y-4 w-full">
+                            <div
+                                class="p-4 bg-background-dark/50 rounded-lg border border-border-dark/30"
                             >
-                                Precio Renovable
-                            </label>
+                                <p
+                                    class="text-xs text-text-muted mb-2 font-mono break-all line-clamp-2"
+                                >
+                                    URL: <span
+                                        id="current-url"
+                                        class="text-blue-400"
+                                        >{product.image}</span
+                                    >
+                                </p>
+                                <input
+                                    type="hidden"
+                                    id="image"
+                                    name="image"
+                                    value={product.image}
+                                    required
+                                />
+
+                                <button
+                                    type="button"
+                                    id="media-library-btn"
+                                    class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-600/20"
+                                >
+                                    <span class="material-symbols-outlined"
+                                        >photo_library</span
+                                    >
+                                    Gestionar Imagen con Cloudinary
+                                </button>
+                            </div>
+                            <p class="text-[11px] text-text-muted px-2">
+                                Tip: Desde la biblioteca puedes subir nuevas
+                                imágenes o reutilizar existentes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Section -->
+                <div
+                    class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-4"
+                >
+                    <div
+                        class="flex items-center justify-between border-b border-border-dark pb-3"
+                    >
+                        <h3
+                            class="text-white font-bold flex items-center gap-2"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >collections</span
+                            >
+                            Galería de Imágenes
+                        </h3>
+                        <span
+                            class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded font-bold uppercase"
+                            >Beta</span
+                        >
+                    </div>
+
+                    <div
+                        id="gallery-container"
+                        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 min-h-[100px] p-4 bg-background-dark/30 rounded-lg border border-dashed border-border-dark/50"
+                    >
+                        {
+                            product.thumbnails &&
+                            product.thumbnails.length > 0 ? (
+                                product.thumbnails.map((thumb) => (
+                                    <div class="relative group aspect-square">
+                                        <img
+                                            src={thumb}
+                                            class="w-full h-full object-cover rounded-lg border border-border-dark"
+                                        />
+                                        <button
+                                            type="button"
+                                            class="remove-thumb absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                                            data-url={thumb}
+                                        >
+                                            <span class="material-symbols-outlined text-sm">
+                                                close
+                                            </span>
+                                        </button>
+                                        <input
+                                            type="hidden"
+                                            name="thumbnails"
+                                            value={thumb}
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <div class="col-span-full flex flex-col items-center justify-center text-text-muted py-4">
+                                    <span class="material-symbols-outlined text-3xl mb-2">
+                                        add_photo_alternate
+                                    </span>
+                                    <p class="text-xs">
+                                        No hay imágenes en la galería
+                                    </p>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    <button
+                        type="button"
+                        id="manage-gallery-btn"
+                        class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-card-dark hover:bg-background-dark text-white font-medium rounded-lg transition-all border border-border-dark transform active:scale-[0.98]"
+                    >
+                        <span class="material-symbols-outlined text-blue-400"
+                            >add_to_photos</span
+                        >
+                        Añadir Imágenes a la Galería
+                    </button>
+                    <p class="text-[10px] text-text-muted text-center">
+                        Puedes seleccionar múltiples imágenes a la vez en la
+                        biblioteca.
+                    </p>
+                </div>
+
+                <!-- Features Section -->
+                <div
+                    class="bg-card-dark border border-border-dark rounded-xl p-6"
+                >
+                    <div
+                        class="flex items-center justify-between border-b border-border-dark pb-3 mb-4"
+                    >
+                        <h3
+                            class="text-white font-bold flex items-center gap-2"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >list_bullet</span
+                            >
+                            Características
+                        </h3>
+                        <button
+                            type="button"
+                            id="add-feature"
+                            class="flex items-center gap-1.5 text-primary hover:text-red-600 text-xs font-bold transition-colors"
+                        >
+                            <span class="material-symbols-outlined text-[18px]"
+                                >add_circle</span
+                            >
+                            AÑADIR
+                        </button>
+                    </div>
+
+                    <div
+                        id="features-container"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-3"
+                    >
+                        {
+                            product.features &&
+                                product.features.map((feature) => (
+                                    <div class="flex gap-2 group">
+                                        <input
+                                            type="text"
+                                            class="feature-input flex-1 px-3 py-2 bg-background-dark border border-border-dark rounded-lg text-white text-sm focus:ring-1 focus:ring-primary"
+                                            value={feature}
+                                        />
+                                        <button
+                                            type="button"
+                                            class="remove-feature p-2 text-text-muted hover:text-red-500 transition-colors"
+                                        >
+                                            <span class="material-symbols-outlined text-[20px]">
+                                                delete
+                                            </span>
+                                        </button>
+                                    </div>
+                                ))
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Settings & Badges -->
+            <div class="space-y-6">
+                <!-- Status & Inventory -->
+                <div
+                    class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-6"
+                >
+                    <h3
+                        class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3"
+                    >
+                        <span class="material-symbols-outlined text-primary"
+                            >settings</span
+                        >
+                        Estado y Stock
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div
+                            class="flex items-center justify-between p-3 bg-background-dark/30 rounded-lg border border-border-dark/50"
+                        >
+                            <label
+                                class="text-sm text-white font-medium cursor-pointer"
+                                for="is_active">Producto Activo</label
+                            >
+                            <input
+                                type="checkbox"
+                                id="is_active"
+                                name="is_active"
+                                checked={!!product.is_active}
+                                onchange="document.getElementById('top_is_active').checked = this.checked"
+                                class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
+                            />
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-3 bg-background-dark/30 rounded-lg border border-border-dark/50"
+                        >
+                            <label
+                                class="text-sm text-white font-medium cursor-pointer"
+                                for="in_stock">En Stock</label
+                            >
+                            <input
+                                type="checkbox"
+                                id="in_stock"
+                                name="in_stock"
+                                checked={!!product.in_stock}
+                                class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
+                            />
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-3 bg-background-dark/30 rounded-lg border border-blue-500/30"
+                        >
+                            <div class="flex flex-col">
+                                <label
+                                    class="text-sm text-white font-medium cursor-pointer"
+                                    for="show_gallery">Mostrar Galería</label
+                                >
+                                <span class="text-[10px] text-blue-400"
+                                    >Ver múltiples fotos</span
+                                >
+                            </div>
+                            <input
+                                type="checkbox"
+                                id="show_gallery"
+                                name="show_gallery"
+                                checked={!!product.show_gallery}
+                                class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
+                            />
+                        </div>
+
+                        <div class="pt-2">
+                            <label
+                                for="stock_quantity"
+                                class="block text-xs font-bold text-text-muted uppercase mb-2"
+                                >Cantidad en Stock</label
+                            >
+                            <input
+                                type="number"
+                                id="stock_quantity"
+                                name="stock_quantity"
+                                value={product.stock_quantity}
+                                required
+                                min="0"
+                                class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="category"
+                                class="block text-xs font-bold text-text-muted uppercase mb-2"
+                                >Categoría</label
+                            >
+                            <input
+                                type="text"
+                                id="category"
+                                name="category"
+                                value={product.category}
+                                required
+                                class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                for="seller"
+                                class="block text-xs font-bold text-text-muted uppercase mb-2"
+                                >Vendedor</label
+                            >
+                            <input
+                                type="text"
+                                id="seller"
+                                name="seller"
+                                value={product.seller}
+                                class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Badges (Redesigned Compact) -->
+                <div
+                    class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-6"
+                >
+                    <h3
+                        class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3"
+                    >
+                        <span class="material-symbols-outlined text-primary"
+                            >label</span
+                        >
+                        Etiquetas (Badges)
+                    </h3>
+
+                    <!-- Regular Badge -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span
+                                class="text-xs font-bold text-text-muted uppercase"
+                                >Etiqueta Principal</span
+                            >
                             <label
                                 class="flex items-center gap-1.5 cursor-pointer"
                             >
                                 <input
                                     type="checkbox"
-                                    id="show_renewable_price"
-                                    name="show_renewable_price"
-                                    checked={!!product.show_renewable_price}
-                                    class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
+                                    id="show_badge"
+                                    name="show_badge"
+                                    checked={!!product.show_badge}
+                                    class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary"
                                 />
-                                <span
-                                    class="text-[10px] text-text-muted uppercase"
-                                    >Ver</span
+                                <span class="text-[10px] text-white/70"
+                                    >Mostrar</span
                                 >
                             </label>
                         </div>
                         <input
-                            type="number"
-                            id="renewable_price"
-                            name="renewable_price"
-                            value={product.renewable_price}
-                            step="0.01"
-                            min="0"
-                            class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                            type="text"
+                            id="badge"
+                            name="badge"
+                            value={product.badge}
+                            class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white text-sm"
+                            placeholder="Ej: Nuevo"
                         />
-                    </div>
-                </div>
-            </div>
 
-            <!-- Media -->
-            <div
-                class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-4"
-            >
-                <h3
-                    class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3"
-                >
-                    <span class="material-symbols-outlined text-primary"
-                        >image</span
-                    >
-                    Imagen del Producto
-                </h3>
-
-                <div
-                    class="flex flex-col md:flex-row gap-6 items-start text-center md:text-left"
-                >
-                    {
-                        product.image && (
-                            <div class="relative group mx-auto md:mx-0">
-                                <img
-                                    id="preview-img"
-                                    src={product.image}
-                                    alt="Preview"
-                                    class="w-48 h-48 rounded-lg border border-border-dark object-cover shadow-2xl transition-transform group-hover:scale-[1.02]"
-                                />
-                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                                    <span class="text-white text-xs font-medium">
-                                        Vista Previa
-                                    </span>
-                                </div>
-                            </div>
-                        )
-                    }
-
-                    <div class="flex-1 space-y-4 w-full">
-                        <div
-                            class="p-4 bg-background-dark/50 rounded-lg border border-border-dark/30"
-                        >
-                            <p
-                                class="text-xs text-text-muted mb-2 font-mono break-all line-clamp-2"
-                            >
-                                URL: <span
-                                    id="current-url"
-                                    class="text-blue-400">{product.image}</span
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label
+                                    class="block text-[10px] text-text-muted uppercase mb-1"
+                                    >Fondo</label
                                 >
-                            </p>
-                            <input
-                                type="hidden"
-                                id="image"
-                                name="image"
-                                value={product.image}
-                                required
-                            />
-
-                            <button
-                                type="button"
-                                id="media-library-btn"
-                                class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-blue-600/20"
-                            >
-                                <span class="material-symbols-outlined"
-                                    >photo_library</span
-                                >
-                                Gestionar Imagen con Cloudinary
-                            </button>
-                        </div>
-                        <p class="text-[11px] text-text-muted px-2">
-                            Tip: Desde la biblioteca puedes subir nuevas
-                            imágenes o reutilizar existentes.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gallery Section -->
-            <div
-                class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-4"
-            >
-                <div
-                    class="flex items-center justify-between border-b border-border-dark pb-3"
-                >
-                    <h3 class="text-white font-bold flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary"
-                            >collections</span
-                        >
-                        Galería de Imágenes
-                    </h3>
-                    <span
-                        class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded font-bold uppercase"
-                        >Beta</span
-                    >
-                </div>
-
-                <div
-                    id="gallery-container"
-                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 min-h-[100px] p-4 bg-background-dark/30 rounded-lg border border-dashed border-border-dark/50"
-                >
-                    {
-                        product.thumbnails && product.thumbnails.length > 0 ? (
-                            product.thumbnails.map((thumb) => (
-                                <div class="relative group aspect-square">
-                                    <img
-                                        src={thumb}
-                                        class="w-full h-full object-cover rounded-lg border border-border-dark"
-                                    />
-                                    <button
-                                        type="button"
-                                        class="remove-thumb absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                                        data-url={thumb}
-                                    >
-                                        <span class="material-symbols-outlined text-sm">
-                                            close
-                                        </span>
-                                    </button>
+                                <div class="flex gap-1">
                                     <input
-                                        type="hidden"
-                                        name="thumbnails"
-                                        value={thumb}
+                                        type="color"
+                                        id="badge_color_picker"
+                                        class="w-8 h-8 rounded bg-transparent border-none cursor-pointer"
+                                        value={product.badge_color || "#FFD700"}
                                     />
-                                </div>
-                            ))
-                        ) : (
-                            <div class="col-span-full flex flex-col items-center justify-center text-text-muted py-4">
-                                <span class="material-symbols-outlined text-3xl mb-2">
-                                    add_photo_alternate
-                                </span>
-                                <p class="text-xs">
-                                    No hay imágenes en la galería
-                                </p>
-                            </div>
-                        )
-                    }
-                </div>
-
-                <button
-                    type="button"
-                    id="manage-gallery-btn"
-                    class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-card-dark hover:bg-background-dark text-white font-medium rounded-lg transition-all border border-border-dark transform active:scale-[0.98]"
-                >
-                    <span class="material-symbols-outlined text-blue-400"
-                        >add_to_photos</span
-                    >
-                    Añadir Imágenes a la Galería
-                </button>
-                <p class="text-[10px] text-text-muted text-center">
-                    Puedes seleccionar múltiples imágenes a la vez en la
-                    biblioteca.
-                </p>
-            </div>
-
-            <!-- Features Section -->
-            <div class="bg-card-dark border border-border-dark rounded-xl p-6">
-                <div
-                    class="flex items-center justify-between border-b border-border-dark pb-3 mb-4"
-                >
-                    <h3 class="text-white font-bold flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary"
-                            >list_bullet</span
-                        >
-                        Características
-                    </h3>
-                    <button
-                        type="button"
-                        id="add-feature"
-                        class="flex items-center gap-1.5 text-primary hover:text-red-600 text-xs font-bold transition-colors"
-                    >
-                        <span class="material-symbols-outlined text-[18px]"
-                            >add_circle</span
-                        >
-                        AÑADIR
-                    </button>
-                </div>
-
-                <div
-                    id="features-container"
-                    class="grid grid-cols-1 md:grid-cols-2 gap-3"
-                >
-                    {
-                        product.features &&
-                            product.features.map((feature) => (
-                                <div class="flex gap-2 group">
                                     <input
                                         type="text"
-                                        class="feature-input flex-1 px-3 py-2 bg-background-dark border border-border-dark rounded-lg text-white text-sm focus:ring-1 focus:ring-primary"
-                                        value={feature}
+                                        id="badge_color"
+                                        name="badge_color"
+                                        class="flex-1 text-[10px] bg-background-dark border border-border-dark rounded px-2"
+                                        value={product.badge_color || "#FFD700"}
                                     />
-                                    <button
-                                        type="button"
-                                        class="remove-feature p-2 text-text-muted hover:text-red-500 transition-colors"
-                                    >
-                                        <span class="material-symbols-outlined text-[20px]">
-                                            delete
-                                        </span>
-                                    </button>
                                 </div>
-                            ))
-                    }
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] text-text-muted uppercase mb-1"
+                                    >Texto</label
+                                >
+                                <div class="flex gap-1">
+                                    <input
+                                        type="color"
+                                        id="badge_text_color_picker"
+                                        class="w-8 h-8 rounded bg-transparent border-none cursor-pointer"
+                                        value={product.badge_text_color ||
+                                            "#000000"}
+                                    />
+                                    <input
+                                        type="text"
+                                        id="badge_text_color"
+                                        name="badge_text_color"
+                                        class="flex-1 text-[10px] bg-background-dark border border-border-dark rounded px-2"
+                                        value={product.badge_text_color ||
+                                            "#000000"}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="h-px bg-border-dark my-4"></div>
+
+                    <!-- Discount Badge -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span
+                                class="text-xs font-bold text-text-muted uppercase"
+                                >Etiqueta Descuento</span
+                            >
+                            <label
+                                class="flex items-center gap-1.5 cursor-pointer"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="show_discount_badge"
+                                    name="show_discount_badge"
+                                    checked={!!product.show_discount_badge}
+                                    class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary"
+                                />
+                                <span class="text-[10px] text-white/70"
+                                    >Mostrar</span
+                                >
+                            </label>
+                        </div>
+                        <input
+                            type="text"
+                            id="discount_badge"
+                            name="discount_badge"
+                            value={product.discount_badge}
+                            class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white text-sm"
+                            placeholder="Ej: -20%"
+                        />
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label
+                                    class="block text-[10px] text-text-muted uppercase mb-1"
+                                    >Fondo</label
+                                >
+                                <div class="flex gap-1">
+                                    <input
+                                        type="color"
+                                        id="discount_badge_color_picker"
+                                        class="w-8 h-8 rounded bg-transparent border-none cursor-pointer"
+                                        value={product.discount_badge_color ||
+                                            "#E00700"}
+                                    />
+                                    <input
+                                        type="text"
+                                        id="discount_badge_color"
+                                        name="discount_badge_color"
+                                        class="flex-1 text-[10px] bg-background-dark border border-border-dark rounded px-2"
+                                        value={product.discount_badge_color ||
+                                            "#E00700"}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] text-text-muted uppercase mb-1"
+                                    >Texto</label
+                                >
+                                <div class="flex gap-1">
+                                    <input
+                                        type="color"
+                                        id="discount_badge_text_color_picker"
+                                        class="w-8 h-8 rounded bg-transparent border-none cursor-pointer"
+                                        value={product.discount_badge_text_color ||
+                                            "#FFFFFF"}
+                                    />
+                                    <input
+                                        type="text"
+                                        id="discount_badge_text_color"
+                                        name="discount_badge_text_color"
+                                        class="flex-1 text-[10px] bg-background-dark border border-border-dark rounded px-2"
+                                        value={product.discount_badge_text_color ||
+                                            "#FFFFFF"}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating -->
+                <div
+                    class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-4"
+                >
+                    <h3
+                        class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3 text-sm"
+                    >
+                        <span
+                            class="material-symbols-outlined text-primary text-sm"
+                            >stars</span
+                        >
+                        Reseñas y Rating
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label
+                                for="rating"
+                                class="block text-[10px] font-bold text-text-muted uppercase mb-2"
+                                >Rating</label
+                            >
+                            <input
+                                type="number"
+                                id="rating"
+                                name="rating"
+                                value={product.rating}
+                                required
+                                min="1"
+                                max="5"
+                                class="w-full px-3 py-2 bg-background-dark border border-border-dark rounded-lg text-white"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="review_count"
+                                class="block text-[10px] font-bold text-text-muted uppercase mb-2"
+                                >Reviews</label
+                            >
+                            <input
+                                type="number"
+                                id="review_count"
+                                name="review_count"
+                                value={product.review_count}
+                                min="0"
+                                class="w-full px-3 py-2 bg-background-dark border border-border-dark rounded-lg text-white"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Actions (Sticky Bottom) -->
+                <div
+                    class="lg:hidden sticky bottom-6 bg-card-dark/80 backdrop-blur-md border border-primary/30 rounded-xl p-4 flex gap-3 shadow-2xl z-40"
+                >
+                    <button
+                        type="submit"
+                        class="submit-btn flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+                    >
+                        <span class="material-symbols-outlined">save</span>
+                        Guardar
+                    </button>
+                    <a
+                        href="/admin/products"
+                        class="px-4 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all flex items-center justify-center border border-border-dark"
+                    >
+                        Cancelar
+                    </a>
                 </div>
             </div>
         </div>
+    </form>
 
-        <!-- Right Column: Settings & Badges -->
-        <div class="space-y-6">
-            <!-- Status & Inventory -->
-            <div
-                class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-6"
-            >
-                <h3
-                    class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3"
-                >
-                    <span class="material-symbols-outlined text-primary"
-                        >settings</span
-                    >
-                    Estado y Stock
-                </h3>
+    <!-- Cloudinary Upload Widget Script -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" is:inline
+    ></script>
 
-                <div class="space-y-4">
-                    <div
-                        class="flex items-center justify-between p-3 bg-background-dark/30 rounded-lg border border-border-dark/50"
-                    >
-                        <label
-                            class="text-sm text-white font-medium cursor-pointer"
-                            for="is_active">Producto Activo</label
-                        >
-                        <input
-                            type="checkbox"
-                            id="is_active"
-                            name="is_active"
-                            checked={!!product.is_active}
-                            onchange="document.getElementById('top_is_active').checked = this.checked"
-                            class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
-                        />
-                    </div>
+    <!-- Cloudinary Media Library Widget Script -->
+    <script src="https://media-library.cloudinary.com/global/all.js" is:inline
+    ></script>
 
-                    <div
-                        class="flex items-center justify-between p-3 bg-background-dark/30 rounded-lg border border-border-dark/50"
-                    >
-                        <label
-                            class="text-sm text-white font-medium cursor-pointer"
-                            for="in_stock">En Stock</label
-                        >
-                        <input
-                            type="checkbox"
-                            id="in_stock"
-                            name="in_stock"
-                            checked={!!product.in_stock}
-                            class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
-                        />
-                    </div>
+    <script
+        define:vars={{
+            cloudName: import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME,
+            uploadPreset: import.meta.env.PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+        }}
+    >
+        // Toast Notification System
+        function showToast(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            if (!container) return;
 
-                    <div
-                        class="flex items-center justify-between p-3 bg-background-dark/30 rounded-lg border border-blue-500/30"
-                    >
-                        <div class="flex flex-col">
-                            <label
-                                class="text-sm text-white font-medium cursor-pointer"
-                                for="show_gallery">Mostrar Galería</label
-                            >
-                            <span class="text-[10px] text-blue-400"
-                                >Ver múltiples fotos</span
-                            >
-                        </div>
-                        <input
-                            type="checkbox"
-                            id="show_gallery"
-                            name="show_gallery"
-                            checked={!!product.show_gallery}
-                            class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
-                        />
-                    </div>
+            const toast = document.createElement("div");
 
-                    <div class="pt-2">
-                        <label
-                            for="stock_quantity"
-                            class="block text-xs font-bold text-text-muted uppercase mb-2"
-                            >Cantidad en Stock</label
-                        >
-                        <input
-                            type="number"
-                            id="stock_quantity"
-                            name="stock_quantity"
-                            value={product.stock_quantity}
-                            required
-                            min="0"
-                            class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white focus:ring-2 focus:ring-primary"
-                        />
-                    </div>
+            const icons = {
+                success: "check_circle",
+                error: "error",
+                warning: "warning",
+                info: "info",
+            };
 
-                    <div>
-                        <label
-                            for="category"
-                            class="block text-xs font-bold text-text-muted uppercase mb-2"
-                            >Categoría</label
-                        >
-                        <input
-                            type="text"
-                            id="category"
-                            name="category"
-                            value={product.category}
-                            required
-                            class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                        />
-                    </div>
+            const colors = {
+                success: "bg-green-600 border-green-500",
+                error: "bg-red-600 border-red-500",
+                warning: "bg-yellow-600 border-yellow-500",
+                info: "bg-blue-600 border-blue-500",
+            };
 
-                    <div>
-                        <label
-                            for="seller"
-                            class="block text-xs font-bold text-text-muted uppercase mb-2"
-                            >Vendedor</label
-                        >
-                        <input
-                            type="text"
-                            id="seller"
-                            name="seller"
-                            value={product.seller}
-                            class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Badges (Redesigned Compact) -->
-            <div
-                class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-6"
-            >
-                <h3
-                    class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3"
-                >
-                    <span class="material-symbols-outlined text-primary"
-                        >label</span
-                    >
-                    Etiquetas (Badges)
-                </h3>
-
-                <!-- Regular Badge -->
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span
-                            class="text-xs font-bold text-text-muted uppercase"
-                            >Etiqueta Principal</span
-                        >
-                        <label class="flex items-center gap-1.5 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                id="show_badge"
-                                name="show_badge"
-                                checked={!!product.show_badge}
-                                class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary"
-                            />
-                            <span class="text-[10px] text-white/70"
-                                >Mostrar</span
-                            >
-                        </label>
-                    </div>
-                    <input
-                        type="text"
-                        id="badge"
-                        name="badge"
-                        value={product.badge}
-                        class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white text-sm"
-                        placeholder="Ej: Nuevo"
-                    />
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label
-                                class="block text-[10px] text-text-muted uppercase mb-1"
-                                >Fondo</label
-                            >
-                            <div class="flex gap-1">
-                                <input
-                                    type="color"
-                                    id="badge_color_picker"
-                                    class="w-8 h-8 rounded bg-transparent border-none cursor-pointer"
-                                    value={product.badge_color || "#FFD700"}
-                                />
-                                <input
-                                    type="text"
-                                    id="badge_color"
-                                    name="badge_color"
-                                    class="flex-1 text-[10px] bg-background-dark border border-border-dark rounded px-2"
-                                    value={product.badge_color || "#FFD700"}
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label
-                                class="block text-[10px] text-text-muted uppercase mb-1"
-                                >Texto</label
-                            >
-                            <div class="flex gap-1">
-                                <input
-                                    type="color"
-                                    id="badge_text_color_picker"
-                                    class="w-8 h-8 rounded bg-transparent border-none cursor-pointer"
-                                    value={product.badge_text_color ||
-                                        "#000000"}
-                                />
-                                <input
-                                    type="text"
-                                    id="badge_text_color"
-                                    name="badge_text_color"
-                                    class="flex-1 text-[10px] bg-background-dark border border-border-dark rounded px-2"
-                                    value={product.badge_text_color ||
-                                        "#000000"}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="h-px bg-border-dark my-4"></div>
-
-                <!-- Discount Badge -->
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span
-                            class="text-xs font-bold text-text-muted uppercase"
-                            >Etiqueta Descuento</span
-                        >
-                        <label class="flex items-center gap-1.5 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                id="show_discount_badge"
-                                name="show_discount_badge"
-                                checked={!!product.show_discount_badge}
-                                class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary"
-                            />
-                            <span class="text-[10px] text-white/70"
-                                >Mostrar</span
-                            >
-                        </label>
-                    </div>
-                    <input
-                        type="text"
-                        id="discount_badge"
-                        name="discount_badge"
-                        value={product.discount_badge}
-                        class="w-full px-4 py-2.5 bg-background-dark border border-border-dark rounded-lg text-white text-sm"
-                        placeholder="Ej: -20%"
-                    />
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label
-                                class="block text-[10px] text-text-muted uppercase mb-1"
-                                >Fondo</label
-                            >
-                            <div class="flex gap-1">
-                                <input
-                                    type="color"
-                                    id="discount_badge_color_picker"
-                                    class="w-8 h-8 rounded bg-transparent border-none cursor-pointer"
-                                    value={product.discount_badge_color ||
-                                        "#E00700"}
-                                />
-                                <input
-                                    type="text"
-                                    id="discount_badge_color"
-                                    name="discount_badge_color"
-                                    class="flex-1 text-[10px] bg-background-dark border border-border-dark rounded px-2"
-                                    value={product.discount_badge_color ||
-                                        "#E00700"}
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label
-                                class="block text-[10px] text-text-muted uppercase mb-1"
-                                >Texto</label
-                            >
-                            <div class="flex gap-1">
-                                <input
-                                    type="color"
-                                    id="discount_badge_text_color_picker"
-                                    class="w-8 h-8 rounded bg-transparent border-none cursor-pointer"
-                                    value={product.discount_badge_text_color ||
-                                        "#FFFFFF"}
-                                />
-                                <input
-                                    type="text"
-                                    id="discount_badge_text_color"
-                                    name="discount_badge_text_color"
-                                    class="flex-1 text-[10px] bg-background-dark border border-border-dark rounded px-2"
-                                    value={product.discount_badge_text_color ||
-                                        "#FFFFFF"}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Rating -->
-            <div
-                class="bg-card-dark border border-border-dark rounded-xl p-6 space-y-4"
-            >
-                <h3
-                    class="text-white font-bold flex items-center gap-2 border-b border-border-dark pb-3 text-sm"
-                >
-                    <span class="material-symbols-outlined text-primary text-sm"
-                        >stars</span
-                    >
-                    Reseñas y Rating
-                </h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label
-                            for="rating"
-                            class="block text-[10px] font-bold text-text-muted uppercase mb-2"
-                            >Rating</label
-                        >
-                        <input
-                            type="number"
-                            id="rating"
-                            name="rating"
-                            value={product.rating}
-                            required
-                            min="1"
-                            max="5"
-                            class="w-full px-3 py-2 bg-background-dark border border-border-dark rounded-lg text-white"
-                        />
-                    </div>
-                    <div>
-                        <label
-                            for="review_count"
-                            class="block text-[10px] font-bold text-text-muted uppercase mb-2"
-                            >Reviews</label
-                        >
-                        <input
-                            type="number"
-                            id="review_count"
-                            name="review_count"
-                            value={product.review_count}
-                            min="0"
-                            class="w-full px-3 py-2 bg-background-dark border border-border-dark rounded-lg text-white"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mobile Actions (Sticky Bottom) -->
-            <div
-                class="lg:hidden sticky bottom-6 bg-card-dark/80 backdrop-blur-md border border-primary/30 rounded-xl p-4 flex gap-3 shadow-2xl z-40"
-            >
-                <button
-                    type="submit"
-                    class="submit-btn flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
-                >
-                    <span class="material-symbols-outlined">save</span>
-                    Guardar
-                </button>
-                <a
-                    href="/admin/products"
-                    class="px-4 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all flex items-center justify-center border border-border-dark"
-                >
-                    Cancelar
-                </a>
-            </div>
-        </div>
-    </div>
-</AdminLayout>
-
-<!-- Cloudinary Upload Widget Script -->
-<script src="https://upload-widget.cloudinary.com/global/all.js" is:inline
-></script>
-
-<!-- Cloudinary Media Library Widget Script -->
-<script src="https://media-library.cloudinary.com/global/all.js" is:inline
-></script>
-
-<script
-    define:vars={{
-        cloudName: import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME,
-        uploadPreset: import.meta.env.PUBLIC_CLOUDINARY_UPLOAD_PRESET,
-    }}
->
-    // Toast Notification System
-    function showToast(message, type = "success") {
-        const container = document.getElementById("toast-container");
-        if (!container) return;
-
-        const toast = document.createElement("div");
-
-        const icons = {
-            success: "check_circle",
-            error: "error",
-            warning: "warning",
-            info: "info",
-        };
-
-        const colors = {
-            success: "bg-green-600 border-green-500",
-            error: "bg-red-600 border-red-500",
-            warning: "bg-yellow-600 border-yellow-500",
-            info: "bg-blue-600 border-blue-500",
-        };
-
-        toast.className = `${colors[type]} border-l-4 text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 min-w-[320px] max-w-md pointer-events-auto transform transition-all duration-300 translate-x-[400px] opacity-0`;
-        toast.innerHTML = `
+            toast.className = `${colors[type]} border-l-4 text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 min-w-[320px] max-w-md pointer-events-auto transform transition-all duration-300 translate-x-[400px] opacity-0`;
+            toast.innerHTML = `
             <span class="material-symbols-outlined text-2xl">${icons[type]}</span>
             <p class="flex-1 font-medium">${message}</p>
             <button class="toast-close hover:bg-white/20 rounded p-1 transition-colors">
@@ -870,55 +882,174 @@ if (!product) {
             </button>
         `;
 
-        container.appendChild(toast);
+            container.appendChild(toast);
 
-        // Trigger animation
-        setTimeout(() => {
-            toast.classList.remove("translate-x-[400px]", "opacity-0");
-        }, 10);
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove("translate-x-[400px]", "opacity-0");
+            }, 10);
 
-        // Auto dismiss after 5 seconds
-        const timeoutId = setTimeout(() => {
-            dismissToast(toast);
-        }, 5000);
+            // Auto dismiss after 5 seconds
+            const timeoutId = setTimeout(() => {
+                dismissToast(toast);
+            }, 5000);
 
-        // Manual dismiss
-        toast.querySelector(".toast-close")?.addEventListener("click", () => {
-            clearTimeout(timeoutId);
-            dismissToast(toast);
+            // Manual dismiss
+            toast
+                .querySelector(".toast-close")
+                ?.addEventListener("click", () => {
+                    clearTimeout(timeoutId);
+                    dismissToast(toast);
+                });
+        }
+        // Make it globally accessible
+        window.showToast = showToast;
+
+        function dismissToast(toast) {
+            toast.classList.add("translate-x-[400px]", "opacity-0");
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }
+
+        // Get references to DOM elements
+        const imageInput = document.getElementById("image");
+        const previewImg = document.getElementById("preview-img");
+        const currentUrlSpan = document.getElementById("current-url");
+
+        // Media Library Widget Handler
+        const mediaLibraryBtn = document.getElementById("media-library-btn");
+        let mediaLibraryConfig = null;
+        let mediaLibraryWidget = null;
+
+        // Pre-fetch signature and pre-initialize widget for instant loading
+        async function initMediaLibrary() {
+            try {
+                const response = await fetch("/api/cloudinary-sign");
+                const data = await response.json();
+                if (!data.error) {
+                    mediaLibraryConfig = data;
+
+                    // Pre-initialize the widget for faster opening
+                    // @ts-ignore
+                    mediaLibraryWidget = cloudinary.createMediaLibrary(
+                        {
+                            cloud_name: mediaLibraryConfig.cloudName,
+                            api_key: mediaLibraryConfig.apiKey,
+                            timestamp: mediaLibraryConfig.timestamp,
+                            signature: mediaLibraryConfig.signature,
+                            folder: {
+                                path: "digitalstore/products",
+                                resource_type: "image",
+                            },
+                            multiple: false,
+                            max_files: 1,
+                            insert_caption: "Seleccionar",
+                        },
+                        {
+                            insertHandler: (data) => {
+                                if (data.assets && data.assets.length > 0) {
+                                    const url = data.assets[0].secure_url;
+                                    if (imageInput) imageInput.value = url;
+
+                                    // Visual feedback
+                                    if (previewImg) previewImg.src = url;
+                                    if (currentUrlSpan)
+                                        currentUrlSpan.textContent = url;
+
+                                    showToast(
+                                        "Imagen actualizada correctamente. No olvides guardar los cambios.",
+                                        "success",
+                                    );
+                                }
+                            },
+                        },
+                    );
+                }
+            } catch (err) {
+                console.error("Error pre-initializing Media Library:", err);
+            }
+        }
+
+        // Initialize on page load
+        initMediaLibrary();
+
+        // Gallery Management
+        const galleryContainer = document.getElementById("gallery-container");
+        const manageGalleryBtn = document.getElementById("manage-gallery-btn");
+
+        function addThumbToUI(url) {
+            if (!galleryContainer) return;
+
+            // Remove placeholder if it exists
+            const placeholder =
+                galleryContainer.querySelector(".col-span-full");
+            if (placeholder) placeholder.remove();
+
+            const div = document.createElement("div");
+            div.className = "relative group aspect-square";
+            div.innerHTML = `
+            <img src="${url}" class="w-full h-full object-cover rounded-lg border border-border-dark" />
+            <button type="button" class="remove-thumb absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" data-url="${url}">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+            <input type="hidden" name="thumbnails" value="${url}" />
+        `;
+
+            galleryContainer.appendChild(div);
+
+            // Add remove listener
+            div.querySelector(".remove-thumb")?.addEventListener(
+                "click",
+                () => {
+                    div.remove();
+                    if (
+                        galleryContainer.querySelectorAll(".aspect-square")
+                            .length === 0
+                    ) {
+                        galleryContainer.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center text-text-muted py-4">
+                        <span class="material-symbols-outlined text-3xl mb-2">add_photo_alternate</span>
+                        <p class="text-xs">No hay imágenes en la galería</p>
+                    </div>
+                `;
+                    }
+                },
+            );
+        }
+
+        // Add removal listeners locally to existing thumbs
+        document.querySelectorAll(".remove-thumb").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const parent = btn.closest(".relative");
+                parent?.remove();
+                if (
+                    galleryContainer?.querySelectorAll(".aspect-square")
+                        .length === 0
+                ) {
+                    galleryContainer.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center text-text-muted py-4">
+                        <span class="material-symbols-outlined text-3xl mb-2">add_photo_alternate</span>
+                        <p class="text-xs">No hay imágenes en la galería</p>
+                    </div>
+                `;
+                }
+            });
         });
-    }
-    // Make it globally accessible
-    window.showToast = showToast;
 
-    function dismissToast(toast) {
-        toast.classList.add("translate-x-[400px]", "opacity-0");
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }
+        manageGalleryBtn?.addEventListener("click", async () => {
+            try {
+                const originalHTML = manageGalleryBtn.innerHTML;
+                manageGalleryBtn.disabled = true;
+                manageGalleryBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Cargando...`;
 
-    // Get references to DOM elements
-    const imageInput = document.getElementById("image");
-    const previewImg = document.getElementById("preview-img");
-    const currentUrlSpan = document.getElementById("current-url");
+                if (!mediaLibraryConfig) {
+                    const response = await fetch("/api/cloudinary-sign");
+                    mediaLibraryConfig = await response.json();
+                }
 
-    // Media Library Widget Handler
-    const mediaLibraryBtn = document.getElementById("media-library-btn");
-    let mediaLibraryConfig = null;
-    let mediaLibraryWidget = null;
-
-    // Pre-fetch signature and pre-initialize widget for instant loading
-    async function initMediaLibrary() {
-        try {
-            const response = await fetch("/api/cloudinary-sign");
-            const data = await response.json();
-            if (!data.error) {
-                mediaLibraryConfig = data;
-
-                // Pre-initialize the widget for faster opening
                 // @ts-ignore
-                mediaLibraryWidget = cloudinary.createMediaLibrary(
+                cloudinary.openMediaLibrary(
                     {
                         cloud_name: mediaLibraryConfig.cloudName,
                         api_key: mediaLibraryConfig.apiKey,
@@ -928,262 +1059,153 @@ if (!product) {
                             path: "digitalstore/products",
                             resource_type: "image",
                         },
-                        multiple: false,
-                        max_files: 1,
-                        insert_caption: "Seleccionar",
+                        multiple: true,
                     },
                     {
                         insertHandler: (data) => {
                             if (data.assets && data.assets.length > 0) {
-                                const url = data.assets[0].secure_url;
-                                if (imageInput) imageInput.value = url;
-
-                                // Visual feedback
-                                if (previewImg) previewImg.src = url;
-                                if (currentUrlSpan)
-                                    currentUrlSpan.textContent = url;
-
+                                data.assets.forEach((asset) => {
+                                    addThumbToUI(asset.secure_url);
+                                });
                                 showToast(
-                                    "Imagen actualizada correctamente. No olvides guardar los cambios.",
+                                    `${data.assets.length} imágenes añadidas a la galería.`,
                                     "success",
                                 );
                             }
+                            manageGalleryBtn.disabled = false;
+                            manageGalleryBtn.innerHTML = originalHTML;
                         },
                     },
                 );
-            }
-        } catch (err) {
-            console.error("Error pre-initializing Media Library:", err);
-        }
-    }
 
-    // Initialize on page load
-    initMediaLibrary();
-
-    // Gallery Management
-    const galleryContainer = document.getElementById("gallery-container");
-    const manageGalleryBtn = document.getElementById("manage-gallery-btn");
-
-    function addThumbToUI(url) {
-        if (!galleryContainer) return;
-
-        // Remove placeholder if it exists
-        const placeholder = galleryContainer.querySelector(".col-span-full");
-        if (placeholder) placeholder.remove();
-
-        const div = document.createElement("div");
-        div.className = "relative group aspect-square";
-        div.innerHTML = `
-            <img src="${url}" class="w-full h-full object-cover rounded-lg border border-border-dark" />
-            <button type="button" class="remove-thumb absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" data-url="${url}">
-                <span class="material-symbols-outlined text-sm">close</span>
-            </button>
-            <input type="hidden" name="thumbnails" value="${url}" />
-        `;
-
-        galleryContainer.appendChild(div);
-
-        // Add remove listener
-        div.querySelector(".remove-thumb")?.addEventListener("click", () => {
-            div.remove();
-            if (
-                galleryContainer.querySelectorAll(".aspect-square").length === 0
-            ) {
-                galleryContainer.innerHTML = `
-                    <div class="col-span-full flex flex-col items-center justify-center text-text-muted py-4">
-                        <span class="material-symbols-outlined text-3xl mb-2">add_photo_alternate</span>
-                        <p class="text-xs">No hay imágenes en la galería</p>
-                    </div>
-                `;
-            }
-        });
-    }
-
-    // Add removal listeners locally to existing thumbs
-    document.querySelectorAll(".remove-thumb").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            const parent = btn.closest(".relative");
-            parent?.remove();
-            if (
-                galleryContainer?.querySelectorAll(".aspect-square").length ===
-                0
-            ) {
-                galleryContainer.innerHTML = `
-                    <div class="col-span-full flex flex-col items-center justify-center text-text-muted py-4">
-                        <span class="material-symbols-outlined text-3xl mb-2">add_photo_alternate</span>
-                        <p class="text-xs">No hay imágenes en la galería</p>
-                    </div>
-                `;
-            }
-        });
-    });
-
-    manageGalleryBtn?.addEventListener("click", async () => {
-        try {
-            const originalHTML = manageGalleryBtn.innerHTML;
-            manageGalleryBtn.disabled = true;
-            manageGalleryBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Cargando...`;
-
-            if (!mediaLibraryConfig) {
-                const response = await fetch("/api/cloudinary-sign");
-                mediaLibraryConfig = await response.json();
-            }
-
-            // @ts-ignore
-            cloudinary.openMediaLibrary(
-                {
-                    cloud_name: mediaLibraryConfig.cloudName,
-                    api_key: mediaLibraryConfig.apiKey,
-                    timestamp: mediaLibraryConfig.timestamp,
-                    signature: mediaLibraryConfig.signature,
-                    folder: {
-                        path: "digitalstore/products",
-                        resource_type: "image",
-                    },
-                    multiple: true,
-                },
-                {
-                    insertHandler: (data) => {
-                        if (data.assets && data.assets.length > 0) {
-                            data.assets.forEach((asset) => {
-                                addThumbToUI(asset.secure_url);
-                            });
-                            showToast(
-                                `${data.assets.length} imágenes añadidas a la galería.`,
-                                "success",
-                            );
-                        }
+                setTimeout(() => {
+                    if (manageGalleryBtn.disabled) {
                         manageGalleryBtn.disabled = false;
                         manageGalleryBtn.innerHTML = originalHTML;
-                    },
-                },
-            );
-
-            setTimeout(() => {
-                if (manageGalleryBtn.disabled) {
-                    manageGalleryBtn.disabled = false;
-                    manageGalleryBtn.innerHTML = originalHTML;
-                }
-            }, 1000);
-        } catch (err) {
-            console.error("Error opening gallery library:", err);
-            showToast("Error al conectar con Cloudinary", "error");
-            manageGalleryBtn.disabled = false;
-            manageGalleryBtn.innerHTML = `<span class="material-symbols-outlined text-blue-400">add_to_photos</span> Añadir Imágenes a la Galería`;
-        }
-    });
-
-    mediaLibraryBtn?.addEventListener("click", async () => {
-        if (mediaLibraryWidget) {
-            mediaLibraryWidget.show();
-        } else {
-            // Fallback: re-init if not available
-            await initMediaLibrary();
-            if (mediaLibraryWidget) mediaLibraryWidget.show();
-        }
-    });
-</script>
-
-<script>
-    import { updateProduct, supabase } from "../../../../lib/supabase";
-
-    // Auto-generate slug from title
-    const titleInput = document.getElementById("title") as HTMLInputElement;
-    const slugInput = document.getElementById("slug") as HTMLInputElement;
-
-    titleInput?.addEventListener("input", () => {
-        if (
-            !slugInput.value ||
-            slugInput.value ===
-                titleInput.value.toLowerCase().replace(/[^a-z0-9]+/g, "-")
-        ) {
-            slugInput.value = titleInput.value
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-+|-+$/g, "");
-        }
-    });
-
-    // Badge General color sync
-    const colorPicker = document.getElementById(
-        "badge_color_picker",
-    ) as HTMLInputElement;
-    const colorInput = document.getElementById(
-        "badge_color",
-    ) as HTMLInputElement;
-    const textColorPicker = document.getElementById(
-        "badge_text_color_picker",
-    ) as HTMLInputElement;
-    const textColorInput = document.getElementById(
-        "badge_text_color",
-    ) as HTMLInputElement;
-
-    colorPicker?.addEventListener("input", (e) => {
-        colorInput.value = (e.target as HTMLInputElement).value.toUpperCase();
-    });
-    colorInput?.addEventListener("input", (e) => {
-        const value = (e.target as HTMLInputElement).value;
-        if (/^#[0-9A-F]{6}$/i.test(value)) colorPicker.value = value;
-    });
-    textColorPicker?.addEventListener("input", (e) => {
-        textColorInput.value = (
-            e.target as HTMLInputElement
-        ).value.toUpperCase();
-    });
-    textColorInput?.addEventListener("input", (e) => {
-        const value = (e.target as HTMLInputElement).value;
-        if (/^#[0-9A-F]{6}$/i.test(value)) textColorPicker.value = value;
-    });
-
-    // DISCOUNT Badge color sync
-    const discountColorPicker = document.getElementById(
-        "discount_badge_color_picker",
-    ) as HTMLInputElement;
-    const discountColorInput = document.getElementById(
-        "discount_badge_color",
-    ) as HTMLInputElement;
-    const discountTextColorPicker = document.getElementById(
-        "discount_badge_text_color_picker",
-    ) as HTMLInputElement;
-    const discountTextColorInput = document.getElementById(
-        "discount_badge_text_color",
-    ) as HTMLInputElement;
-
-    discountColorPicker?.addEventListener("input", (e) => {
-        discountColorInput.value = (
-            e.target as HTMLInputElement
-        ).value.toUpperCase();
-    });
-    discountColorInput?.addEventListener("input", (e) => {
-        const value = (e.target as HTMLInputElement).value;
-        if (/^#[0-9A-F]{6}$/i.test(value)) discountColorPicker.value = value;
-    });
-    discountTextColorPicker?.addEventListener("input", (e) => {
-        discountTextColorInput.value = (
-            e.target as HTMLInputElement
-        ).value.toUpperCase();
-    });
-    discountTextColorInput?.addEventListener("input", (e) => {
-        const value = (e.target as HTMLInputElement).value;
-        if (/^#[0-9A-F]{6}$/i.test(value))
-            discountTextColorPicker.value = value;
-    });
-
-    // Features management
-    const featuresContainer = document.getElementById("features-container");
-    const addFeatureBtn = document.getElementById("add-feature");
-
-    document.querySelectorAll(".remove-feature").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            const target = e.currentTarget as HTMLElement;
-            target.parentElement?.remove();
+                    }
+                }, 1000);
+            } catch (err) {
+                console.error("Error opening gallery library:", err);
+                showToast("Error al conectar con Cloudinary", "error");
+                manageGalleryBtn.disabled = false;
+                manageGalleryBtn.innerHTML = `<span class="material-symbols-outlined text-blue-400">add_to_photos</span> Añadir Imágenes a la Galería`;
+            }
         });
-    });
 
-    addFeatureBtn?.addEventListener("click", () => {
-        const featureDiv = document.createElement("div");
-        featureDiv.className = "flex gap-2 group";
-        featureDiv.innerHTML = `
+        mediaLibraryBtn?.addEventListener("click", async () => {
+            if (mediaLibraryWidget) {
+                mediaLibraryWidget.show();
+            } else {
+                // Fallback: re-init if not available
+                await initMediaLibrary();
+                if (mediaLibraryWidget) mediaLibraryWidget.show();
+            }
+        });
+    </script>
+
+    <script>
+        import { updateProduct, supabase } from "../../../../lib/supabase";
+
+        // Auto-generate slug from title
+        const titleInput = document.getElementById("title") as HTMLInputElement;
+        const slugInput = document.getElementById("slug") as HTMLInputElement;
+
+        titleInput?.addEventListener("input", () => {
+            if (
+                !slugInput.value ||
+                slugInput.value ===
+                    titleInput.value.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+            ) {
+                slugInput.value = titleInput.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/^-+|-+$/g, "");
+            }
+        });
+
+        // Badge General color sync
+        const colorPicker = document.getElementById(
+            "badge_color_picker",
+        ) as HTMLInputElement;
+        const colorInput = document.getElementById(
+            "badge_color",
+        ) as HTMLInputElement;
+        const textColorPicker = document.getElementById(
+            "badge_text_color_picker",
+        ) as HTMLInputElement;
+        const textColorInput = document.getElementById(
+            "badge_text_color",
+        ) as HTMLInputElement;
+
+        colorPicker?.addEventListener("input", (e) => {
+            colorInput.value = (
+                e.target as HTMLInputElement
+            ).value.toUpperCase();
+        });
+        colorInput?.addEventListener("input", (e) => {
+            const value = (e.target as HTMLInputElement).value;
+            if (/^#[0-9A-F]{6}$/i.test(value)) colorPicker.value = value;
+        });
+        textColorPicker?.addEventListener("input", (e) => {
+            textColorInput.value = (
+                e.target as HTMLInputElement
+            ).value.toUpperCase();
+        });
+        textColorInput?.addEventListener("input", (e) => {
+            const value = (e.target as HTMLInputElement).value;
+            if (/^#[0-9A-F]{6}$/i.test(value)) textColorPicker.value = value;
+        });
+
+        // DISCOUNT Badge color sync
+        const discountColorPicker = document.getElementById(
+            "discount_badge_color_picker",
+        ) as HTMLInputElement;
+        const discountColorInput = document.getElementById(
+            "discount_badge_color",
+        ) as HTMLInputElement;
+        const discountTextColorPicker = document.getElementById(
+            "discount_badge_text_color_picker",
+        ) as HTMLInputElement;
+        const discountTextColorInput = document.getElementById(
+            "discount_badge_text_color",
+        ) as HTMLInputElement;
+
+        discountColorPicker?.addEventListener("input", (e) => {
+            discountColorInput.value = (
+                e.target as HTMLInputElement
+            ).value.toUpperCase();
+        });
+        discountColorInput?.addEventListener("input", (e) => {
+            const value = (e.target as HTMLInputElement).value;
+            if (/^#[0-9A-F]{6}$/i.test(value))
+                discountColorPicker.value = value;
+        });
+        discountTextColorPicker?.addEventListener("input", (e) => {
+            discountTextColorInput.value = (
+                e.target as HTMLInputElement
+            ).value.toUpperCase();
+        });
+        discountTextColorInput?.addEventListener("input", (e) => {
+            const value = (e.target as HTMLInputElement).value;
+            if (/^#[0-9A-F]{6}$/i.test(value))
+                discountTextColorPicker.value = value;
+        });
+
+        // Features management
+        const featuresContainer = document.getElementById("features-container");
+        const addFeatureBtn = document.getElementById("add-feature");
+
+        document.querySelectorAll(".remove-feature").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const target = e.currentTarget as HTMLElement;
+                target.parentElement?.remove();
+            });
+        });
+
+        addFeatureBtn?.addEventListener("click", () => {
+            const featureDiv = document.createElement("div");
+            featureDiv.className = "flex gap-2 group";
+            featureDiv.innerHTML = `
 			<input
 				type="text"
 				class="feature-input flex-1 px-3 py-2 bg-background-dark border border-border-dark rounded-lg text-white text-sm focus:ring-1 focus:ring-primary"
@@ -1196,164 +1218,92 @@ if (!product) {
 				<span class="material-symbols-outlined text-[20px]">delete</span>
 			</button>
 		`;
-        featuresContainer?.appendChild(featureDiv);
-        featureDiv
-            .querySelector(".remove-feature")
-            ?.addEventListener("click", () => featureDiv.remove());
-    });
-
-    // Form submission
-    const form = document.getElementById("product-form") as HTMLFormElement;
-    const submitBtns = document.querySelectorAll(".submit-btn");
-    const productId = form.dataset.productId;
-
-    // Capture initial state for partial updates
-    const initialData = {
-        title: (document.getElementById("title") as HTMLInputElement)?.value,
-        slug: (document.getElementById("slug") as HTMLInputElement)?.value,
-        description:
-            (document.getElementById("description") as HTMLTextAreaElement)
-                ?.value || null,
-        price: parseFloat(
-            (document.getElementById("price") as HTMLInputElement)?.value,
-        ),
-        original_price: (
-            document.getElementById("original_price") as HTMLInputElement
-        )?.value
-            ? parseFloat(
-                  (
-                      document.getElementById(
-                          "original_price",
-                      ) as HTMLInputElement
-                  )?.value,
-              )
-            : null,
-        renewable_price: (
-            document.getElementById("renewable_price") as HTMLInputElement
-        )?.value
-            ? parseFloat(
-                  (
-                      document.getElementById(
-                          "renewable_price",
-                      ) as HTMLInputElement
-                  )?.value,
-              )
-            : null,
-        image: (document.getElementById("image") as HTMLInputElement)?.value,
-        category: (document.getElementById("category") as HTMLInputElement)
-            ?.value,
-        seller:
-            (document.getElementById("seller") as HTMLInputElement)?.value ||
-            null,
-        badge:
-            (document.getElementById("badge") as HTMLInputElement)?.value ||
-            null,
-        badge_color:
-            (document.getElementById("badge_color") as HTMLInputElement)
-                ?.value || null,
-        badge_text_color:
-            (document.getElementById("badge_text_color") as HTMLInputElement)
-                ?.value || null,
-        rating: parseInt(
-            (document.getElementById("rating") as HTMLInputElement)?.value,
-        ),
-        review_count:
-            parseInt(
-                (document.getElementById("review_count") as HTMLInputElement)
-                    ?.value,
-            ) || 0,
-        stock_quantity: parseInt(
-            (document.getElementById("stock_quantity") as HTMLInputElement)
-                ?.value,
-        ),
-        features: Array.from(document.querySelectorAll(".feature-input"))
-            .map((i) => (i as HTMLInputElement).value.trim())
-            .filter(Boolean),
-        thumbnails: Array.from(
-            document.querySelectorAll('input[name="thumbnails"]'),
-        )
-            .map((i) => (i as HTMLInputElement).value)
-            .filter(Boolean),
-        show_gallery: (
-            document.getElementById("show_gallery") as HTMLInputElement
-        ).checked,
-        is_active: (document.getElementById("is_active") as HTMLInputElement)
-            .checked,
-        in_stock: (document.getElementById("in_stock") as HTMLInputElement)
-            .checked,
-        show_badge: (document.getElementById("show_badge") as HTMLInputElement)
-            .checked,
-        discount_badge:
-            (document.getElementById("discount_badge") as HTMLInputElement)
-                ?.value || null,
-        discount_badge_color:
-            (
-                document.getElementById(
-                    "discount_badge_color",
-                ) as HTMLInputElement
-            )?.value || null,
-        discount_badge_text_color:
-            (
-                document.getElementById(
-                    "discount_badge_text_color",
-                ) as HTMLInputElement
-            )?.value || null,
-        show_discount_badge: (
-            document.getElementById("show_discount_badge") as HTMLInputElement
-        ).checked,
-        show_renewable_price: (
-            document.getElementById("show_renewable_price") as HTMLInputElement
-        ).checked,
-    };
-    console.log("💎 Initial State Captured:", initialData);
-
-    form?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        if (!productId) return;
-
-        console.time("🚀 Save Process");
-        const formData = new FormData(form);
-
-        // Collect current features
-        const features: string[] = [];
-        document.querySelectorAll(".feature-input").forEach((input) => {
-            const value = (input as HTMLInputElement).value.trim();
-            if (value) features.push(value);
+            featuresContainer?.appendChild(featureDiv);
+            featureDiv
+                .querySelector(".remove-feature")
+                ?.addEventListener("click", () => featureDiv.remove());
         });
 
-        // Collect current thumbnails
-        const thumbnails: string[] = [];
-        document
-            .querySelectorAll('input[name="thumbnails"]')
-            .forEach((input) => {
-                const value = (input as HTMLInputElement).value;
-                if (value) thumbnails.push(value);
-            });
+        // Form submission
+        const form = document.getElementById("product-form") as HTMLFormElement;
+        const submitBtns = document.querySelectorAll(".submit-btn");
+        const productId = form.dataset.productId;
 
-        const currentData = {
-            title: formData.get("title") as string,
-            slug: formData.get("slug") as string,
-            description: (formData.get("description") as string) || null,
-            price: parseFloat(formData.get("price") as string),
-            original_price: formData.get("original_price")
-                ? parseFloat(formData.get("original_price") as string)
+        // Capture initial state for partial updates
+        const initialData = {
+            title: (document.getElementById("title") as HTMLInputElement)
+                ?.value,
+            slug: (document.getElementById("slug") as HTMLInputElement)?.value,
+            description:
+                (document.getElementById("description") as HTMLTextAreaElement)
+                    ?.value || null,
+            price: parseFloat(
+                (document.getElementById("price") as HTMLInputElement)?.value,
+            ),
+            original_price: (
+                document.getElementById("original_price") as HTMLInputElement
+            )?.value
+                ? parseFloat(
+                      (
+                          document.getElementById(
+                              "original_price",
+                          ) as HTMLInputElement
+                      )?.value,
+                  )
                 : null,
-            renewable_price: formData.get("renewable_price")
-                ? parseFloat(formData.get("renewable_price") as string)
+            renewable_price: (
+                document.getElementById("renewable_price") as HTMLInputElement
+            )?.value
+                ? parseFloat(
+                      (
+                          document.getElementById(
+                              "renewable_price",
+                          ) as HTMLInputElement
+                      )?.value,
+                  )
                 : null,
             image: (document.getElementById("image") as HTMLInputElement)
                 ?.value,
-            category: formData.get("category") as string,
-            seller: (formData.get("seller") as string) || null,
-            badge: (formData.get("badge") as string) || null,
-            badge_color: (formData.get("badge_color") as string) || null,
+            category: (document.getElementById("category") as HTMLInputElement)
+                ?.value,
+            seller:
+                (document.getElementById("seller") as HTMLInputElement)
+                    ?.value || null,
+            badge:
+                (document.getElementById("badge") as HTMLInputElement)?.value ||
+                null,
+            badge_color:
+                (document.getElementById("badge_color") as HTMLInputElement)
+                    ?.value || null,
             badge_text_color:
-                (formData.get("badge_text_color") as string) || null,
-            rating: parseInt(formData.get("rating") as string),
-            review_count: parseInt(formData.get("review_count") as string) || 0,
-            stock_quantity: parseInt(formData.get("stock_quantity") as string),
-            features: features,
-            thumbnails: thumbnails,
+                (
+                    document.getElementById(
+                        "badge_text_color",
+                    ) as HTMLInputElement
+                )?.value || null,
+            rating: parseInt(
+                (document.getElementById("rating") as HTMLInputElement)?.value,
+            ),
+            review_count:
+                parseInt(
+                    (
+                        document.getElementById(
+                            "review_count",
+                        ) as HTMLInputElement
+                    )?.value,
+                ) || 0,
+            stock_quantity: parseInt(
+                (document.getElementById("stock_quantity") as HTMLInputElement)
+                    ?.value,
+            ),
+            features: Array.from(document.querySelectorAll(".feature-input"))
+                .map((i) => (i as HTMLInputElement).value.trim())
+                .filter(Boolean),
+            thumbnails: Array.from(
+                document.querySelectorAll('input[name="thumbnails"]'),
+            )
+                .map((i) => (i as HTMLInputElement).value)
+                .filter(Boolean),
             show_gallery: (
                 document.getElementById("show_gallery") as HTMLInputElement
             ).checked,
@@ -1365,11 +1315,21 @@ if (!product) {
             show_badge: (
                 document.getElementById("show_badge") as HTMLInputElement
             ).checked,
-            discount_badge: (formData.get("discount_badge") as string) || null,
+            discount_badge:
+                (document.getElementById("discount_badge") as HTMLInputElement)
+                    ?.value || null,
             discount_badge_color:
-                (formData.get("discount_badge_color") as string) || null,
+                (
+                    document.getElementById(
+                        "discount_badge_color",
+                    ) as HTMLInputElement
+                )?.value || null,
             discount_badge_text_color:
-                (formData.get("discount_badge_text_color") as string) || null,
+                (
+                    document.getElementById(
+                        "discount_badge_text_color",
+                    ) as HTMLInputElement
+                )?.value || null,
             show_discount_badge: (
                 document.getElementById(
                     "show_discount_badge",
@@ -1381,143 +1341,235 @@ if (!product) {
                 ) as HTMLInputElement
             ).checked,
         };
-        console.log("📝 Current State on Submit:", currentData);
+        console.log("💎 Initial State Captured:", initialData);
 
-        // Determine only changed fields
-        const productData: any = {};
-        Object.keys(currentData).forEach((key) => {
-            const typedKey = key as keyof typeof currentData;
-            const currentVal = currentData[typedKey];
-            const initialVal = initialData[typedKey];
+        form?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!productId) return;
 
-            // Deep comparison for arrays
-            if (Array.isArray(currentVal) && Array.isArray(initialVal)) {
-                if (JSON.stringify(currentVal) !== JSON.stringify(initialVal)) {
+            console.time("🚀 Save Process");
+            const formData = new FormData(form);
+
+            // Collect current features
+            const features: string[] = [];
+            document.querySelectorAll(".feature-input").forEach((input) => {
+                const value = (input as HTMLInputElement).value.trim();
+                if (value) features.push(value);
+            });
+
+            // Collect current thumbnails
+            const thumbnails: string[] = [];
+            document
+                .querySelectorAll('input[name="thumbnails"]')
+                .forEach((input) => {
+                    const value = (input as HTMLInputElement).value;
+                    if (value) thumbnails.push(value);
+                });
+
+            const currentData = {
+                title: formData.get("title") as string,
+                slug: formData.get("slug") as string,
+                description: (formData.get("description") as string) || null,
+                price: parseFloat(formData.get("price") as string),
+                original_price: formData.get("original_price")
+                    ? parseFloat(formData.get("original_price") as string)
+                    : null,
+                renewable_price: formData.get("renewable_price")
+                    ? parseFloat(formData.get("renewable_price") as string)
+                    : null,
+                image: (document.getElementById("image") as HTMLInputElement)
+                    ?.value,
+                category: formData.get("category") as string,
+                seller: (formData.get("seller") as string) || null,
+                badge: (formData.get("badge") as string) || null,
+                badge_color: (formData.get("badge_color") as string) || null,
+                badge_text_color:
+                    (formData.get("badge_text_color") as string) || null,
+                rating: parseInt(formData.get("rating") as string),
+                review_count:
+                    parseInt(formData.get("review_count") as string) || 0,
+                stock_quantity: parseInt(
+                    formData.get("stock_quantity") as string,
+                ),
+                features: features,
+                thumbnails: thumbnails,
+                show_gallery: (
+                    document.getElementById("show_gallery") as HTMLInputElement
+                ).checked,
+                is_active: (
+                    document.getElementById("is_active") as HTMLInputElement
+                ).checked,
+                in_stock: (
+                    document.getElementById("in_stock") as HTMLInputElement
+                ).checked,
+                show_badge: (
+                    document.getElementById("show_badge") as HTMLInputElement
+                ).checked,
+                discount_badge:
+                    (formData.get("discount_badge") as string) || null,
+                discount_badge_color:
+                    (formData.get("discount_badge_color") as string) || null,
+                discount_badge_text_color:
+                    (formData.get("discount_badge_text_color") as string) ||
+                    null,
+                show_discount_badge: (
+                    document.getElementById(
+                        "show_discount_badge",
+                    ) as HTMLInputElement
+                ).checked,
+                show_renewable_price: (
+                    document.getElementById(
+                        "show_renewable_price",
+                    ) as HTMLInputElement
+                ).checked,
+            };
+            console.log("📝 Current State on Submit:", currentData);
+
+            // Determine only changed fields
+            const productData: any = {};
+            Object.keys(currentData).forEach((key) => {
+                const typedKey = key as keyof typeof currentData;
+                const currentVal = currentData[typedKey];
+                const initialVal = initialData[typedKey];
+
+                // Deep comparison for arrays
+                if (Array.isArray(currentVal) && Array.isArray(initialVal)) {
+                    if (
+                        JSON.stringify(currentVal) !==
+                        JSON.stringify(initialVal)
+                    ) {
+                        productData[typedKey] = currentVal;
+                    }
+                } else if (currentVal !== initialVal) {
                     productData[typedKey] = currentVal;
                 }
-            } else if (currentVal !== initialVal) {
-                productData[typedKey] = currentVal;
-            }
-        });
-
-        if (Object.keys(productData).length === 0) {
-            if (typeof (window as any).showToast === "function") {
-                (window as any).showToast(
-                    "No hay cambios para guardar",
-                    "info",
-                );
-            }
-            console.timeEnd("🚀 Save Process");
-            return;
-        }
-
-        // Disable buttons
-        submitBtns.forEach((btn: any) => {
-            btn.disabled = true;
-            btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Guardando...`;
-        });
-
-        try {
-            console.log("📤 Sending partial update via API:", productData);
-            console.time("⏱️ API Update");
-            // Use the API route instead of direct Supabase client
-            // Get session for auth
-
-            if (!supabase) {
-                throw new Error(
-                    "El cliente de Supabase no se cargó correctamente.",
-                );
-            }
-
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-
-            const response = await fetch(`/api/admin/products/${productId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${session?.access_token}`,
-                },
-                body: JSON.stringify(productData),
             });
-            console.timeEnd("⏱️ API Update");
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(
-                    errorData.error || "Error al actualizar el producto.",
-                );
+            if (Object.keys(productData).length === 0) {
+                if (typeof (window as any).showToast === "function") {
+                    (window as any).showToast(
+                        "No hay cambios para guardar",
+                        "info",
+                    );
+                }
+                console.timeEnd("🚀 Save Process");
+                return;
             }
 
-            if (typeof (window as any).showToast === "function") {
-                (window as any).showToast(
-                    "Producto actualizado correctamente",
-                    "success",
+            // Disable buttons
+            submitBtns.forEach((btn: any) => {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Guardando...`;
+            });
+
+            try {
+                console.log("📤 Sending partial update via API:", productData);
+                console.time("⏱️ API Update");
+                // Use the API route instead of direct Supabase client
+                // Get session for auth
+
+                if (!supabase) {
+                    throw new Error(
+                        "El cliente de Supabase no se cargó correctamente.",
+                    );
+                }
+
+                const {
+                    data: { session },
+                } = await supabase.auth.getSession();
+
+                const response = await fetch(
+                    `/api/admin/products/${productId}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${session?.access_token}`,
+                        },
+                        body: JSON.stringify(productData),
+                    },
                 );
+                console.timeEnd("⏱️ API Update");
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(
+                        errorData.error || "Error al actualizar el producto.",
+                    );
+                }
+
+                if (typeof (window as any).showToast === "function") {
+                    (window as any).showToast(
+                        "Producto actualizado correctamente",
+                        "success",
+                    );
+                }
+
+                console.log("🔄 Redirecting to product list...");
+                console.timeEnd("🚀 Save Process");
+
+                // Short delay to let toast be seen before redirect
+                setTimeout(() => {
+                    window.location.href = "/admin/products";
+                }, 500);
+            } catch (error: any) {
+                console.error("FULL ERROR:", error);
+                console.timeEnd("🚀 Save Process");
+                if (typeof (window as any).showToast === "function") {
+                    (window as any).showToast(
+                        error.message || "Error al actualizar el producto",
+                        "error",
+                    );
+                } else {
+                    alert(error.message || "Error al actualizar el producto");
+                    submitBtns.forEach((btn: any) => {
+                        btn.disabled = false;
+                        btn.innerHTML = `<span class="material-symbols-outlined">save</span> Guardar Cambios`;
+                    });
+                }
             }
+        });
+        // Reactivity for activity toggles
+        const topToggle = document.getElementById("top_is_active");
+        const mainToggle = document.getElementById("is_active");
+        const statusDot = document.getElementById("status-indicator-dot");
+        const statusText = document.getElementById("status-indicator-text");
+        const visibilityText = document.getElementById(
+            "visibility-indicator-text",
+        );
+        const inStockToggle = document.getElementById(
+            "in_stock",
+        ) as HTMLInputElement;
 
-            console.log("🔄 Redirecting to product list...");
-            console.timeEnd("🚀 Save Process");
-
-            // Short delay to let toast be seen before redirect
-            setTimeout(() => {
-                window.location.href = "/admin/products";
-            }, 500);
-        } catch (error: any) {
-            console.error("FULL ERROR:", error);
-            console.timeEnd("🚀 Save Process");
-            if (typeof (window as any).showToast === "function") {
-                (window as any).showToast(
-                    error.message || "Error al actualizar el producto",
-                    "error",
-                );
-            } else {
-                alert(error.message || "Error al actualizar el producto");
-                submitBtns.forEach((btn: any) => {
-                    btn.disabled = false;
-                    btn.innerHTML = `<span class="material-symbols-outlined">save</span> Guardar Cambios`;
-                });
+        function updateStatusUI(isActive: boolean) {
+            if (statusDot) {
+                statusDot.className = `w-3 h-3 rounded-full ${isActive ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" : "bg-gray-500"}`;
+            }
+            if (statusText) {
+                statusText.textContent = `Estado: ${isActive ? "Activo" : "Inactivo"}`;
+            }
+            if (visibilityText) {
+                const isStock = inStockToggle ? inStockToggle.checked : true;
+                visibilityText.textContent =
+                    isActive && isStock ? "Público" : "Oculto";
             }
         }
-    });
-    // Reactivity for activity toggles
-    const topToggle = document.getElementById("top_is_active");
-    const mainToggle = document.getElementById("is_active");
-    const statusDot = document.getElementById("status-indicator-dot");
-    const statusText = document.getElementById("status-indicator-text");
-    const visibilityText = document.getElementById("visibility-indicator-text");
-    const inStockToggle = document.getElementById(
-        "in_stock",
-    ) as HTMLInputElement;
 
-    function updateStatusUI(isActive: boolean) {
-        if (statusDot) {
-            statusDot.className = `w-3 h-3 rounded-full ${isActive ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" : "bg-gray-500"}`;
-        }
-        if (statusText) {
-            statusText.textContent = `Estado: ${isActive ? "Activo" : "Inactivo"}`;
-        }
-        if (visibilityText) {
-            const isStock = inStockToggle ? inStockToggle.checked : true;
-            visibilityText.textContent =
-                isActive && isStock ? "Público" : "Oculto";
-        }
-    }
+        topToggle?.addEventListener("change", (e) => {
+            const checked = (e.target as HTMLInputElement).checked;
+            if (mainToggle) (mainToggle as HTMLInputElement).checked = checked;
+            updateStatusUI(checked);
+        });
 
-    topToggle?.addEventListener("change", (e) => {
-        const checked = (e.target as HTMLInputElement).checked;
-        if (mainToggle) (mainToggle as HTMLInputElement).checked = checked;
-        updateStatusUI(checked);
-    });
+        mainToggle?.addEventListener("change", (e) => {
+            const checked = (e.target as HTMLInputElement).checked;
+            if (topToggle) (topToggle as HTMLInputElement).checked = checked;
+            updateStatusUI(checked);
+        });
 
-    mainToggle?.addEventListener("change", (e) => {
-        const checked = (e.target as HTMLInputElement).checked;
-        if (topToggle) (topToggle as HTMLInputElement).checked = checked;
-        updateStatusUI(checked);
-    });
-
-    inStockToggle?.addEventListener("change", () => {
-        if (topToggle) updateStatusUI((topToggle as HTMLInputElement).checked);
-    });
-</script>
+        inStockToggle?.addEventListener("change", () => {
+            if (topToggle)
+                updateStatusUI((topToggle as HTMLInputElement).checked);
+        });
+    </script>
+</AdminLayout>
