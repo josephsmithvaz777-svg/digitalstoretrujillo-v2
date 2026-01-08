@@ -61,6 +61,8 @@ export const POST: APIRoute = async ({ request }) => {
             amount: amountUSD,
             currency: 'USD',
             order_id: order.id,
+            to_currency: 'USDT',
+            network: 'BSC',
             url_return: `${new URL(request.url).origin}/payment?orderId=${order.id}`,
             url_success: `${new URL(request.url).origin}/payment?status=success&orderId=${order.id}`,
             url_callback: `${new URL(request.url).origin}/api/payments/cryptomus/webhook`,

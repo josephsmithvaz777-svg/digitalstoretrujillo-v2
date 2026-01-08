@@ -7,6 +7,8 @@ interface CreatePaymentParams {
     amount: string;
     currency: string;
     order_id: string;
+    to_currency?: string;
+    network?: string;
     url_return?: string;
     url_success?: string;
     url_callback?: string;
