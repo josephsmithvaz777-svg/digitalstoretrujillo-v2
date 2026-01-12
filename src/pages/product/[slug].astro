@@ -61,13 +61,20 @@ const description = product.description || "";
                     <!-- Left Column: Images -->
                     <div class="lg:col-span-7 flex flex-col gap-4">
                         <div
-                            class="relative w-full aspect-[16/10] overflow-hidden rounded-xl bg-card-dark border border-border-dark group"
+                            class="relative w-full aspect-[16/10] overflow-hidden rounded-xl bg-black border border-border-dark group flex items-center justify-center"
                         >
+                            <!-- Blurred Background for empty spaces -->
                             <div
-                                class="absolute inset-0 bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105"
+                                class="absolute inset-0 bg-center bg-cover blur-2xl opacity-30 scale-110"
                                 style={`background-image: url("${product.image}");`}
                             >
                             </div>
+                            <!-- Main Image contained -->
+                            <img
+                                src={product.image}
+                                class="relative z-10 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                alt={product.title}
+                            />
                             <div
                                 class="absolute top-4 left-4 flex flex-wrap gap-2"
                             >
