@@ -7,6 +7,13 @@ const title = "Checkout - DigitalStoreTrujillo";
 const description = "Complete your purchase securely";
 ---
 
+<style>
+    select option {
+        background-color: #1a1515;
+        color: white;
+    }
+</style>
+
 <Layout title={title} description={description}>
     <Header />
 
@@ -143,19 +150,47 @@ const description = "Complete your purchase securely";
                                 <span class="text-white text-sm font-medium"
                                     >Phone Number</span
                                 >
-                                <div class="relative flex items-center">
+                                <div class="relative flex items-center group">
                                     <div
-                                        class="absolute left-0 top-0 bottom-0 flex items-center pl-3 pr-2 border-r border-border-dark"
+                                        class="absolute left-0 top-0 bottom-0 flex items-center border-r border-border-dark bg-background-dark/30 rounded-l-lg transition-colors group-focus-within:border-primary"
                                     >
+                                        <select
+                                            id="countryCode"
+                                            name="countryCode"
+                                            class="bg-transparent text-white text-xs md:text-sm font-medium border-none focus:ring-0 cursor-pointer pl-3 pr-8 h-full appearance-none outline-none"
+                                        >
+                                            <option value="+51" selected
+                                                >🇵🇪 +51</option
+                                            >
+                                            <option value="+57">🇨🇴 +57</option>
+                                            <option value="+56">🇨🇱 +56</option>
+                                            <option value="+54">🇦🇷 +54</option>
+                                            <option value="+593">🇪🇨 +593</option
+                                            >
+                                            <option value="+591">🇧🇴 +591</option
+                                            >
+                                            <option value="+52">🇲🇽 +52</option>
+                                            <option value="+34">🇪🇸 +34</option>
+                                            <option value="+1">🇺🇸 +1</option>
+                                            <option value="+58">🇻🇪 +58</option>
+                                            <option value="+507">🇵🇦 +507</option
+                                            >
+                                            <option value="+506">🇨🇷 +506</option
+                                            >
+                                            <option value="+503">🇸🇻 +503</option
+                                            >
+                                            <option value="+502">🇬🇹 +502</option
+                                            >
+                                        </select>
                                         <span
-                                            class="text-text-muted text-sm font-medium"
-                                            >+51</span
+                                            class="material-symbols-outlined absolute right-2 text-[16px] text-text-muted pointer-events-none"
+                                            >expand_more</span
                                         >
                                     </div>
                                     <input
                                         id="phone"
                                         name="phone"
-                                        class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-16 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                        class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-32 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
                                         placeholder="987 654 321"
                                         type="tel"
                                     />
