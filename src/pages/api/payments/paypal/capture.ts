@@ -39,9 +39,15 @@ export const GET: APIRoute = async ({ url }) => {
                 <html>
                     <body>
                         <script>
-                            if (window.parent && window.parent !== window) {
+                            if (window.opener) {
+                                // If opened as a popup
+                                window.opener.postMessage({ type: 'paypal_success', orderId: '${orderId}' }, '*');
+                                window.close();
+                            } else if (window.parent && window.parent !== window) {
+                                // If in iframe
                                 window.parent.postMessage({ type: 'paypal_success', orderId: '${orderId}' }, '*');
                             } else {
+                                // Normal redirect
                                 window.location.href = '/payment?status=success&orderId=${orderId}&verified=true';
                             }
                         </script>
