@@ -1069,6 +1069,63 @@ const description = "Choose your payment method";
                 </div>
             </div>
         </div>
+
+        <!-- PayPal Payment Modal -->
+        <div
+            id="paypal-modal"
+            class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card-dark border border-border-dark rounded-2xl max-w-4xl w-full h-[90vh] flex flex-col overflow-hidden"
+            >
+                <!-- Modal Header -->
+                <div
+                    class="p-4 border-b border-border-dark flex items-center justify-between bg-card-dark"
+                >
+                    <div class="flex items-center gap-3">
+                        <img
+                            src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg"
+                            class="h-6"
+                            alt="PayPal"
+                        />
+                        <h3 class="text-white font-bold">
+                            Secure PayPal Checkout
+                        </h3>
+                    </div>
+                    <button
+                        id="close-paypal-modal"
+                        class="text-text-muted hover:text-white transition-colors"
+                    >
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Iframe Container -->
+                <div class="flex-1 bg-white relative">
+                    <div
+                        id="paypal-loading"
+                        class="absolute inset-0 flex items-center justify-center bg-card-dark z-10"
+                    >
+                        <span
+                            class="material-symbols-outlined animate-spin text-primary text-4xl"
+                            >progress_activity</span
+                        >
+                    </div>
+                    <iframe
+                        id="paypal-iframe"
+                        src=""
+                        class="w-full h-full border-none"
+                        title="PayPal Payment"></iframe>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-4 border-t border-border-dark bg-card-dark">
+                    <p class="text-[10px] text-text-muted italic text-center">
+                        Don't close this window until your payment is confirmed.
+                    </p>
+                </div>
+            </div>
+        </div>
     </main>
 
     <Footer />
@@ -1294,8 +1351,28 @@ const description = "Choose your payment method";
                             data.error || "Failed to initiate payment",
                         );
 
-                    // Redirect to PayPal Checkout
-                    window.location.href = data.url;
+                    // Open PayPal Modal
+                    const paypalModal = document.getElementById("paypal-modal");
+                    const paypalIframe = document.getElementById(
+                        "paypal-iframe",
+                    ) as HTMLIFrameElement;
+                    const paypalLoading =
+                        document.getElementById("paypal-loading");
+
+                    if (paypalModal && paypalIframe) {
+                        paypalIframe.src = data.url;
+                        paypalModal.classList.remove("hidden");
+                        document.body.style.overflow = "hidden";
+
+                        paypalIframe.onload = () => {
+                            if (paypalLoading)
+                                paypalLoading.classList.add("hidden");
+                        };
+                    }
+
+                    // Reset button state
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = originalText;
                 } catch (error: any) {
                     console.error("PayPal Error:", error);
                     alert(
@@ -1333,13 +1410,43 @@ const description = "Choose your payment method";
         }
     }
 
-    // Check for success status in URL (Redirect from Cryptomus)
+    // Check for success status in URL (Redirect from Cryptomus/PayPal or postMessage)
     window.addEventListener("load", () => {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get("status") === "success") {
             showSuccessModal();
         }
     });
+
+    // Message listener for modals (iFrames)
+    window.addEventListener("message", (event) => {
+        if (event.data.type === "paypal_success") {
+            const paypalModal = document.getElementById("paypal-modal");
+            if (paypalModal) paypalModal.classList.add("hidden");
+            document.body.style.overflow = "auto";
+            showSuccessModal();
+        }
+    });
+
+    // PayPal Modal Functions
+    const closePaypalModal = document.getElementById("close-paypal-modal");
+    const paypalModal = document.getElementById("paypal-modal");
+
+    if (closePaypalModal) {
+        closePaypalModal.addEventListener("click", () => {
+            if (paypalModal) paypalModal.classList.add("hidden");
+            document.body.style.overflow = "auto";
+        });
+    }
+
+    if (paypalModal) {
+        paypalModal.addEventListener("click", (e) => {
+            if (e.target === paypalModal) {
+                paypalModal.classList.add("hidden");
+                document.body.style.overflow = "auto";
+            }
+        });
+    }
 
     // Yape Modal Functions
     const yapeModal = document.getElementById("yape-modal");

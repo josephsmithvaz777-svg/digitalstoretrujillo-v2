@@ -34,12 +34,27 @@ export const GET: APIRoute = async ({ url }) => {
                 throw new Error('Payment captured but failed to update order in database');
             }
 
-            // Redirect to success page or return success JSON
-            // For now, let's redirect to the payment page with success status
-            return new Response(null, {
-                status: 302,
+            // Return a success script that can be handled by the parent window (if in iframe/popup)
+            return new Response(`
+                <html>
+                    <body>
+                        <script>
+                            if (window.parent && window.parent !== window) {
+                                window.parent.postMessage({ type: 'paypal_success', orderId: '${orderId}' }, '*');
+                            } else {
+                                window.location.href = '/payment?status=success&orderId=${orderId}&verified=true';
+                            }
+                        </script>
+                        <div style="font-family: sans-serif; text-align: center; padding-top: 50px;">
+                            <h2>Pago Verificado</h2>
+                            <p>Procesando tu pedido... Ya puedes cerrar esta ventana.</p>
+                        </div>
+                    </body>
+                </html>
+            `, {
+                status: 200,
                 headers: {
-                    'Location': `/payment?status=success&orderId=${orderId}&verified=true`
+                    'Content-Type': 'text/html'
                 }
             });
         } else {
