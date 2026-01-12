@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
-const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID;
-const PAYPAL_CLIENT_SECRET = import.meta.env.PAYPAL_CLIENT_SECRET;
+const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID?.trim();
+const PAYPAL_CLIENT_SECRET = import.meta.env.PAYPAL_CLIENT_SECRET?.trim();
 const PAYPAL_MODE = import.meta.env.PAYPAL_MODE || 'live'; // 'live' or 'sandbox'
 
 const PAYPAL_API_BASE = PAYPAL_MODE === 'live'
@@ -22,6 +22,7 @@ export class PaypalService {
                 headers: {
                     'Authorization': `Basic ${auth}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
                 },
                 body: 'grant_type=client_credentials',
             });
