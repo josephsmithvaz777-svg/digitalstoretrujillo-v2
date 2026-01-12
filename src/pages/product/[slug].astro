@@ -61,29 +61,32 @@ const description = product.description || "";
                     <!-- Left Column: Images -->
                     <div class="lg:col-span-7 flex flex-col gap-4">
                         <div
-                            class="relative w-full aspect-[16/10] overflow-hidden rounded-xl bg-black border border-border-dark group flex items-center justify-center"
+                            class="relative w-full aspect-square overflow-hidden rounded-2xl bg-[#0f0f0f] border border-border-dark group flex items-center justify-center p-4 lg:p-8"
                         >
-                            <!-- Blurred Background for empty spaces -->
+                            <!-- Ambient Background Glow -->
                             <div
-                                class="absolute inset-0 bg-center bg-cover blur-2xl opacity-30 scale-110"
+                                class="absolute inset-0 bg-center bg-cover blur-[80px] opacity-20 scale-150 transition-opacity duration-500 group-hover:opacity-30"
                                 style={`background-image: url("${product.image}");`}
                             >
                             </div>
-                            <!-- Main Image contained -->
+
+                            <!-- Main Product Image -->
                             <img
                                 src={product.image}
-                                class="relative z-10 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                class="relative z-10 w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.03] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
                                 alt={product.title}
                             />
+
+                            <!-- Badges Overlay -->
                             <div
-                                class="absolute top-4 left-4 flex flex-wrap gap-2"
+                                class="absolute top-6 left-6 flex flex-wrap gap-2 z-20"
                             >
                                 {
                                     product.discount_badge &&
                                         product.show_discount_badge && (
                                             <span
-                                                class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg uppercase tracking-wider"
-                                                style={`background-color: ${product.discount_badge_color || "#E00700"}; color: ${product.discount_badge_text_color || "#FFFFFF"}`}
+                                                class="text-[10px] md:text-xs font-black px-3 py-1.5 rounded-lg shadow-xl uppercase tracking-wider backdrop-blur-md"
+                                                style={`background-color: ${product.discount_badge_color || "rgba(224, 7, 0, 0.9)"}; color: ${product.discount_badge_text_color || "#FFFFFF"}`}
                                             >
                                                 {product.discount_badge}
                                             </span>
@@ -92,8 +95,8 @@ const description = product.description || "";
                                 {
                                     product.badge && product.show_badge && (
                                         <span
-                                            class="text-xs font-black px-3 py-1.5 rounded-lg shadow-lg uppercase tracking-wider"
-                                            style={`background-color: ${product.badge_color || "#FFD700"}; color: ${product.badge_text_color || "#000000"}`}
+                                            class="text-[10px] md:text-xs font-black px-3 py-1.5 rounded-lg shadow-xl uppercase tracking-wider backdrop-blur-md"
+                                            style={`background-color: ${product.badge_color || "rgba(255, 215, 0, 0.9)"}; color: ${product.badge_text_color || "#000000"}`}
                                         >
                                             {product.badge}
                                         </span>
