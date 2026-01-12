@@ -280,19 +280,19 @@ const description = "Choose your payment method";
                         </div>
                     </div>
 
-                    <!-- Whop Payment -->
+                    <!-- PayPal Payment -->
                     <div
-                        class="payment-option group p-6 rounded-xl bg-card-dark border-2 border-border-dark hover:border-[#FF4F00] transition-all cursor-pointer"
-                        data-method="whop"
+                        class="payment-option group p-6 rounded-xl bg-card-dark border-2 border-border-dark hover:border-[#0070ba] transition-all cursor-pointer"
+                        data-method="paypal"
                     >
                         <div class="flex items-start gap-4">
                             <div
-                                class="flex-shrink-0 w-16 h-16 rounded-xl bg-[#FF4F00]/20 flex items-center justify-center border border-[#FF4F00]/30 overflow-hidden"
+                                class="flex-shrink-0 w-16 h-16 rounded-xl bg-[#0070ba]/20 flex items-center justify-center border border-[#0070ba]/30 overflow-hidden"
                             >
                                 <img
-                                    src="https://whop.com/favicon-32x32.png"
-                                    alt="Whop"
-                                    class="w-10 h-10 object-contain"
+                                    src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg"
+                                    alt="PayPal"
+                                    class="w-12 h-12 object-contain"
                                 />
                             </div>
                             <div class="flex-1">
@@ -300,36 +300,36 @@ const description = "Choose your payment method";
                                     class="flex items-center justify-between mb-2"
                                 >
                                     <h3 class="text-white font-bold text-xl">
-                                        Whop (Card/Crypto)
+                                        PayPal (Global)
                                     </h3>
                                     <div
-                                        class="payment-radio w-6 h-6 rounded-full border-2 border-border-dark group-hover:border-[#FF4F00] flex items-center justify-center transition-colors"
+                                        class="payment-radio w-6 h-6 rounded-full border-2 border-border-dark group-hover:border-[#0070ba] flex items-center justify-center transition-colors"
                                     >
                                         <div
-                                            class="w-3 h-3 rounded-full bg-[#FF4F00] opacity-0 group-hover:opacity-100 transition-opacity"
+                                            class="w-3 h-3 rounded-full bg-[#0070ba] opacity-0 group-hover:opacity-100 transition-opacity"
                                         >
                                         </div>
                                     </div>
                                 </div>
                                 <p class="text-text-muted text-sm mb-3">
-                                    Paga con Tarjeta, Apple Pay o Cripto a
-                                    través de Whop.
+                                    Paga de forma segura con tu cuenta PayPal o
+                                    Tarjeta de Crédito/Débito.
                                 </p>
                                 <div class="flex flex-wrap gap-2">
                                     <span
-                                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-orange-500/10 text-orange-400 text-xs font-medium"
+                                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 text-blue-400 text-xs font-medium"
                                     >
-                                        Visa / Mastercard
+                                        Visa / Mastercard / Amex
                                     </span>
                                     <span
                                         class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 text-blue-400 text-xs font-medium"
                                     >
-                                        Apple Pay / Google Pay
+                                        PayPal Account
                                     </span>
                                     <span
                                         class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-500/10 text-green-400 text-xs font-medium"
                                     >
-                                        Crypto
+                                        Instant Delivery
                                     </span>
                                 </div>
                             </div>
@@ -1089,8 +1089,8 @@ const description = "Choose your payment method";
 
         const totalPEN = cartTotal.get();
         const isUSD =
-            method === "binance" || method === "crypto" || method === "whop";
-        const rate = 2.4;
+            method === "binance" || method === "crypto" || method === "paypal";
+        const rate = 3.8;
         const total = isUSD ? totalPEN / rate : totalPEN;
         const symbol = isUSD ? "$" : "S/";
         const currencyText = isUSD ? "USD" : "PEN";
@@ -1140,7 +1140,7 @@ const description = "Choose your payment method";
                     "border-[#722F91]",
                     "border-[#F3BA2F]",
                     "border-[#F7931A]",
-                    "border-[#FF4F00]",
+                    "border-[#0070ba]",
                 );
                 opt.classList.add("border-border-dark");
                 const radio = opt.querySelector(".payment-radio div");
@@ -1164,9 +1164,9 @@ const description = "Choose your payment method";
             } else if (method === "crypto") {
                 option.classList.remove("border-border-dark");
                 option.classList.add("border-[#F7931A]");
-            } else if (method === "whop") {
+            } else if (method === "paypal") {
                 option.classList.remove("border-border-dark");
-                option.classList.add("border-[#FF4F00]");
+                option.classList.add("border-[#0070ba]");
             }
 
             const radio = option.querySelector(".payment-radio div");
@@ -1261,8 +1261,8 @@ const description = "Choose your payment method";
                     continueBtn.disabled = false;
                     continueBtn.innerHTML = originalText;
                 }
-            } else if (selectedMethod === "whop") {
-                // Whop Integration
+            } else if (selectedMethod === "paypal") {
+                // PayPal Integration
                 const originalText = continueBtn.innerHTML;
                 try {
                     continueBtn.disabled = true;
@@ -1274,15 +1274,18 @@ const description = "Choose your payment method";
                     const items = cartItems.get();
                     const totalPEN = cartTotal.get();
 
-                    const response = await fetch("/api/payments/whop/create", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            buyerInfo,
-                            cartItems: items,
-                            totalPEN,
-                        }),
-                    });
+                    const response = await fetch(
+                        "/api/payments/paypal/create",
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                buyerInfo,
+                                cartItems: items,
+                                totalPEN,
+                            }),
+                        },
+                    );
 
                     const data = await response.json();
 
@@ -1291,12 +1294,12 @@ const description = "Choose your payment method";
                             data.error || "Failed to initiate payment",
                         );
 
-                    // Redirect to Whop Checkout
+                    // Redirect to PayPal Checkout
                     window.location.href = data.url;
                 } catch (error: any) {
-                    console.error("Whop Error:", error);
+                    console.error("PayPal Error:", error);
                     alert(
-                        `Error: ${error.message || "No se pudo iniciar el pago con Whop."}`,
+                        `Error: ${error.message || "No se pudo iniciar el pago con PayPal."}`,
                     );
                     continueBtn.disabled = false;
                     continueBtn.innerHTML = originalText;

@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS orders (
     currency TEXT DEFAULT 'PEN',
     
     -- Payment
-    payment_method TEXT NOT NULL CHECK (payment_method IN ('yape', 'binance', 'cryptomus', 'whop')),
+    payment_method TEXT NOT NULL CHECK (payment_method IN ('yape', 'binance', 'cryptomus', 'paypal')),
     payment_proof TEXT, -- URL to payment screenshot
     payment_reference TEXT, -- Reference code from payment
     payment_status TEXT DEFAULT 'pending' CHECK (payment_status IN ('pending', 'verified', 'failed')),
