@@ -2,25 +2,42 @@ import type { APIRoute } from 'astro';
 
 const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = import.meta.env.PAYPAL_CLIENT_SECRET;
-const PAYPAL_API_BASE = 'https://api-m.paypal.com'; // Use sandbox if needed: https://api-m.sandbox.paypal.com
+const PAYPAL_MODE = import.meta.env.PAYPAL_MODE || 'live'; // 'live' or 'sandbox'
+
+const PAYPAL_API_BASE = PAYPAL_MODE === 'live'
+    ? 'https://api-m.paypal.com'
+    : 'https://api-m.sandbox.paypal.com';
 
 export class PaypalService {
     private static async getAccessToken() {
-        const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64');
-        const response = await fetch(`${PAYPAL_API_BASE}/v1/oauth2/token`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Basic ${auth}`,
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'grant_type=client_credentials',
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(`Failed to get PayPal access token: ${data.error_description || data.error}`);
+        if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+            throw new Error('PayPal credentials (CLIENT_ID or CLIENT_SECRET) not found in environment variables');
         }
-        return data.access_token;
+
+        const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64');
+
+        try {
+            const response = await fetch(`${PAYPAL_API_BASE}/v1/oauth2/token`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${auth}`,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'grant_type=client_credentials',
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error('PayPal OAuth Error Detail:', data);
+                throw new Error(`PayPal Auth Failed (${response.status}): ${data.error_description || data.error || JSON.stringify(data)}`);
+            }
+
+            return data.access_token;
+        } catch (error: any) {
+            console.error('Network or Auth error during PayPal token fetch:', error);
+            throw error;
+        }
     }
 
     static async createOrder(params: { amount: number; currency: string; order_number: string; redirect_url: string; cancel_url: string }) {
