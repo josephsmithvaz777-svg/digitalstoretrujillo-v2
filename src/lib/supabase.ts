@@ -537,6 +537,23 @@ export async function updatePaymentStatus(
 }
 
 /**
+ * Delete an order (admin only)
+ */
+export async function deleteOrder(orderId: string): Promise<boolean> {
+  const { error } = await supabase
+    .from('orders')
+    .delete()
+    .eq('id', orderId);
+
+  if (error) {
+    console.error('Error deleting order:', error);
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Get dashboard statistics (admin only)
  */
 export async function getDashboardStats() {

@@ -177,6 +177,15 @@ const orders = await getAllOrders();
                                                     edit
                                                 </span>
                                             </button>
+                                            <button
+                                                class="delete-order-btn p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                                data-order-id={order.id}
+                                                title="Eliminar Orden"
+                                            >
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    delete
+                                                </span>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -232,16 +241,61 @@ const orders = await getAllOrders();
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div
+        id="delete-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-sm w-full p-6 text-center"
+        >
+            <div
+                class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+                <span class="material-symbols-outlined text-red-500 text-3xl">
+                    delete_forever
+                </span>
+            </div>
+            <h2 class="text-white text-xl font-bold mb-2">¿Eliminar Orden?</h2>
+            <p class="text-text-muted text-sm mb-6">
+                Esta acción no se puede deshacer. La orden será eliminada permanentemente.
+            </p>
+
+            <div class="flex gap-3">
+                <button
+                    id="cancel-delete"
+                    class="flex-1 px-4 py-2 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+                >
+                    Cancelar
+                </button>
+                <button
+                    id="confirm-delete"
+                    class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
+                >
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        import { updateOrderStatus } from "../../../lib/supabase";
+        import { updateOrderStatus, deleteOrder } from "../../../lib/supabase";
 
         const statusModal = document.getElementById("status-modal");
+        const deleteModal = document.getElementById("delete-modal");
+        
         const orderStatusSelect = document.getElementById(
             "order-status",
         ) as HTMLSelectElement;
-        const cancelBtn = document.getElementById("cancel-update");
-        const confirmBtn = document.getElementById("confirm-update");
+        
+        const cancelUpdateBtn = document.getElementById("cancel-update");
+        const confirmUpdateBtn = document.getElementById("confirm-update");
+        
+        const cancelDeleteBtn = document.getElementById("cancel-delete");
+        const confirmDeleteBtn = document.getElementById("confirm-delete");
+
         let orderToUpdate: string | null = null;
+        let orderToDelete: string | null = null;
 
         // Open status modal
         document.querySelectorAll(".update-status-btn").forEach((btn) => {
@@ -257,18 +311,35 @@ const orders = await getAllOrders();
             });
         });
 
+        // Open delete modal
+        document.querySelectorAll(".delete-order-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const orderId = btn.getAttribute("data-order-id");
+                if (orderId) {
+                    orderToDelete = orderId;
+                    deleteModal?.classList.remove("hidden");
+                }
+            });
+        });
+
         // Cancel update
-        cancelBtn?.addEventListener("click", () => {
+        cancelUpdateBtn?.addEventListener("click", () => {
             statusModal?.classList.add("hidden");
             orderToUpdate = null;
         });
 
+        // Cancel delete
+        cancelDeleteBtn?.addEventListener("click", () => {
+            deleteModal?.classList.add("hidden");
+            orderToDelete = null;
+        });
+
         // Confirm update
-        confirmBtn?.addEventListener("click", async () => {
+        confirmUpdateBtn?.addEventListener("click", async () => {
             if (!orderToUpdate || !orderStatusSelect) return;
 
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = "Actualizando...";
+            confirmUpdateBtn.disabled = true;
+            confirmUpdateBtn.textContent = "Actualizando...";
 
             const newStatus = orderStatusSelect.value as any;
             const success = await updateOrderStatus(orderToUpdate, newStatus);
@@ -277,16 +348,38 @@ const orders = await getAllOrders();
                 window.location.reload();
             } else {
                 alert("Error al actualizar el estado");
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = "Actualizar";
+                confirmUpdateBtn.disabled = false;
+                confirmUpdateBtn.textContent = "Actualizar";
             }
         });
 
-        // Close modal on backdrop click
-        statusModal?.addEventListener("click", (e) => {
+        // Confirm delete
+        confirmDeleteBtn?.addEventListener("click", async () => {
+            if (!orderToDelete) return;
+
+            confirmDeleteBtn.disabled = true;
+            confirmDeleteBtn.textContent = "Eliminando...";
+
+            const success = await deleteOrder(orderToDelete);
+
+            if (success) {
+                window.location.reload();
+            } else {
+                alert("Error al eliminar la orden");
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.textContent = "Eliminar";
+            }
+        });
+
+        // Close modals on backdrop click
+        window.addEventListener("click", (e) => {
             if (e.target === statusModal) {
-                statusModal.classList.add("hidden");
+                statusModal?.classList.add("hidden");
                 orderToUpdate = null;
+            }
+            if (e.target === deleteModal) {
+                deleteModal?.classList.add("hidden");
+                orderToDelete = null;
             }
         });
     </script>
