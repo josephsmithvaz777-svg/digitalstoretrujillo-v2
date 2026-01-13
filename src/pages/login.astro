@@ -110,56 +110,71 @@ const description = "Access your account and order history";
 <script>
     import { supabase } from "../lib/supabase";
 
-    const form = document.getElementById("login-form") as HTMLFormElement;
-    const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
-    const errorMessage = document.getElementById("error-message");
-    const errorText = document.getElementById("error-text");
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById("login-form") as HTMLFormElement;
+        const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+        const errorMessage = document.getElementById("error-message");
+        const errorText = document.getElementById("error-text");
 
-    // Check if already logged in
-    supabase.auth.getUser().then(({ data: { user } }) => {
-        if (user) {
-            window.location.href = "/account";
+        if (!form || !submitBtn) {
+            console.error("Login form or submit button not found");
+            return;
         }
-    });
 
-    form?.addEventListener("submit", async (e) => {
-        e.preventDefault();
+        // Check if already logged in
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            if (user) {
+                window.location.href = "/account";
+            }
+        });
 
-        const formData = new FormData(form);
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            console.log("Form submitted");
 
-        // Disable button and show loading
-        submitBtn.disabled = true;
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = `
-            <span class="material-symbols-outlined animate-spin">progress_activity</span>
-            Signing in...
-        `;
+            const formData = new FormData(form);
+            const email = formData.get("email") as string;
+            const password = formData.get("password") as string;
 
-        // Hide previous errors
-        errorMessage?.classList.add("hidden");
-
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-
-            if (error) throw error;
-
-            // Success - redirect to account dashboard
-            window.location.href = "/account";
-        } catch (error: any) {
-            // Show error
-            if (errorMessage && errorText) {
-                errorText.textContent = error.message || "Invalid credentials. Please try again.";
-                errorMessage.classList.remove("hidden");
+            if (!email || !password) {
+                return;
             }
 
-            // Re-enable button
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = `
+                <span class="material-symbols-outlined animate-spin">progress_activity</span>
+                Signing in...
+            `;
+
+            // Hide previous errors
+            errorMessage?.classList.add("hidden");
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+
+                if (error) throw error;
+
+                console.log("Login successful");
+                // Success - redirect to account dashboard
+                window.location.href = "/account";
+            } catch (error: any) {
+                console.error("Login error:", error);
+                // Show error
+                if (errorMessage && errorText) {
+                    errorText.textContent = error.message || "Invalid credentials. Please try again.";
+                    errorMessage.classList.remove("hidden");
+                }
+
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
     });
 </script>

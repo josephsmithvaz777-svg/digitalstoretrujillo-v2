@@ -28,25 +28,65 @@ const description = "Create an account to track your orders";
                 class="bg-card-dark border border-border-dark rounded-xl p-8 shadow-lg"
             >
                 <form id="register-form" class="space-y-6">
-                    <!-- Name -->
+                    <!-- Personal Info -->
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <!-- First Name -->
+                        <div>
+                            <label
+                                for="firstName"
+                                class="block text-sm font-medium text-white mb-2"
+                            >
+                                First Name
+                            </label>
+                            <input
+                                id="firstName"
+                                name="firstName"
+                                type="text"
+                                autocomplete="given-name"
+                                required
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                placeholder="Juan"
+                            />
+                        </div>
+
+                        <!-- Last Name -->
+                        <div>
+                            <label
+                                for="lastName"
+                                class="block text-sm font-medium text-white mb-2"
+                            >
+                                Last Name
+                            </label>
+                            <input
+                                id="lastName"
+                                name="lastName"
+                                type="text"
+                                autocomplete="family-name"
+                                required
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                placeholder="Perez"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Phone -->
                     <div>
                         <label
-                            for="full_name"
+                            for="phone"
                             class="block text-sm font-medium text-white mb-2"
                         >
-                            Full Name
+                            Phone Number
                         </label>
                         <div class="relative">
                             <input
-                                id="full_name"
-                                name="full_name"
-                                type="text"
-                                autocomplete="name"
-                                required
+                                id="phone"
+                                name="phone"
+                                type="tel"
+                                autocomplete="tel"
                                 class="w-full px-4 py-3 pl-10 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                                placeholder="John Doe"
+                                placeholder="+51 987 654 321"
                             />
-                            <span class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]">person</span>
+                            <span class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]">call</span>
                         </div>
                     </div>
 
@@ -164,7 +204,10 @@ const description = "Create an account to track your orders";
         const formData = new FormData(form);
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
-        const fullName = formData.get("full_name") as string;
+        const firstName = formData.get("firstName") as string;
+        const lastName = formData.get("lastName") as string;
+        const phone = formData.get("phone") as string;
+        const fullName = `${firstName} ${lastName}`;
 
         // Disable button and show loading
         submitBtn.disabled = true;
@@ -185,6 +228,7 @@ const description = "Create an account to track your orders";
                 options: {
                     data: {
                         full_name: fullName,
+                        phone: phone,
                     },
                     emailRedirectTo: `${window.location.origin}/account`,
                 },
