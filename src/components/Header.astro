@@ -7,7 +7,7 @@ import CartIcon from "./CartIcon.astro";
     class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-dark px-4 lg:px-40 py-3 bg-background-dark sticky top-0 z-50"
 >
     <div class="flex items-center gap-8 w-full">
-        <div class="flex items-center gap-4 text-white">
+        <a href="/" class="flex items-center gap-4 text-white hover:opacity-80 transition-opacity">
             <div class="size-8 text-primary">
                 <span class="material-symbols-outlined text-4xl"
                     >local_mall</span
@@ -18,7 +18,7 @@ import CartIcon from "./CartIcon.astro";
             >
                 DigitalStoreTrujillo
             </h2>
-        </div>
+        </a>
         <form
             action="/search"
             method="get"
@@ -60,13 +60,49 @@ import CartIcon from "./CartIcon.astro";
                 href="/category/services">Services</a
             >
         </div>
-        <div class="flex gap-2">
-            <button
+        <div class="flex gap-2 items-center">
+            <a
+                id="auth-button"
+                href="/login"
                 class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-red-700 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]"
             >
-                <span class="truncate">Sign In</span>
-            </button>
+                <span class="truncate" id="auth-text">Sign In</span>
+            </a>
             <CartIcon />
         </div>
     </div>
 </header>
+
+<script>
+    import { supabase } from "../lib/supabase";
+
+    const authButton = document.getElementById("auth-button") as HTMLAnchorElement;
+    const authText = document.getElementById("auth-text");
+
+    if (authButton && authText) {
+        // Check initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                authText.textContent = "My Account";
+                authButton.href = "/account";
+                authButton.classList.remove("bg-primary", "hover:bg-red-700");
+                authButton.classList.add("bg-card-dark", "border", "border-border-dark", "hover:border-primary");
+            }
+        });
+
+        // Listen for auth changes
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                authText.textContent = "My Account";
+                authButton.href = "/account";
+                authButton.classList.remove("bg-primary", "hover:bg-red-700");
+                authButton.classList.add("bg-card-dark", "border", "border-border-dark", "hover:border-primary");
+            } else {
+                authText.textContent = "Sign In";
+                authButton.href = "/login";
+                authButton.classList.add("bg-primary", "hover:bg-red-700");
+                authButton.classList.remove("bg-card-dark", "border", "border-border-dark", "hover:border-primary");
+            }
+        });
+    }
+</script>
