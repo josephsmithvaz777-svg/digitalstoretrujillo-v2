@@ -489,7 +489,8 @@ const description = "Complete your purchase securely";
     renderOrderSummary();
 
     // Check auth status
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    const checkAuth = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             // Pre-fill form if user is logged in
             const emailInput = document.getElementById("email") as HTMLInputElement;
@@ -512,6 +513,15 @@ const description = "Complete your purchase securely";
                     </div>
                 `;
             }
+        }
+    };
+
+    checkAuth();
+
+    // Listen for auth changes to update UI automatically
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+            checkAuth();
         }
     });
 
@@ -567,7 +577,8 @@ const description = "Complete your purchase securely";
                             data: {
                                 full_name: `${data.firstName} ${data.lastName}`,
                                 phone: data.phone,
-                            }
+                            },
+                            emailRedirectTo: `${window.location.origin}/`,
                         }
                     });
 
