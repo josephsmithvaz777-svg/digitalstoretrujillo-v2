@@ -33,18 +33,17 @@ export const POST: APIRoute = async ({ request }) => {
         // 2. Logic for Automatic Email (Option A)
         // If the payment is verified or order completed, send email
         if (paymentStatus === 'verified' || status === 'completed') {
-            console.log(`[Email Service] Sending confirmation email to ${order.customer_email} for order ${order.order_number}`);
+            const { sendEmail, getOrderConfirmationTemplate } = await import('../../../../lib/mail');
 
-            /* 
-            TODO: Implement actual email sending with Resend/Nodemailer
-            Example with Resend:
-            await resend.emails.send({
-                from: 'Digital Store <noreply@digitalstoretrujillo.com>',
-                to: [order.customer_email],
-                subject: '¡Pago Confirmado! - Digital Store Trujillo',
-                html: '...' (use the template provided by user)
+            await sendEmail({
+                to: order.customer_email,
+                subject: `¡Pago Confirmado! - Orden #${order.order_number}`,
+                html: getOrderConfirmationTemplate(
+                    order.customer_name,
+                    order.order_number,
+                    order.items
+                )
             });
-            */
         }
 
         return new Response(JSON.stringify({ success: true, order }), { status: 200 });
