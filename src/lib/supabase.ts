@@ -480,7 +480,10 @@ export async function deleteProduct(id: string): Promise<boolean> {
  * Get all orders (admin only)
  */
 export async function getAllOrders(): Promise<Order[]> {
-  const { data, error } = await supabase
+  // Use admin client on server if available to bypass RLS
+  const client = (typeof window === 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+
+  const { data, error } = await client
     .from('orders')
     .select('*')
     .order('created_at', { ascending: false });
@@ -537,24 +540,27 @@ export async function updatePaymentStatus(
  * Get dashboard statistics (admin only)
  */
 export async function getDashboardStats() {
+  // Use admin client on server if available to bypass RLS
+  const client = (typeof window === 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+
   // Get total products
-  const { count: totalProducts } = await supabase
+  const { count: totalProducts } = await client
     .from('products')
     .select('*', { count: 'exact', head: true });
 
   // Get total orders
-  const { count: totalOrders } = await supabase
+  const { count: totalOrders } = await client
     .from('orders')
     .select('*', { count: 'exact', head: true });
 
   // Get pending orders
-  const { count: pendingOrders } = await supabase
+  const { count: pendingOrders } = await client
     .from('orders')
     .select('*', { count: 'exact', head: true })
     .eq('status', 'pending');
 
   // Get total revenue
-  const { data: orders } = await supabase
+  const { data: orders } = await client
     .from('orders')
     .select('total')
     .eq('payment_status', 'verified');
