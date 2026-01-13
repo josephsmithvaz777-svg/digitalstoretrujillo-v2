@@ -473,6 +473,60 @@ export async function deleteProduct(id: string): Promise<boolean> {
 }
 
 // ============================================
+// Admin User Functions
+// ============================================
+
+/**
+ * Get all users (admin only)
+ */
+export async function getAllUsers() {
+  // Use admin client on server if available to bypass RLS
+  const client = (typeof window === 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+
+  // Since we can't directly list users from auth.users via client SDK without admin API,
+  // we'll fetch from the auth admin API if on server, or rely on a specific table if we had a public profiles table.
+  // BUT, supabaseAdmin (service role) HAS access to auth.admin.listUsers()!
+  
+  if (typeof window === 'undefined' && supabaseAdmin) {
+    const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
+    
+    if (error) {
+      console.error('Error fetching users:', error);
+      return [];
+    }
+    return users || [];
+  }
+  
+  // Client side can't list users easily without a function or public table.
+  // For this project, we are rendering mostly on server (Astro) for admin pages, 
+  // so the component will call this and get data.
+  return [];
+}
+
+/**
+ * Delete a user (admin only)
+ */
+export async function deleteUser(userId: string): Promise<boolean> {
+  // This must be done via an API route because client-side can't use auth.admin
+  try {
+    const response = await fetch('/api/admin/users/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Pass session token if needed for API route protection
+        'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+      },
+      body: JSON.stringify({ userId })
+    });
+    
+    return response.ok;
+  } catch (e) {
+    console.error("Error deleting user:", e);
+    return false;
+  }
+}
+
+// ============================================
 // Admin Order Functions
 // ============================================
 

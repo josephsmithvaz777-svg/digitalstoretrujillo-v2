@@ -1,0 +1,239 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { getAllUsers } from "../../../lib/supabase";
+
+const users = await getAllUsers();
+---
+
+<AdminLayout title="Usuarios" activePage="users">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-white text-2xl font-bold mb-1">Usuarios</h1>
+        <p class="text-text-muted text-sm">
+            Gestiona los usuarios registrados en la plataforma
+        </p>
+    </div>
+
+    <!-- Users Table -->
+    <div
+        class="bg-card-dark border border-border-dark rounded-xl overflow-hidden"
+    >
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-background-dark border-b border-border-dark">
+                    <tr>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Usuario
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Email
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Estado
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Registro
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Último Acceso
+                        </th>
+                        <th
+                            class="px-6 py-4 text-right text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border-dark">
+                    {
+                        users.length === 0 ? (
+                            <tr>
+                                <td colspan="6" class="px-6 py-12 text-center">
+                                    <span class="material-symbols-outlined text-text-muted text-5xl mb-4 block">
+                                        group_off
+                                    </span>
+                                    <p class="text-text-muted">
+                                        No hay usuarios registrados aún
+                                    </p>
+                                </td>
+                            </tr>
+                        ) : (
+                            users.map((user: any) => (
+                                <tr class="hover:bg-background-dark/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold text-xs">
+                                                {user.email?.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <p class="text-white font-medium text-sm">
+                                                    {user.user_metadata?.full_name || "Sin nombre"}
+                                                </p>
+                                                <p class="text-text-muted text-xs">
+                                                    ID: {user.id.slice(0, 8)}...
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-text-muted text-sm">
+                                            {user.email}
+                                        </p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${
+                                                user.email_confirmed_at
+                                                    ? "bg-green-500/20 text-green-400"
+                                                    : "bg-yellow-500/20 text-yellow-400"
+                                            }`}
+                                        >
+                                            {user.email_confirmed_at
+                                                ? "Verificado"
+                                                : "No Verificado"}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-text-muted text-sm">
+                                            {new Date(
+                                                user.created_at,
+                                            ).toLocaleDateString("es-PE")}
+                                        </p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-text-muted text-sm">
+                                            {user.last_sign_in_at
+                                                ? new Date(
+                                                      user.last_sign_in_at,
+                                                  ).toLocaleDateString("es-PE")
+                                                : "Nunca"}
+                                        </p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <button
+                                                class="delete-user-btn p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                                data-user-id={user.id}
+                                                data-user-email={user.email}
+                                                title="Eliminar Usuario"
+                                            >
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    delete
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+        id="delete-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-sm w-full p-6 text-center"
+        >
+            <div
+                class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+                <span class="material-symbols-outlined text-red-500 text-3xl">
+                    person_remove
+                </span>
+            </div>
+            <h2 class="text-white text-xl font-bold mb-2">¿Eliminar Usuario?</h2>
+            <p class="text-text-muted text-sm mb-6">
+                Se eliminará el usuario <span id="delete-user-email" class="text-white font-bold"></span> y su acceso. Esta acción es irreversible.
+            </p>
+
+            <div class="flex gap-3">
+                <button
+                    id="cancel-delete"
+                    class="flex-1 px-4 py-2 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+                >
+                    Cancelar
+                </button>
+                <button
+                    id="confirm-delete"
+                    class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
+                >
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import { deleteUser } from "../../../lib/supabase";
+
+        const deleteModal = document.getElementById("delete-modal");
+        const cancelDeleteBtn = document.getElementById("cancel-delete");
+        const confirmDeleteBtn = document.getElementById("confirm-delete");
+        const deleteUserEmailSpan = document.getElementById("delete-user-email");
+        let userToDelete: string | null = null;
+
+        // Open delete modal
+        document.querySelectorAll(".delete-user-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const userId = btn.getAttribute("data-user-id");
+                const userEmail = btn.getAttribute("data-user-email");
+                
+                if (userId) {
+                    userToDelete = userId;
+                    if (deleteUserEmailSpan && userEmail) {
+                        deleteUserEmailSpan.textContent = userEmail;
+                    }
+                    deleteModal?.classList.remove("hidden");
+                }
+            });
+        });
+
+        // Cancel delete
+        cancelDeleteBtn?.addEventListener("click", () => {
+            deleteModal?.classList.add("hidden");
+            userToDelete = null;
+        });
+
+        // Confirm delete
+        confirmDeleteBtn?.addEventListener("click", async () => {
+            if (!userToDelete) return;
+
+            confirmDeleteBtn.disabled = true;
+            confirmDeleteBtn.textContent = "Eliminando...";
+
+            const success = await deleteUser(userToDelete);
+
+            if (success) {
+                window.location.reload();
+            } else {
+                alert("Error al eliminar el usuario");
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.textContent = "Eliminar";
+            }
+        });
+
+        // Close modal on backdrop click
+        window.addEventListener("click", (e) => {
+            if (e.target === deleteModal) {
+                deleteModal?.classList.add("hidden");
+                userToDelete = null;
+            }
+        });
+    </script>
+</AdminLayout>
