@@ -127,9 +127,8 @@ const lowStockProducts = (await getProducts()).filter(
                 ) : (
                     <div class="space-y-4">
                         {recentOrders.map((order) => (
-                            <a
-                                href={`/admin/orders/${order.id}`}
-                                class="block p-4 bg-background-dark hover:bg-background-dark/50 rounded-lg border border-border-dark hover:border-primary/30 transition-all"
+                            <div
+                                class="block p-4 bg-background-dark rounded-lg border border-border-dark"
                             >
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-white font-medium">
@@ -163,7 +162,7 @@ const lowStockProducts = (await getProducts()).filter(
                                         S/ {Number(order.total).toFixed(2)}
                                     </span>
                                 </div>
-                            </a>
+                            </div>
                         ))}
                     </div>
                 )
