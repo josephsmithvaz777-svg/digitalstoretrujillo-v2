@@ -10,31 +10,58 @@ const description = "View your order history and credentials";
 <Layout title={title} description={description}>
     <Header />
 
-    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <main
+        class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
+    >
         <!-- Loading State -->
-        <div id="loading" class="flex flex-col items-center justify-center py-20">
-            <span class="material-symbols-outlined text-primary text-5xl animate-spin mb-4">progress_activity</span>
+        <div
+            id="loading"
+            class="flex flex-col items-center justify-center py-20"
+        >
+            <span
+                class="material-symbols-outlined text-primary text-5xl animate-spin mb-4"
+                >progress_activity</span
+            >
             <p class="text-text-muted">Loading your account...</p>
         </div>
 
         <!-- Success Modal for Email Confirmation -->
-        <div id="confirmation-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-card-dark border border-border-dark rounded-xl max-w-sm w-full p-6 shadow-2xl transform transition-all scale-100 text-center relative">
+        <div
+            id="confirmation-modal"
+            class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card-dark border border-border-dark rounded-xl max-w-sm w-full p-6 shadow-2xl transform transition-all scale-100 text-center relative"
+            >
                 <!-- Close Button -->
-                <button id="close-modal-btn" class="absolute top-4 right-4 text-text-muted hover:text-white">
+                <button
+                    id="close-modal-btn"
+                    class="absolute top-4 right-4 text-text-muted hover:text-white"
+                >
                     <span class="material-symbols-outlined">close</span>
                 </button>
 
-                <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                    <span class="material-symbols-outlined text-green-500 text-3xl">mark_email_read</span>
+                <div
+                    class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce"
+                >
+                    <span
+                        class="material-symbols-outlined text-green-500 text-3xl"
+                        >mark_email_read</span
+                    >
                 </div>
-                
-                <h3 class="text-white text-xl font-bold mb-2">Account Confirmed!</h3>
+
+                <h3 class="text-white text-xl font-bold mb-2">
+                    Account Confirmed!
+                </h3>
                 <p class="text-text-muted text-sm leading-relaxed mb-6">
-                    Thank you for verifying your email. You now have full access to your account and purchases.
+                    Thank you for verifying your email. You now have full access
+                    to your account and purchases.
                 </p>
 
-                <button id="modal-continue-btn" class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all">
+                <button
+                    id="modal-continue-btn"
+                    class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all"
+                >
                     Continue Shopping
                 </button>
             </div>
@@ -43,14 +70,23 @@ const description = "View your order history and credentials";
         <!-- Dashboard Content -->
         <div id="dashboard" class="hidden space-y-8">
             <!-- Header -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border-dark pb-6">
+            <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border-dark pb-6"
+            >
                 <div>
-                    <h1 class="text-3xl font-black text-white tracking-tight">My Account</h1>
+                    <h1 class="text-3xl font-black text-white tracking-tight">
+                        My Account
+                    </h1>
                     <p class="text-text-muted mt-1">
-                        Welcome back, <span id="user-email" class="text-white font-bold"></span>
+                        Welcome back, <span
+                            id="user-display-name"
+                            class="text-white font-bold"></span>
                     </p>
                 </div>
-                <button id="logout-btn" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-card-dark border border-border-dark text-text-muted hover:text-white hover:border-red-500 hover:bg-red-500/10 transition-all">
+                <button
+                    id="logout-btn"
+                    class="flex items-center gap-2 px-4 py-2 rounded-lg bg-card-dark border border-border-dark text-text-muted hover:text-white hover:border-red-500 hover:bg-red-500/10 transition-all"
+                >
                     <span class="material-symbols-outlined">logout</span>
                     Sign Out
                 </button>
@@ -59,11 +95,15 @@ const description = "View your order history and credentials";
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Main Content: Orders -->
                 <div class="lg:col-span-2 space-y-6">
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">shopping_bag</span>
+                    <h2
+                        class="text-xl font-bold text-white flex items-center gap-2"
+                    >
+                        <span class="material-symbols-outlined text-primary"
+                            >shopping_bag</span
+                        >
                         Order History
                     </h2>
-                    
+
                     <div id="orders-container" class="space-y-4">
                         <!-- Orders will be injected here -->
                     </div>
@@ -72,33 +112,74 @@ const description = "View your order history and credentials";
                 <!-- Sidebar: Profile & Support -->
                 <div class="space-y-6">
                     <!-- Profile Card -->
-                    <div class="bg-card-dark border border-border-dark rounded-xl p-6">
-                        <h3 class="text-white font-bold mb-4 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">person</span>
+                    <div
+                        class="bg-card-dark border border-border-dark rounded-xl p-6"
+                    >
+                        <h3
+                            class="text-white font-bold mb-4 flex items-center gap-2"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >person</span
+                            >
                             Profile Details
                         </h3>
                         <div class="space-y-3">
                             <div>
-                                <p class="text-text-muted text-xs">Email</p>
-                                <p id="profile-email" class="text-white text-sm break-all"></p>
+                                <p class="text-text-muted text-xs">Full Name</p>
+                                <p
+                                    id="profile-name"
+                                    class="text-white text-sm font-bold"
+                                >
+                                </p>
                             </div>
                             <div>
-                                <p class="text-text-muted text-xs">Member Since</p>
-                                <p id="profile-date" class="text-white text-sm"></p>
+                                <p class="text-text-muted text-xs">Email</p>
+                                <p
+                                    id="profile-email"
+                                    class="text-white text-sm break-all"
+                                >
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-text-muted text-xs">
+                                    Phone Number
+                                </p>
+                                <p
+                                    id="profile-phone"
+                                    class="text-white text-sm"
+                                >
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-text-muted text-xs">
+                                    Member Since
+                                </p>
+                                <p id="profile-date" class="text-white text-sm">
+                                </p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Support Card -->
-                    <div class="bg-card-dark border border-border-dark rounded-xl p-6">
-                        <h3 class="text-white font-bold mb-4 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">support_agent</span>
+                    <div
+                        class="bg-card-dark border border-border-dark rounded-xl p-6"
+                    >
+                        <h3
+                            class="text-white font-bold mb-4 flex items-center gap-2"
+                        >
+                            <span class="material-symbols-outlined text-primary"
+                                >support_agent</span
+                            >
                             Need Help?
                         </h3>
                         <p class="text-text-muted text-sm mb-4">
-                            If you have issues with your orders or credentials, please contact our support team.
+                            If you have issues with your orders or credentials,
+                            please contact our support team.
                         </p>
-                        <a href="/contact" class="flex items-center justify-center gap-2 w-full py-2 bg-[#25D366]/10 text-[#25D366] rounded-lg border border-[#25D366]/20 hover:bg-[#25D366]/20 transition-all font-bold text-sm">
+                        <a
+                            href="/contact"
+                            class="flex items-center justify-center gap-2 w-full py-2 bg-[#25D366]/10 text-[#25D366] rounded-lg border border-[#25D366]/20 hover:bg-[#25D366]/20 transition-all font-bold text-sm"
+                        >
                             WhatsApp Support
                         </a>
                     </div>
@@ -107,13 +188,25 @@ const description = "View your order history and credentials";
         </div>
 
         <!-- No Auth State (Should redirect, but fallback) -->
-        <div id="no-auth" class="hidden flex flex-col items-center justify-center py-20 text-center">
-            <div class="w-20 h-20 bg-card-dark rounded-full flex items-center justify-center mb-6 border border-border-dark">
-                <span class="material-symbols-outlined text-text-muted text-4xl">lock</span>
+        <div
+            id="no-auth"
+            class="hidden flex flex-col items-center justify-center py-20 text-center"
+        >
+            <div
+                class="w-20 h-20 bg-card-dark rounded-full flex items-center justify-center mb-6 border border-border-dark"
+            >
+                <span class="material-symbols-outlined text-text-muted text-4xl"
+                    >lock</span
+                >
             </div>
             <h2 class="text-2xl font-bold text-white mb-2">Access Denied</h2>
-            <p class="text-text-muted mb-8 max-w-md">Please sign in to view your account.</p>
-            <a href="/login" class="bg-primary hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-all">
+            <p class="text-text-muted mb-8 max-w-md">
+                Please sign in to view your account.
+            </p>
+            <a
+                href="/login"
+                class="bg-primary hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-all"
+            >
                 Sign In
             </a>
         </div>
@@ -129,8 +222,10 @@ const description = "View your order history and credentials";
     const loading = document.getElementById("loading");
     const dashboard = document.getElementById("dashboard");
     const noAuth = document.getElementById("no-auth");
-    const userEmail = document.getElementById("user-email");
+    const userDisplayName = document.getElementById("user-display-name");
+    const profileName = document.getElementById("profile-name");
     const profileEmail = document.getElementById("profile-email");
+    const profilePhone = document.getElementById("profile-phone");
     const profileDate = document.getElementById("profile-date");
     const ordersContainer = document.getElementById("orders-container");
     const logoutBtn = document.getElementById("logout-btn");
@@ -142,8 +237,11 @@ const description = "View your order history and credentials";
 
     // Check for email confirmation hash
     // Supabase redirects with #access_token=...&type=signup or recovery
-    const hasAuthHash = window.location.hash && (window.location.hash.includes("type=signup") || window.location.hash.includes("access_token"));
-    
+    const hasAuthHash =
+        window.location.hash &&
+        (window.location.hash.includes("type=signup") ||
+            window.location.hash.includes("access_token"));
+
     if (hasAuthHash) {
         confirmationModal?.classList.remove("hidden");
         // We don't clean URL immediately here to allow Supabase to process it
@@ -154,14 +252,14 @@ const description = "View your order history and credentials";
         confirmationModal?.classList.add("hidden");
         // Clean URL after closing modal
         if (hasAuthHash) {
-             window.history.replaceState(null, "", window.location.pathname);
+            window.history.replaceState(null, "", window.location.pathname);
         }
     };
 
     closeModalBtn?.addEventListener("click", closeModal);
     modalContinueBtn?.addEventListener("click", () => {
         closeModal();
-        
+
         // If there are items in the cart, redirect to checkout
         if (cartCount.get() > 0) {
             window.location.href = "/checkout";
@@ -170,28 +268,59 @@ const description = "View your order history and credentials";
         }
     });
 
-    // ... (format functions) ...
+    function formatDate(dateString: string) {
+        return new Date(dateString).toLocaleDateString("es-PE", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
+    }
+
+    function formatPrice(amount: number, currency: string = "PEN") {
+        const symbol = currency === "USD" ? "$" : "S/";
+        return `${symbol} ${parseFloat(amount.toString()).toFixed(2)}`;
+    }
+
+    function getStatusColor(status: string) {
+        switch (status) {
+            case "completed":
+                return "text-green-500 border-green-500/20 bg-green-500/10";
+            case "processing":
+                return "text-blue-500 border-blue-500/20 bg-blue-500/10";
+            case "cancelled":
+                return "text-red-500 border-red-500/20 bg-red-500/10";
+            default:
+                return "text-yellow-500 border-yellow-500/20 bg-yellow-500/10";
+        }
+    }
 
     async function init() {
         // If we have a hash, give Supabase a moment to process it
         if (hasAuthHash) {
             console.log("Waiting for auth hash processing...");
             // We rely on onAuthStateChange to handle the success case
-            
+
             // Fallback: If nothing happens after 3 seconds, redirect to login
             setTimeout(() => {
-                if (!document.getElementById("dashboard")?.classList.contains("hidden")) return;
+                if (
+                    !document
+                        .getElementById("dashboard")
+                        ?.classList.contains("hidden")
+                )
+                    return;
                 console.log("Auth hash timeout, checking user manually...");
                 checkUserAndRender();
             }, 3000);
-            return; 
+            return;
         }
 
         checkUserAndRender();
     }
 
     async function checkUserAndRender() {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
 
         if (!user) {
             loading?.classList.add("hidden");
@@ -211,8 +340,14 @@ const description = "View your order history and credentials";
         dashboard?.classList.remove("hidden");
 
         // Fill user info
-        if (userEmail) userEmail.textContent = user.email || "User";
+        const metadata = user.user_metadata || {};
+        const fullName = metadata.full_name || "User";
+        const phone = metadata.phone || "Not provided";
+
+        if (userDisplayName) userDisplayName.textContent = fullName;
+        if (profileName) profileName.textContent = fullName;
         if (profileEmail) profileEmail.textContent = user.email || "-";
+        if (profilePhone) profilePhone.textContent = phone;
         if (profileDate) profileDate.textContent = formatDate(user.created_at);
 
         // Fetch orders
@@ -235,7 +370,9 @@ const description = "View your order history and credentials";
                 </div>
             `;
         } else {
-            ordersContainer.innerHTML = orders.map(order => `
+            ordersContainer.innerHTML = orders
+                .map(
+                    (order) => `
                 <div class="bg-card-dark border border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
                     <div class="p-4 border-b border-border-dark flex flex-wrap justify-between items-center gap-4 bg-background-dark/50">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
@@ -259,7 +396,11 @@ const description = "View your order history and credentials";
                     </div>
                     <div class="p-4">
                         <div class="space-y-3">
-                            ${Array.isArray(order.items) ? order.items.map((item: any) => `
+                            ${
+                                Array.isArray(order.items)
+                                    ? order.items
+                                          .map(
+                                              (item: any) => `
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 rounded bg-background-dark border border-border-dark flex-shrink-0 overflow-hidden">
                                         <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">
@@ -272,35 +413,46 @@ const description = "View your order history and credentials";
                                         <p class="text-white text-sm font-medium">${formatPrice(item.price * item.quantity, order.currency)}</p>
                                     </div>
                                 </div>
-                            `).join('') : '<p class="text-text-muted text-sm">Items details unavailable</p>'}
+                            `,
+                                          )
+                                          .join("")
+                                    : '<p class="text-text-muted text-sm">Items details unavailable</p>'
+                            }
                         </div>
                         
                         <div class="mt-4 pt-4 border-t border-border-dark flex justify-between items-center">
                             <div>
                                 <p class="text-xs text-text-muted">Payment Method: <span class="text-white capitalize">${order.payment_method}</span></p>
-                                <p class="text-xs text-text-muted">Payment Status: <span class="${order.payment_status === 'verified' ? 'text-green-500' : 'text-yellow-500'} capitalize font-medium">${order.payment_status}</span></p>
+                                <p class="text-xs text-text-muted">Payment Status: <span class="${order.payment_status === "verified" ? "text-green-500" : "text-yellow-500"} capitalize font-medium">${order.payment_status}</span></p>
                             </div>
                             
-                            ${order.status === 'completed' || order.payment_status === 'verified' ? `
+                            ${
+                                order.status === "completed" ||
+                                order.payment_status === "verified"
+                                    ? `
                                 <button class="text-primary hover:text-white text-sm font-bold flex items-center gap-1 transition-colors">
                                     <span class="material-symbols-outlined text-sm">key</span>
                                     View Credentials
                                 </button>
-                            ` : ''}
+                            `
+                                    : ""
+                            }
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `,
+                )
+                .join("");
         }
     }
 
     // Listen for Auth Changes (This catches the hash redirect login)
     supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
             if (session?.user) {
                 renderDashboard(session.user);
             }
-        } else if (event === 'SIGNED_OUT') {
+        } else if (event === "SIGNED_OUT") {
             window.location.href = "/login";
         }
     });
