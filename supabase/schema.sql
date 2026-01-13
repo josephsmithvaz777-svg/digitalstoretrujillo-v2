@@ -176,10 +176,10 @@ CREATE POLICY "Service role can manage orders"
 -- STORAGE BUCKET (For payment proofs)
 -- ============================================
 
--- Create bucket for payment proofs
+-- Create bucket for payment proofs (now public so images can be displayed)
 INSERT INTO storage.buckets (id, name, public)
-VALUES ('payment-proofs', 'payment-proofs', false)
-ON CONFLICT (id) DO NOTHING;
+VALUES ('payment-proofs', 'payment-proofs', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
 
 -- Policies
 DROP POLICY IF EXISTS "Anyone can upload payment proofs" ON storage.objects;
@@ -187,7 +187,7 @@ CREATE POLICY "Anyone can upload payment proofs"
     ON storage.objects FOR INSERT
     WITH CHECK (bucket_id = 'payment-proofs');
 
-DROP POLICY IF EXISTS "Service role can read payment proofs" ON storage.objects;
-CREATE POLICY "Service role can read payment proofs"
+DROP POLICY IF EXISTS "Anyone can read payment proofs" ON storage.objects;
+CREATE POLICY "Anyone can read payment proofs"
     ON storage.objects FOR SELECT
-    USING (bucket_id = 'payment-proofs' AND auth.role() = 'service_role');
+    USING (bucket_id = 'payment-proofs');
