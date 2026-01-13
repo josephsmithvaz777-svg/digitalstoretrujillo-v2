@@ -142,15 +142,20 @@ const description = "View your order history and credentials";
 
     // Check for email confirmation hash
     // Supabase redirects with #access_token=...&type=signup or recovery
-    if (window.location.hash && window.location.hash.includes("type=signup")) {
+    const hasAuthHash = window.location.hash && (window.location.hash.includes("type=signup") || window.location.hash.includes("access_token"));
+    
+    if (hasAuthHash) {
         confirmationModal?.classList.remove("hidden");
-        // Clean URL without reloading
-        window.history.replaceState(null, "", window.location.pathname);
+        // We don't clean URL immediately here to allow Supabase to process it
     }
 
     // Modal actions
     const closeModal = () => {
         confirmationModal?.classList.add("hidden");
+        // Clean URL after closing modal
+        if (hasAuthHash) {
+             window.history.replaceState(null, "", window.location.pathname);
+        }
     };
 
     closeModalBtn?.addEventListener("click", closeModal);
@@ -165,37 +170,28 @@ const description = "View your order history and credentials";
         }
     });
 
-    // Format currency
-    const formatPrice = (amount: number, currency: string) => {
-        return new Intl.NumberFormat('es-PE', { style: 'currency', currency: currency || 'PEN' }).format(amount);
-    };
-
-    // Format date
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('es-PE', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
-
-    // Status colors
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'completed': return 'text-green-500 bg-green-500/10 border-green-500/20';
-            case 'processing': return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
-            case 'cancelled': return 'text-red-500 bg-red-500/10 border-red-500/20';
-            default: return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20'; // pending
-        }
-    };
+    // ... (format functions) ...
 
     async function init() {
+        // If we have a hash, give Supabase a moment to process it
+        if (hasAuthHash) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            // Force session refresh from URL
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (session) {
+                // Session established from URL
+                console.log("Session established from URL");
+            }
+        }
+
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {
+            // Only redirect if we didn't just arrive with a hash
+            // (If hash processing failed, then redirect)
             loading?.classList.add("hidden");
             noAuth?.classList.remove("hidden");
-            window.location.href = "/login";
+            // window.location.href = "/login"; // Don't auto redirect immediately to let user see "Access Denied" or retry
             return;
         }
 

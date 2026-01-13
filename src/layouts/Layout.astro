@@ -36,51 +36,5 @@ const {
     class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden font-display text-white"
   >
     <slot />
-
-    <script>
-      import { supabase, syncCartToDB, fetchCartFromDB } from "../lib/supabase";
-      import { cartItems } from "../stores/cart";
-
-      let isSyncing = false;
-
-      // Listen for auth changes
-      supabase.auth.onAuthStateChange(async (event, session) => {
-        if (session?.user) {
-          const userId = session.user.id;
-
-          if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-            // Fetch remote cart
-            const remoteCart = await fetchCartFromDB(userId);
-            const localCart = cartItems.get();
-
-            // Merge strategy:
-            // 1. If local cart is empty and remote has items -> Load remote
-            // 2. If local has items -> Keep local and sync to remote (overwrite remote)
-            //    (Assuming user just added items and then logged in to buy them)
-            
-            if (localCart.length === 0 && remoteCart.length > 0) {
-              cartItems.set(remoteCart);
-            } else if (localCart.length > 0) {
-              await syncCartToDB(userId, localCart);
-            }
-          }
-        }
-      });
-
-      // Subscribe to cart changes to sync with DB
-      cartItems.subscribe(async (items) => {
-        if (isSyncing) return;
-        
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          isSyncing = true;
-          try {
-            await syncCartToDB(session.user.id, items);
-          } finally {
-            isSyncing = false;
-          }
-        }
-      });
-    </script>
   </body>
 </html>
