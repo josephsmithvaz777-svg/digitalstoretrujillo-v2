@@ -252,6 +252,7 @@ const description = "Complete your purchase securely";
 
                             <!-- Account Toggle -->
                             <div
+                                id="create-account-section"
                                 class="md:col-span-2 flex flex-col gap-4 pt-2"
                             >
                                 <div class="flex items-start gap-3">
@@ -499,7 +500,7 @@ const description = "Complete your purchase securely";
             }
 
             // Hide create account option
-            const createAccountContainer = document.querySelector(".md\\:col-span-2.space-y-4");
+            const createAccountContainer = document.getElementById("create-account-section");
             if (createAccountContainer) {
                 createAccountContainer.innerHTML = `
                     <div class="bg-primary/10 border border-primary/30 rounded-lg p-4 flex items-center gap-3">
