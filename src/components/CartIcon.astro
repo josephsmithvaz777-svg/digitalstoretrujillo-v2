@@ -4,12 +4,12 @@
 
 <a
     href="/cart"
-    class="relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-border-dark hover:bg-[#4a3232] transition-colors text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
+    class="relative flex cursor-pointer items-center justify-center rounded-lg h-10 bg-border-dark hover:bg-[#4a3232] transition-colors text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
 >
     <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
     <span
         id="cart-count"
-        class="cart-badge hidden absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+        class="cart-badge hidden absolute -top-1.5 -right-1.5 bg-primary text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-[#181110] shadow-lg"
     >
         0
     </span>
@@ -48,7 +48,9 @@
 
 <style>
     .cart-badge {
-        animation: pop 0.3s ease-out;
+        animation:
+            pop 0.3s ease-out,
+            pulse-red 2s infinite;
     }
 
     @keyframes pop {
@@ -60,6 +62,18 @@
         }
         100% {
             transform: scale(1);
+        }
+    }
+
+    @keyframes pulse-red {
+        0% {
+            box-shadow: 0 0 0 0 rgba(224, 7, 0, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 8px rgba(224, 7, 0, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(224, 7, 0, 0);
         }
     }
 </style>
