@@ -521,6 +521,25 @@ if (!product) {
                         </div>
 
                         <div
+                            class="flex items-center justify-between p-3 bg-background-dark/30 rounded-lg border border-border-dark/50"
+                        >
+                            <label
+                                class="text-sm text-white font-medium cursor-pointer flex items-center gap-2"
+                                for="is_featured"
+                            >
+                                Producto Destacado
+                                <span class="material-symbols-outlined text-yellow-400 text-[18px]">star</span>
+                            </label>
+                            <input
+                                type="checkbox"
+                                id="is_featured"
+                                name="is_featured"
+                                checked={!!product.is_featured}
+                                class="w-5 h-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
+                            />
+                        </div>
+
+                        <div
                             class="flex items-center justify-between p-3 bg-background-dark/30 rounded-lg border border-blue-500/30"
                         >
                             <div class="flex flex-col">
@@ -1312,6 +1331,9 @@ if (!product) {
             ).checked,
             in_stock: (document.getElementById("in_stock") as HTMLInputElement)
                 .checked,
+            is_featured: (
+                document.getElementById("is_featured") as HTMLInputElement
+            ).checked,
             show_badge: (
                 document.getElementById("show_badge") as HTMLInputElement
             ).checked,
@@ -1401,6 +1423,9 @@ if (!product) {
                 ).checked,
                 in_stock: (
                     document.getElementById("in_stock") as HTMLInputElement
+                ).checked,
+                is_featured: (
+                    document.getElementById("is_featured") as HTMLInputElement
                 ).checked,
                 show_badge: (
                     document.getElementById("show_badge") as HTMLInputElement

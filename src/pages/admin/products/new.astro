@@ -541,6 +541,19 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input
                         type="checkbox"
+                        id="is_featured"
+                        name="is_featured"
+                        class="w-5 h-5 bg-background-dark border-2 border-border-dark rounded checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-card-dark transition-all"
+                    />
+                    <span class="text-white font-medium flex items-center gap-2">
+                        Producto Destacado
+                        <span class="material-symbols-outlined text-yellow-400 text-[18px]">star</span>
+                    </span>
+                </label>
+
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                        type="checkbox"
                         id="show_renewable_price"
                         name="show_renewable_price"
                         class="w-5 h-5 bg-background-dark border-2 border-border-dark rounded checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-card-dark transition-all"
@@ -901,6 +914,9 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
                 ).checked,
                 in_stock: (
                     document.getElementById("in_stock") as HTMLInputElement
+                ).checked,
+                is_featured: (
+                    document.getElementById("is_featured") as HTMLInputElement
                 ).checked,
                 show_badge: (
                     document.getElementById("show_badge") as HTMLInputElement

@@ -159,7 +159,28 @@ export async function getProductById(id: string): Promise<Product | null> {
  * Get featured products (for homepage)
  */
 export async function getFeaturedProducts(limit: number = 4): Promise<Product[]> {
-  const { data, error } = await supabase
+  // 1. Try fetching manually featured products
+  const { data: featured, error: featuredError } = await supabase
+    .from('products')
+    .select('*')
+    .eq('is_active', true)
+    .eq('in_stock', true)
+    .eq('is_featured', true)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (featuredError) {
+    console.error('Error fetching featured products:', featuredError);
+    return [];
+  }
+
+  // If we have manual picks, use them
+  if (featured && featured.length > 0) {
+    return featured;
+  }
+
+  // 2. Fallback: Automatic (Popularity/Reviews)
+  const { data: popular, error: popularError } = await supabase
     .from('products')
     .select('*')
     .eq('is_active', true)
@@ -167,12 +188,12 @@ export async function getFeaturedProducts(limit: number = 4): Promise<Product[]>
     .order('review_count', { ascending: false })
     .limit(limit);
 
-  if (error) {
-    console.error('Error fetching featured products:', error);
+  if (popularError) {
+    console.error('Error fetching popular products:', popularError);
     return [];
   }
 
-  return data || [];
+  return popular || [];
 }
 
 /**

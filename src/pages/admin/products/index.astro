@@ -103,8 +103,11 @@ const products = await getAllProducts();
                                                 class="w-12 h-12 object-cover rounded-lg"
                                             />
                                             <div>
-                                                <p class="text-white font-medium">
+                                                <p class="text-white font-medium flex items-center gap-2">
                                                     {product.title}
+                                                    {product.is_featured && (
+                                                        <span class="material-symbols-outlined text-yellow-400 text-[16px]" title="Destacado">star</span>
+                                                    )}
                                                 </p>
                                                 <p class="text-text-muted text-sm">
                                                     {product.slug}
