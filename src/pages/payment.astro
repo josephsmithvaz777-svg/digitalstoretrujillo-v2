@@ -1077,6 +1077,7 @@ const description = "Choose your payment method";
 
 <script>
     import { cartItems, cartTotal, clearCart } from "../stores/cart";
+    import { supabase } from "../lib/supabase";
 
     let selectedMethod: string | null = null;
 
@@ -1207,16 +1208,24 @@ const description = "Choose your payment method";
                     );
                     const items = cartItems.get();
                     const totalPEN = cartTotal.get();
+                    const registeredUserId = localStorage.getItem("registeredUserId");
+
+                    const { data: { session } } = await supabase.auth.getSession();
+                    const headers: any = { "Content-Type": "application/json" };
+                    if (session) {
+                        headers["Authorization"] = `Bearer ${session.access_token}`;
+                    }
 
                     const response = await fetch(
                         "/api/payments/cryptomus/create",
                         {
                             method: "POST",
-                            headers: { "Content-Type": "application/json" },
+                            headers,
                             body: JSON.stringify({
                                 buyerInfo,
                                 cartItems: items,
                                 totalPEN,
+                                userId: registeredUserId,
                             }),
                         },
                     );
@@ -1274,16 +1283,24 @@ const description = "Choose your payment method";
                     );
                     const items = cartItems.get();
                     const totalPEN = cartTotal.get();
+                    const registeredUserId = localStorage.getItem("registeredUserId");
+
+                    const { data: { session } } = await supabase.auth.getSession();
+                    const headers: any = { "Content-Type": "application/json" };
+                    if (session) {
+                        headers["Authorization"] = `Bearer ${session.access_token}`;
+                    }
 
                     const response = await fetch(
                         "/api/payments/paypal/create",
                         {
                             method: "POST",
-                            headers: { "Content-Type": "application/json" },
+                            headers,
                             body: JSON.stringify({
                                 buyerInfo,
                                 cartItems: items,
                                 totalPEN,
+                                userId: registeredUserId,
                             }),
                         },
                     );

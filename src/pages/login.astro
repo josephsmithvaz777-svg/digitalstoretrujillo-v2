@@ -1,0 +1,165 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "Login - DigitalStoreTrujillo";
+const description = "Access your account and order history";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+    <main
+        class="flex-grow flex items-center justify-center px-4 py-12 bg-background-dark"
+    >
+        <div class="max-w-md w-full space-y-8">
+            <!-- Header -->
+            <div class="text-center">
+                <h2 class="text-3xl font-black text-white tracking-tight">
+                    Welcome Back
+                </h2>
+                <p class="mt-2 text-sm text-text-muted">
+                    Sign in to view your orders and credentials
+                </p>
+            </div>
+
+            <!-- Login Form -->
+            <div
+                class="bg-card-dark border border-border-dark rounded-xl p-8 shadow-lg"
+            >
+                <form id="login-form" class="space-y-6">
+                    <!-- Email -->
+                    <div>
+                        <label
+                            for="email"
+                            class="block text-sm font-medium text-white mb-2"
+                        >
+                            Email Address
+                        </label>
+                        <div class="relative">
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                autocomplete="email"
+                                required
+                                class="w-full px-4 py-3 pl-10 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                placeholder="you@example.com"
+                            />
+                            <span class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]">mail</span>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label
+                            for="password"
+                            class="block text-sm font-medium text-white mb-2"
+                        >
+                            Password
+                        </label>
+                        <div class="relative">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                autocomplete="current-password"
+                                required
+                                class="w-full px-4 py-3 pl-10 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                placeholder="••••••••"
+                            />
+                            <span class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]">lock</span>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div
+                        id="error-message"
+                        class="hidden bg-red-500/10 border border-red-500/30 rounded-lg p-3"
+                    >
+                        <p class="text-red-400 text-sm flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">error</span>
+                            <span id="error-text"></span>
+                        </p>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        id="submit-btn"
+                        class="w-full flex justify-center items-center gap-2 py-3 px-4 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+                    >
+                        Sign In
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Footer Links -->
+            <div class="text-center text-sm">
+                <p class="text-text-muted">
+                    Don't have an account? 
+                    <a href="/checkout" class="text-primary hover:underline font-bold">Buy something to register</a>
+                </p>
+            </div>
+        </div>
+    </main>
+    <Footer />
+</Layout>
+
+<script>
+    import { supabase } from "../lib/supabase";
+
+    const form = document.getElementById("login-form") as HTMLFormElement;
+    const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+    const errorMessage = document.getElementById("error-message");
+    const errorText = document.getElementById("error-text");
+
+    // Check if already logged in
+    supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+            window.location.href = "/account";
+        }
+    });
+
+    form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = `
+            <span class="material-symbols-outlined animate-spin">progress_activity</span>
+            Signing in...
+        `;
+
+        // Hide previous errors
+        errorMessage?.classList.add("hidden");
+
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) throw error;
+
+            // Success - redirect to account dashboard
+            window.location.href = "/account";
+        } catch (error: any) {
+            // Show error
+            if (errorMessage && errorText) {
+                errorText.textContent = error.message || "Invalid credentials. Please try again.";
+                errorMessage.classList.remove("hidden");
+            }
+
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+</script>

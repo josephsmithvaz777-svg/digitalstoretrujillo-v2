@@ -1,11 +1,18 @@
 import type { APIRoute } from 'astro';
-import { supabaseAdmin } from '../../../../lib/supabase';
+import { supabaseAdmin, getAdminUserFromToken } from '../../../../lib/supabase';
 import { PaypalService } from '../../../../lib/paypal';
 
 export const POST: APIRoute = async ({ request }) => {
     try {
         const body = await request.json();
-        const { buyerInfo, cartItems, totalPEN } = body;
+        const { buyerInfo, cartItems, totalPEN, userId } = body;
+
+        // Check for authenticated user
+        const authHeader = request.headers.get('Authorization');
+        const user = await getAdminUserFromToken(authHeader);
+
+        // Use authenticated user ID or fallback to provided userId (for pending verification)
+        const finalUserId = user?.id || userId || null;
 
         if (!buyerInfo || !cartItems || !totalPEN) {
             return new Response(JSON.stringify({ error: 'Missing required data' }), { status: 400 });
@@ -25,6 +32,7 @@ export const POST: APIRoute = async ({ request }) => {
             .from('orders')
             .insert({
                 order_number,
+                user_id: finalUserId, // Link to user
                 customer_email: buyerInfo.email,
                 customer_name: `${buyerInfo.firstName} ${buyerInfo.lastName}`,
                 customer_phone: buyerInfo.phone || null,

@@ -377,6 +377,7 @@ const description = "Complete your purchase securely";
 
 <script>
     import { cartItems, cartTotal } from "../stores/cart";
+    import { supabase } from "../lib/supabase";
 
     function renderOrderSummary() {
         const items = cartItems.get();
@@ -440,15 +441,64 @@ const description = "Complete your purchase securely";
     // Initial render
     renderOrderSummary();
 
+    // Check auth status
+    supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+            // Pre-fill form if user is logged in
+            const emailInput = document.getElementById("email") as HTMLInputElement;
+            if (emailInput) {
+                emailInput.value = user.email || "";
+                emailInput.readOnly = true;
+                emailInput.classList.add("opacity-50", "cursor-not-allowed");
+            }
+
+            // Hide create account option
+            const createAccountContainer = document.querySelector(".md\\:col-span-2.space-y-4");
+            if (createAccountContainer) {
+                createAccountContainer.innerHTML = `
+                    <div class="bg-primary/10 border border-primary/30 rounded-lg p-4 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">person_check</span>
+                        <div>
+                            <p class="text-white text-sm font-bold">Logged in as ${user.email}</p>
+                            <p class="text-text-muted text-xs">Your order will be linked to your account.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    });
+
+    // Handle create account toggle
+    const createAccountCheckbox = document.getElementById("create-account") as HTMLInputElement;
+    const passwordContainer = document.getElementById("password-container");
+    const passwordInput = document.getElementById("password") as HTMLInputElement;
+
+    if (createAccountCheckbox && passwordContainer) {
+        createAccountCheckbox.addEventListener("change", (e) => {
+            const isChecked = (e.target as HTMLInputElement).checked;
+            if (isChecked) {
+                passwordContainer.classList.remove("hidden");
+                passwordInput.setAttribute("required", "true");
+            } else {
+                passwordContainer.classList.add("hidden");
+                passwordInput.removeAttribute("required");
+            }
+        });
+    }
+
     // Handle form submission
     const form = document.getElementById("checkout-form");
     if (form) {
-        form.addEventListener("submit", (e) => {
+        form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
+            const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+            const originalBtnText = submitBtn.innerHTML;
+            
             // Get form data
             const formData = new FormData(form as HTMLFormElement);
             const data = Object.fromEntries(formData);
+            const createAccount = createAccountCheckbox?.checked;
 
             // Validate required fields
             if (!data.email || !data.firstName || !data.lastName) {
@@ -456,11 +506,48 @@ const description = "Complete your purchase securely";
                 return;
             }
 
-            // Save buyer info to localStorage
-            localStorage.setItem("buyerInfo", JSON.stringify(data));
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...`;
 
-            // Redirect to payment page
-            window.location.href = "/payment";
+                // Handle Registration
+                let registeredUserId = null;
+                if (createAccount && data.password) {
+                    const { data: authData, error: authError } = await supabase.auth.signUp({
+                        email: data.email as string,
+                        password: data.password as string,
+                        options: {
+                            data: {
+                                full_name: `${data.firstName} ${data.lastName}`,
+                                phone: data.phone,
+                            }
+                        }
+                    });
+
+                    if (authError) throw authError;
+                    
+                    if (authData.user) {
+                        registeredUserId = authData.user.id;
+                        localStorage.setItem("registeredUserId", authData.user.id);
+                    }
+
+                    if (authData.user && !authData.session) {
+                        alert("Registration successful! Please check your email to confirm your account. You can proceed to payment, and your order will be linked to your account.");
+                    }
+                }
+
+                // Save buyer info to localStorage
+                localStorage.setItem("buyerInfo", JSON.stringify(data));
+
+                // Redirect to payment page
+                window.location.href = "/payment";
+
+            } catch (error: any) {
+                console.error("Checkout Error:", error);
+                alert(error.message || "An error occurred during checkout.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
         });
     }
 </script>

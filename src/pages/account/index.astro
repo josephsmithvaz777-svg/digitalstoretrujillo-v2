@@ -1,0 +1,239 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+
+const title = "My Account - DigitalStoreTrujillo";
+const description = "View your order history and credentials";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <!-- Loading State -->
+        <div id="loading" class="flex flex-col items-center justify-center py-20">
+            <span class="material-symbols-outlined text-primary text-5xl animate-spin mb-4">progress_activity</span>
+            <p class="text-text-muted">Loading your account...</p>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard" class="hidden space-y-8">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border-dark pb-6">
+                <div>
+                    <h1 class="text-3xl font-black text-white tracking-tight">My Account</h1>
+                    <p class="text-text-muted mt-1">
+                        Welcome back, <span id="user-email" class="text-white font-bold"></span>
+                    </p>
+                </div>
+                <button id="logout-btn" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-card-dark border border-border-dark text-text-muted hover:text-white hover:border-red-500 hover:bg-red-500/10 transition-all">
+                    <span class="material-symbols-outlined">logout</span>
+                    Sign Out
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Content: Orders -->
+                <div class="lg:col-span-2 space-y-6">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">shopping_bag</span>
+                        Order History
+                    </h2>
+                    
+                    <div id="orders-container" class="space-y-4">
+                        <!-- Orders will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Sidebar: Profile & Support -->
+                <div class="space-y-6">
+                    <!-- Profile Card -->
+                    <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+                        <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">person</span>
+                            Profile Details
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-text-muted text-xs">Email</p>
+                                <p id="profile-email" class="text-white text-sm break-all"></p>
+                            </div>
+                            <div>
+                                <p class="text-text-muted text-xs">Member Since</p>
+                                <p id="profile-date" class="text-white text-sm"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Card -->
+                    <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+                        <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">support_agent</span>
+                            Need Help?
+                        </h3>
+                        <p class="text-text-muted text-sm mb-4">
+                            If you have issues with your orders or credentials, please contact our support team.
+                        </p>
+                        <a href="/contact" class="flex items-center justify-center gap-2 w-full py-2 bg-[#25D366]/10 text-[#25D366] rounded-lg border border-[#25D366]/20 hover:bg-[#25D366]/20 transition-all font-bold text-sm">
+                            WhatsApp Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Auth State (Should redirect, but fallback) -->
+        <div id="no-auth" class="hidden flex flex-col items-center justify-center py-20 text-center">
+            <div class="w-20 h-20 bg-card-dark rounded-full flex items-center justify-center mb-6 border border-border-dark">
+                <span class="material-symbols-outlined text-text-muted text-4xl">lock</span>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">Access Denied</h2>
+            <p class="text-text-muted mb-8 max-w-md">Please sign in to view your account.</p>
+            <a href="/login" class="bg-primary hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-all">
+                Sign In
+            </a>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<script>
+    import { supabase, getUserOrders } from "../../lib/supabase";
+
+    const loading = document.getElementById("loading");
+    const dashboard = document.getElementById("dashboard");
+    const noAuth = document.getElementById("no-auth");
+    const userEmail = document.getElementById("user-email");
+    const profileEmail = document.getElementById("profile-email");
+    const profileDate = document.getElementById("profile-date");
+    const ordersContainer = document.getElementById("orders-container");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    // Format currency
+    const formatPrice = (amount: number, currency: string) => {
+        return new Intl.NumberFormat('es-PE', { style: 'currency', currency: currency || 'PEN' }).format(amount);
+    };
+
+    // Format date
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('es-PE', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
+    // Status colors
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'completed': return 'text-green-500 bg-green-500/10 border-green-500/20';
+            case 'processing': return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
+            case 'cancelled': return 'text-red-500 bg-red-500/10 border-red-500/20';
+            default: return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20'; // pending
+        }
+    };
+
+    async function init() {
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            loading?.classList.add("hidden");
+            noAuth?.classList.remove("hidden");
+            window.location.href = "/login";
+            return;
+        }
+
+        // Fill user info
+        if (userEmail) userEmail.textContent = user.email || "User";
+        if (profileEmail) profileEmail.textContent = user.email || "-";
+        if (profileDate) profileDate.textContent = formatDate(user.created_at);
+
+        // Fetch orders
+        const orders = await getUserOrders();
+
+        if (ordersContainer) {
+            if (orders.length === 0) {
+                ordersContainer.innerHTML = `
+                    <div class="bg-card-dark border border-border-dark rounded-xl p-8 text-center">
+                        <div class="w-16 h-16 bg-background-dark rounded-full flex items-center justify-center mx-auto mb-4 border border-border-dark">
+                            <span class="material-symbols-outlined text-text-muted text-3xl">shopping_cart_off</span>
+                        </div>
+                        <h3 class="text-white font-bold text-lg mb-2">No orders yet</h3>
+                        <p class="text-text-muted text-sm mb-6">Looks like you haven't placed any orders yet.</p>
+                        <a href="/" class="text-primary hover:text-white font-bold text-sm transition-colors">Start Shopping</a>
+                    </div>
+                `;
+            } else {
+                ordersContainer.innerHTML = orders.map(order => `
+                    <div class="bg-card-dark border border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+                        <div class="p-4 border-b border-border-dark flex flex-wrap justify-between items-center gap-4 bg-background-dark/50">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                                <div>
+                                    <p class="text-text-muted text-xs uppercase tracking-wider">Order Placed</p>
+                                    <p class="text-white text-sm font-medium">${formatDate(order.created_at)}</p>
+                                </div>
+                                <div>
+                                    <p class="text-text-muted text-xs uppercase tracking-wider">Order #</p>
+                                    <p class="text-white text-sm font-medium">${order.order_number}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(order.status)} capitalize">
+                                    ${order.status}
+                                </span>
+                                <span class="text-white font-bold">
+                                    ${formatPrice(order.total, order.currency)}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="space-y-3">
+                                ${Array.isArray(order.items) ? order.items.map((item: any) => `
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded bg-background-dark border border-border-dark flex-shrink-0 overflow-hidden">
+                                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h4 class="text-white text-sm font-medium truncate">${item.title}</h4>
+                                            <p class="text-text-muted text-xs">Qty: ${item.quantity}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-white text-sm font-medium">${formatPrice(item.price * item.quantity, order.currency)}</p>
+                                        </div>
+                                    </div>
+                                `).join('') : '<p class="text-text-muted text-sm">Items details unavailable</p>'}
+                            </div>
+                            
+                            <div class="mt-4 pt-4 border-t border-border-dark flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs text-text-muted">Payment Method: <span class="text-white capitalize">${order.payment_method}</span></p>
+                                    <p class="text-xs text-text-muted">Payment Status: <span class="${order.payment_status === 'verified' ? 'text-green-500' : 'text-yellow-500'} capitalize font-medium">${order.payment_status}</span></p>
+                                </div>
+                                
+                                ${order.status === 'completed' || order.payment_status === 'verified' ? `
+                                    <button class="text-primary hover:text-white text-sm font-bold flex items-center gap-1 transition-colors">
+                                        <span class="material-symbols-outlined text-sm">key</span>
+                                        View Credentials
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        loading?.classList.add("hidden");
+        dashboard?.classList.remove("hidden");
+    }
+
+    init();
+
+    // Logout
+    logoutBtn?.addEventListener("click", async () => {
+        await supabase.auth.signOut();
+        window.location.href = "/login";
+    });
+</script>

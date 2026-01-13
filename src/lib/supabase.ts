@@ -318,6 +318,23 @@ export async function uploadPaymentProof(
   return data.publicUrl;
 }
 
+/**
+ * Get orders for the current user
+ */
+export async function getUserOrders(): Promise<Order[]> {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching user orders:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
 // ============================================
 // Admin Authentication Functions
 // ============================================
