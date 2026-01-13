@@ -68,6 +68,14 @@ const description = "Review your digital items before checkout";
             >
                 Continue Shopping
             </a>
+
+            <!-- Recommended Products (Only shown when cart is empty) -->
+            <div id="recommended-products" class="mt-16 border-t border-border-dark pt-12">
+                <h3 class="text-xl font-bold text-white mb-8 text-left">Popular Products</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                    <!-- Products will be injected here via JS -->
+                </div>
+            </div>
         </div>
 
         <div
@@ -246,14 +254,78 @@ const description = "Review your digital items before checkout";
         removeFromCart,
         updateQuantity,
         cartTotal,
+        addToCart,
     } from "../stores/cart";
+    import { getFeaturedProducts } from "../lib/supabase";
 
     const removeModal = document.getElementById("remove-item-modal");
     const removeModalContent = document.getElementById("remove-modal-content");
     const removeItemNameEl = document.getElementById("remove-item-name");
     const cancelRemoveBtn = document.getElementById("cancel-remove");
     const confirmRemoveBtn = document.getElementById("confirm-remove");
+    const recommendedContainer = document.getElementById("recommended-products");
     let itemToRemoveId: string | null = null;
+    let productsLoaded = false;
+
+    async function loadRecommendedProducts() {
+        if (productsLoaded) return;
+        const container = recommendedContainer?.querySelector(".grid");
+        if (!container) return;
+
+        try {
+            const products = await getFeaturedProducts(4); // Get top 4 popular products
+            
+            if (products.length === 0) {
+                recommendedContainer?.classList.add("hidden");
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="bg-card-dark border border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-all group flex flex-col">
+                    <a href="/products/${product.id}" class="aspect-video overflow-hidden">
+                        <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </a>
+                    <div class="p-4 flex flex-col flex-1">
+                        <h4 class="text-white font-bold text-sm mb-1 truncate">${product.title}</h4>
+                        <p class="text-text-muted text-xs mb-4 line-clamp-1">${product.category}</p>
+                        <div class="mt-auto flex items-center justify-between">
+                            <span class="text-white font-black text-base">S/ ${product.price.toFixed(2)}</span>
+                            <button 
+                                class="add-recommended size-8 bg-primary hover:bg-red-700 text-white rounded-lg flex items-center justify-center transition-colors shadow-lg shadow-primary/20"
+                                data-id="${product.id}"
+                                data-title="${product.title}"
+                                data-price="${product.price}"
+                                data-image="${product.image}"
+                            >
+                                <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners to new buttons
+            container.querySelectorAll(".add-recommended").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const target = e.currentTarget as HTMLButtonElement;
+                    const item = {
+                        id: target.dataset.id!,
+                        title: target.dataset.title!,
+                        price: parseFloat(target.dataset.price!),
+                        image: target.dataset.image!,
+                        quantity: 1
+                    };
+                    addToCart(item);
+                    // Cart will re-render automatically via subscription
+                });
+            });
+
+            productsLoaded = true;
+        } catch (error) {
+            console.error("Error loading recommendations:", error);
+            recommendedContainer?.classList.add("hidden");
+        }
+    }
 
     function openRemoveModal(id: string, name: string) {
         if (!removeModal || !removeModalContent || !removeItemNameEl) return;
@@ -315,7 +387,11 @@ const description = "Review your digital items before checkout";
 
         // Show/hide empty cart message
         if (items.length === 0) {
-            if (emptyCart) emptyCart.classList.remove("hidden");
+            if (emptyCart) {
+                emptyCart.classList.remove("hidden");
+                // Load recommendations only when cart is empty
+                loadRecommendedProducts();
+            }
             if (cartContent) cartContent.classList.add("hidden");
             return;
         } else {
