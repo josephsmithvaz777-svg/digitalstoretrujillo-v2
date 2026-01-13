@@ -68,6 +68,15 @@ import CartIcon from "./CartIcon.astro";
             >
                 <span class="truncate" id="auth-text">Sign In</span>
             </a>
+            
+            <button 
+                id="header-logout-btn" 
+                class="hidden w-10 h-10 items-center justify-center rounded-lg bg-card-dark border border-border-dark hover:border-red-500 hover:text-red-500 transition-colors text-white"
+                title="Sign Out"
+            >
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+
             <CartIcon />
         </div>
     </div>
@@ -78,31 +87,46 @@ import CartIcon from "./CartIcon.astro";
 
     const authButton = document.getElementById("auth-button") as HTMLAnchorElement;
     const authText = document.getElementById("auth-text");
+    const logoutBtn = document.getElementById("header-logout-btn");
 
-    if (authButton && authText) {
-        // Check initial session
-        supabase.auth.getSession().then(({ data: { session } }) => {
+    if (authButton && authText && logoutBtn) {
+        // Function to update UI state
+        const updateUI = (session: any) => {
             if (session) {
                 authText.textContent = "My Account";
                 authButton.href = "/account";
                 authButton.classList.remove("bg-primary", "hover:bg-red-700");
                 authButton.classList.add("bg-card-dark", "border", "border-border-dark", "hover:border-primary");
-            }
-        });
-
-        // Listen for auth changes
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                authText.textContent = "My Account";
-                authButton.href = "/account";
-                authButton.classList.remove("bg-primary", "hover:bg-red-700");
-                authButton.classList.add("bg-card-dark", "border", "border-border-dark", "hover:border-primary");
+                
+                // Show logout button
+                logoutBtn.classList.remove("hidden");
+                logoutBtn.classList.add("flex");
             } else {
                 authText.textContent = "Sign In";
                 authButton.href = "/login";
                 authButton.classList.add("bg-primary", "hover:bg-red-700");
                 authButton.classList.remove("bg-card-dark", "border", "border-border-dark", "hover:border-primary");
+                
+                // Hide logout button
+                logoutBtn.classList.add("hidden");
+                logoutBtn.classList.remove("flex");
             }
+        };
+
+        // Check initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            updateUI(session);
+        });
+
+        // Listen for auth changes
+        supabase.auth.onAuthStateChange((event, session) => {
+            updateUI(session);
+        });
+
+        // Handle Logout
+        logoutBtn.addEventListener("click", async () => {
+            await supabase.auth.signOut();
+            window.location.href = "/login";
         });
     }
 </script>
