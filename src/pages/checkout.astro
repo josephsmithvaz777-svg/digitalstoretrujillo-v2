@@ -399,6 +399,26 @@ const description = "Complete your purchase securely";
     </main>
 
     <Footer />
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-card-dark border border-border-dark rounded-xl max-w-md w-full p-6 shadow-2xl transform transition-all scale-100">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                </div>
+                <h3 class="text-white text-lg font-bold">Registration Successful</h3>
+            </div>
+            
+            <p class="text-text-muted text-sm leading-relaxed mb-6">
+                Please check your email to confirm your account. You can proceed to payment, and your order will be linked to your account.
+            </p>
+
+            <button id="modal-ok-btn" class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all">
+                Continue to Payment
+            </button>
+        </div>
+    </div>
 </Layout>
 
 <script>
@@ -558,7 +578,21 @@ const description = "Complete your purchase securely";
                     }
 
                     if (authData.user && !authData.session) {
-                        alert("Registration successful! Please check your email to confirm your account. You can proceed to payment, and your order will be linked to your account.");
+                        // Show success modal instead of alert
+                        const modal = document.getElementById("success-modal");
+                        const okBtn = document.getElementById("modal-ok-btn");
+                        
+                        if (modal && okBtn) {
+                            modal.classList.remove("hidden");
+                            
+                            // Wait for user to click OK to proceed
+                            await new Promise((resolve) => {
+                                okBtn.onclick = () => {
+                                    modal.classList.add("hidden");
+                                    resolve(true);
+                                };
+                            });
+                        }
                     }
                 }
 
