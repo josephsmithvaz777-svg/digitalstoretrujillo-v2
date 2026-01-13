@@ -30,20 +30,25 @@ export const POST: APIRoute = async ({ request }) => {
 
         if (updateError) throw updateError;
 
-        // 2. Logic for Automatic Email (Option A)
-        // If the payment is verified or order completed, send email
+        // 2. Logic for Automatic Email (Option A via Supabase Edge Function)
         if (paymentStatus === 'verified' || status === 'completed') {
-            const { sendEmail, getOrderConfirmationTemplate } = await import('../../../../lib/mail');
+            const { supabaseAdmin } = await import('../../../../lib/supabase');
+            if (supabaseAdmin) {
+                const { error: funcError } = await supabaseAdmin.functions.invoke('send-order-email', {
+                    body: {
+                        customerName: order.customer_name,
+                        customerEmail: order.customer_email,
+                        orderNumber: order.order_number,
+                        items: order.items
+                    }
+                });
 
-            await sendEmail({
-                to: order.customer_email,
-                subject: `¡Pago Confirmado! - Orden #${order.order_number}`,
-                html: getOrderConfirmationTemplate(
-                    order.customer_name,
-                    order.order_number,
-                    order.items
-                )
-            });
+                if (funcError) {
+                    console.error('Error calling Supabase Edge Function:', funcError);
+                } else {
+                    console.log('✅ Email notification triggered via Supabase Edge Function');
+                }
+            }
         }
 
         return new Response(JSON.stringify({ success: true, order }), { status: 200 });
