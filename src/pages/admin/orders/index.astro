@@ -163,8 +163,31 @@ const orders = await getAllOrders();
                                             })}
                                         </p>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-4 text-sm font-medium">
                                         <div class="flex items-center justify-end gap-2">
+                                            {(order.payment_method === "yape" ||
+                                                order.payment_method ===
+                                                    "binance") &&
+                                                order.payment_reference && (
+                                                    <button
+                                                        class="view-proof-btn p-2 text-text-muted hover:text-green-500 hover:bg-green-500/10 rounded-lg transition-all"
+                                                        data-order-id={order.id}
+                                                        data-order-number={
+                                                            order.order_number
+                                                        }
+                                                        data-proof-url={
+                                                            order.payment_proof
+                                                        }
+                                                        data-reference={
+                                                            order.payment_reference
+                                                        }
+                                                        title="Ver Comprobante"
+                                                    >
+                                                        <span class="material-symbols-outlined text-[20px]">
+                                                            visibility
+                                                        </span>
+                                                    </button>
+                                                )}
                                             <button
                                                 class="update-status-btn p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                                                 data-order-id={order.id}
@@ -258,7 +281,8 @@ const orders = await getAllOrders();
             </div>
             <h2 class="text-white text-xl font-bold mb-2">¿Eliminar Orden?</h2>
             <p class="text-text-muted text-sm mb-6">
-                Esta acción no se puede deshacer. La orden será eliminada permanentemente.
+                Esta acción no se puede deshacer. La orden será eliminada
+                permanentemente.
             </p>
 
             <div class="flex gap-3">
@@ -278,21 +302,108 @@ const orders = await getAllOrders();
         </div>
     </div>
 
+    <!-- View Proof Modal -->
+    <div
+        id="proof-modal"
+        class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-[60] flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-2xl w-full p-6 relative"
+        >
+            <button
+                id="close-proof-modal"
+                class="absolute top-4 right-4 text-text-muted hover:text-white transition-colors"
+            >
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <h2 class="text-white text-xl font-bold mb-1">
+                Comprobante de Pago
+            </h2>
+            <p id="proof-order-number" class="text-text-muted text-sm mb-6"></p>
+
+            <div class="space-y-6">
+                <!-- Reference Code -->
+                <div
+                    class="bg-background-dark p-4 rounded-lg border border-border-dark text-center"
+                >
+                    <p
+                        class="text-text-muted text-xs uppercase tracking-widest mb-1"
+                    >
+                        Código de Referencia
+                    </p>
+                    <p
+                        id="proof-reference"
+                        class="text-white text-2xl font-black tracking-wider"
+                    >
+                    </p>
+                </div>
+
+                <!-- Screenshot Image -->
+                <div class="relative group">
+                    <div
+                        class="absolute inset-0 bg-primary/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity -z-10"
+                    >
+                    </div>
+                    <img
+                        id="proof-image"
+                        src=""
+                        alt="Screenshot de pago"
+                        class="w-full max-h-[60vh] object-contain rounded-lg border border-border-dark bg-black shadow-2xl"
+                    />
+                </div>
+
+                <div class="flex justify-center">
+                    <a
+                        id="download-proof"
+                        href="#"
+                        download
+                        class="flex items-center gap-2 text-text-muted hover:text-white text-sm transition-colors"
+                    >
+                        <span class="material-symbols-outlined text-sm"
+                            >download</span
+                        >
+                        Descargar Comprobante
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         import { updateOrderStatus, deleteOrder } from "../../../lib/supabase";
 
         const statusModal = document.getElementById("status-modal");
         const deleteModal = document.getElementById("delete-modal");
-        
+        const proofModal = document.getElementById("proof-modal");
+
         const orderStatusSelect = document.getElementById(
             "order-status",
         ) as HTMLSelectElement;
-        
-        const cancelUpdateBtn = document.getElementById("cancel-update");
-        const confirmUpdateBtn = document.getElementById("confirm-update");
-        
-        const cancelDeleteBtn = document.getElementById("cancel-delete");
-        const confirmDeleteBtn = document.getElementById("confirm-delete");
+
+        const cancelUpdateBtn = document.getElementById(
+            "cancel-update",
+        ) as HTMLButtonElement;
+        const confirmUpdateBtn = document.getElementById(
+            "confirm-update",
+        ) as HTMLButtonElement;
+
+        const cancelDeleteBtn = document.getElementById(
+            "cancel-delete",
+        ) as HTMLButtonElement;
+        const confirmDeleteBtn = document.getElementById(
+            "confirm-delete",
+        ) as HTMLButtonElement;
+
+        const closeProofBtn = document.getElementById("close-proof-modal");
+        const proofImage = document.getElementById(
+            "proof-image",
+        ) as HTMLImageElement;
+        const proofRef = document.getElementById("proof-reference");
+        const proofOrderNum = document.getElementById("proof-order-number");
+        const downloadProofLink = document.getElementById(
+            "download-proof",
+        ) as HTMLAnchorElement;
 
         let orderToUpdate: string | null = null;
         let orderToDelete: string | null = null;
@@ -320,6 +431,35 @@ const orders = await getAllOrders();
                     deleteModal?.classList.remove("hidden");
                 }
             });
+        });
+
+        // Open proof modal
+        document.querySelectorAll(".view-proof-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const url = btn.getAttribute("data-proof-url");
+                const ref = btn.getAttribute("data-reference");
+                const num = btn.getAttribute("data-order-number");
+
+                if (
+                    proofImage &&
+                    proofRef &&
+                    proofOrderNum &&
+                    downloadProofLink
+                ) {
+                    proofImage.src = url || "";
+                    proofRef.textContent = ref || "N/A";
+                    proofOrderNum.textContent = `Orden: ${num}`;
+                    downloadProofLink.href = url || "#";
+                    proofModal?.classList.remove("hidden");
+                    document.body.style.overflow = "hidden";
+                }
+            });
+        });
+
+        // Close proof modal
+        closeProofBtn?.addEventListener("click", () => {
+            proofModal?.classList.add("hidden");
+            document.body.style.overflow = "auto";
         });
 
         // Cancel update
@@ -380,6 +520,10 @@ const orders = await getAllOrders();
             if (e.target === deleteModal) {
                 deleteModal?.classList.add("hidden");
                 orderToDelete = null;
+            }
+            if (e.target === proofModal) {
+                proofModal?.classList.add("hidden");
+                document.body.style.overflow = "auto";
             }
         });
     </script>
