@@ -35,7 +35,7 @@ const description = "View your order history and credentials";
                 </p>
 
                 <button id="modal-continue-btn" class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all">
-                    Start Shopping
+                    Continue Shopping
                 </button>
             </div>
         </div>
@@ -124,6 +124,7 @@ const description = "View your order history and credentials";
 
 <script>
     import { supabase, getUserOrders } from "../../lib/supabase";
+    import { cartCount } from "../../stores/cart";
 
     const loading = document.getElementById("loading");
     const dashboard = document.getElementById("dashboard");
@@ -155,7 +156,13 @@ const description = "View your order history and credentials";
     closeModalBtn?.addEventListener("click", closeModal);
     modalContinueBtn?.addEventListener("click", () => {
         closeModal();
-        window.location.href = "/"; // Go to home to shop
+        
+        // If there are items in the cart, redirect to checkout
+        if (cartCount.get() > 0) {
+            window.location.href = "/checkout";
+        } else {
+            window.location.href = "/"; // Go to home to shop
+        }
     });
 
     // Format currency
