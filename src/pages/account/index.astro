@@ -17,6 +17,29 @@ const description = "View your order history and credentials";
             <p class="text-text-muted">Loading your account...</p>
         </div>
 
+        <!-- Success Modal for Email Confirmation -->
+        <div id="confirmation-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-card-dark border border-border-dark rounded-xl max-w-sm w-full p-6 shadow-2xl transform transition-all scale-100 text-center relative">
+                <!-- Close Button -->
+                <button id="close-modal-btn" class="absolute top-4 right-4 text-text-muted hover:text-white">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+
+                <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                    <span class="material-symbols-outlined text-green-500 text-3xl">mark_email_read</span>
+                </div>
+                
+                <h3 class="text-white text-xl font-bold mb-2">Account Confirmed!</h3>
+                <p class="text-text-muted text-sm leading-relaxed mb-6">
+                    Thank you for verifying your email. You now have full access to your account and purchases.
+                </p>
+
+                <button id="modal-continue-btn" class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all">
+                    Start Shopping
+                </button>
+            </div>
+        </div>
+
         <!-- Dashboard Content -->
         <div id="dashboard" class="hidden space-y-8">
             <!-- Header -->
@@ -110,6 +133,30 @@ const description = "View your order history and credentials";
     const profileDate = document.getElementById("profile-date");
     const ordersContainer = document.getElementById("orders-container");
     const logoutBtn = document.getElementById("logout-btn");
+
+    // Modal elements
+    const confirmationModal = document.getElementById("confirmation-modal");
+    const closeModalBtn = document.getElementById("close-modal-btn");
+    const modalContinueBtn = document.getElementById("modal-continue-btn");
+
+    // Check for email confirmation hash
+    // Supabase redirects with #access_token=...&type=signup or recovery
+    if (window.location.hash && window.location.hash.includes("type=signup")) {
+        confirmationModal?.classList.remove("hidden");
+        // Clean URL without reloading
+        window.history.replaceState(null, "", window.location.pathname);
+    }
+
+    // Modal actions
+    const closeModal = () => {
+        confirmationModal?.classList.add("hidden");
+    };
+
+    closeModalBtn?.addEventListener("click", closeModal);
+    modalContinueBtn?.addEventListener("click", () => {
+        closeModal();
+        window.location.href = "/"; // Go to home to shop
+    });
 
     // Format currency
     const formatPrice = (amount: number, currency: string) => {
