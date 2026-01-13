@@ -100,10 +100,52 @@ const description = "Complete your purchase securely";
 
                 <!-- Form -->
                 <form id="checkout-form" class="flex flex-col gap-6 mt-2">
-                    <!-- Section: Contact -->
-                    <div
-                        class="p-6 rounded-xl bg-card-dark border border-border-dark"
-                    >
+                    
+                    <!-- Logged In Summary (Hidden by default) -->
+                    <div id="logged-in-summary" class="hidden p-6 rounded-xl bg-card-dark border border-border-dark animate-fade-in">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-3xl">person</span>
+                            </div>
+                            <div>
+                                <h3 class="text-white font-bold text-xl" id="summary-name">Loading...</h3>
+                                <p class="text-text-muted" id="summary-email">Loading...</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 rounded-lg bg-background-dark/50 border border-border-dark">
+                                <span class="text-xs text-text-muted uppercase tracking-wider font-bold">Phone</span>
+                                <p class="text-white font-medium mt-1 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm text-primary">call</span>
+                                    <span id="summary-phone">--</span>
+                                </p>
+                            </div>
+                            <div class="p-4 rounded-lg bg-background-dark/50 border border-border-dark">
+                                <span class="text-xs text-text-muted uppercase tracking-wider font-bold">Status</span>
+                                <p class="text-green-400 font-medium mt-1 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">verified</span>
+                                    Verified Account
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-sm text-text-muted bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg">
+                            <span class="material-symbols-outlined text-blue-400">info</span>
+                            Your order will be automatically linked to this account.
+                        </div>
+                        
+                        <button type="button" id="edit-info-btn" class="mt-4 text-sm text-primary hover:text-white underline transition-colors">
+                            Not you? Switch account or Edit info
+                        </button>
+                    </div>
+
+                    <!-- Guest/Form Fields Wrapper -->
+                    <div id="form-sections" class="flex flex-col gap-6">
+                        <!-- Section: Contact -->
+                        <div
+                            class="p-6 rounded-xl bg-card-dark border border-border-dark"
+                        >
                         <h3
                             class="text-white font-bold text-lg mb-6 flex items-center gap-2"
                         >
@@ -301,6 +343,7 @@ const description = "Complete your purchase securely";
                             </div>
                         </div>
                     </div>
+                    </div> <!-- End of form-sections -->
 
                     <!-- Actions -->
                     <div class="flex justify-end pt-4">
@@ -491,29 +534,77 @@ const description = "Complete your purchase securely";
     // Check auth status
     const checkAuth = async () => {
         const { data: { user } } = await supabase.auth.getUser();
+        
+        const formSections = document.getElementById("form-sections");
+        const loggedInSummary = document.getElementById("logged-in-summary");
+        const summaryName = document.getElementById("summary-name");
+        const summaryEmail = document.getElementById("summary-email");
+        const summaryPhone = document.getElementById("summary-phone");
+        const editInfoBtn = document.getElementById("edit-info-btn");
+
+        // Input refs
+        const emailInput = document.getElementById("email") as HTMLInputElement;
+        const firstNameInput = document.getElementById("firstName") as HTMLInputElement;
+        const lastNameInput = document.getElementById("lastName") as HTMLInputElement;
+        const phoneInput = document.getElementById("phone") as HTMLInputElement;
+
         if (user) {
-            // Pre-fill form if user is logged in
-            const emailInput = document.getElementById("email") as HTMLInputElement;
+            // 1. Always pre-fill email
             if (emailInput) {
                 emailInput.value = user.email || "";
                 emailInput.readOnly = true;
                 emailInput.classList.add("opacity-50", "cursor-not-allowed");
             }
 
-            // Hide create account option
+            // 2. Extract metadata
+            const meta = user.user_metadata || {};
+            const fullName = meta.full_name || meta.name || "";
+            const phone = meta.phone || meta.phone_number || "";
+
+            // 3. If we have enough info (Name + Phone), switch to Summary View
+            // (Assuming user wants "no form" if logged in)
+            if (fullName && loggedInSummary && formSections) {
+                // Pre-fill hidden inputs so submission works
+                if (firstNameInput) firstNameInput.value = fullName.split(' ')[0] || "";
+                if (lastNameInput) lastNameInput.value = fullName.split(' ').slice(1).join(' ') || "."; // Fallback dot if no last name
+                if (phoneInput) phoneInput.value = phone;
+
+                // Update Summary UI
+                if (summaryName) summaryName.textContent = fullName;
+                if (summaryEmail) summaryEmail.textContent = user.email || "";
+                if (summaryPhone) summaryPhone.textContent = phone || "Not provided";
+
+                // Toggle visibility
+                formSections.classList.add("hidden");
+                loggedInSummary.classList.remove("hidden");
+            } else {
+                 // Partially fill what we have
+                 if (firstNameInput && fullName) {
+                    firstNameInput.value = fullName.split(' ')[0] || "";
+                    lastNameInput.value = fullName.split(' ').slice(1).join(' ') || "";
+                 }
+                 if (phoneInput && phone) phoneInput.value = phone;
+                 
+                 // Show form but maybe simplified
+                 // For now, keep form visible if data is missing
+            }
+
+            // Hide create account option in form (if form is visible)
             const createAccountContainer = document.getElementById("create-account-section");
             if (createAccountContainer) {
-                createAccountContainer.innerHTML = `
-                    <div class="bg-primary/10 border border-primary/30 rounded-lg p-4 flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary">person_check</span>
-                        <div>
-                            <p class="text-white text-sm font-bold">Logged in as ${user.email}</p>
-                            <p class="text-text-muted text-xs">Your order will be linked to your account.</p>
-                        </div>
-                    </div>
-                `;
+                createAccountContainer.classList.add("hidden"); // Just hide it completely if logged in
             }
+        } else {
+             // Not logged in - ensure form is visible
+             if (formSections) formSections.classList.remove("hidden");
+             if (loggedInSummary) loggedInSummary.classList.add("hidden");
         }
+
+        // Edit button logic
+        editInfoBtn?.addEventListener("click", () => {
+             if (formSections) formSections.classList.remove("hidden");
+             if (loggedInSummary) loggedInSummary.classList.add("hidden");
+        });
     };
 
     checkAuth();
