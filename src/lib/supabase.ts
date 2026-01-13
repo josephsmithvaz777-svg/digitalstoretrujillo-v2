@@ -661,3 +661,81 @@ export async function getDashboardStats() {
     totalRevenue,
   };
 }
+
+// ============================================
+// Cart Synchronization Functions
+// ============================================
+
+export interface CartItemDB {
+  id?: string;
+  user_id?: string;
+  product_id: string;
+  title: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+
+/**
+ * Sync local cart to database
+ */
+export async function syncCartToDB(userId: string, items: any[]) {
+  if (!items.length) return;
+
+  // Transform local items to DB format
+  const dbItems = items.map(item => ({
+    user_id: userId,
+    product_id: item.id,
+    title: item.title,
+    price: item.price,
+    image: item.image,
+    quantity: item.quantity
+  }));
+
+  // Upsert items (requires unique constraint on user_id, product_id)
+  const { error } = await supabase
+    .from('cart_items')
+    .upsert(dbItems, { onConflict: 'user_id,product_id' });
+
+  if (error) {
+    console.error('Error syncing cart to DB:', error);
+  }
+}
+
+/**
+ * Fetch cart from database
+ */
+export async function fetchCartFromDB(userId: string) {
+  const { data, error } = await supabase
+    .from('cart_items')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) {
+    console.error('Error fetching cart from DB:', error);
+    return [];
+  }
+
+  // Transform back to local format
+  return data.map(item => ({
+    id: item.product_id,
+    title: item.title,
+    price: Number(item.price),
+    image: item.image,
+    quantity: item.quantity
+  }));
+}
+
+/**
+ * Clear cart in database
+ */
+export async function clearCartInDB(userId: string) {
+  const { error } = await supabase
+    .from('cart_items')
+    .delete()
+    .eq('user_id', userId);
+
+  if (error) {
+    console.error('Error clearing cart in DB:', error);
+  }
+}
