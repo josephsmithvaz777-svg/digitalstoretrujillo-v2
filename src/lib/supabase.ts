@@ -630,6 +630,20 @@ export async function getDashboardStats() {
     .select('*', { count: 'exact', head: true })
     .eq('status', 'pending');
 
+  // Get new users (last 30 days or total)
+  // Since we can't filter auth.users easily here without admin API wrapper,
+  // we'll fetch all users count if possible, or just return 0 if client side.
+  let totalUsers = 0;
+  let pendingUsers = 0; // Unverified email
+
+  if (typeof window === 'undefined' && supabaseAdmin) {
+    const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
+    if (!error && users) {
+      totalUsers = users.length;
+      pendingUsers = users.filter(u => !u.email_confirmed_at).length;
+    }
+  }
+
   // Get total revenue
   const { data: orders } = await client
     .from('orders')
@@ -642,6 +656,8 @@ export async function getDashboardStats() {
     totalProducts: totalProducts || 0,
     totalOrders: totalOrders || 0,
     pendingOrders: pendingOrders || 0,
+    totalUsers,
+    pendingUsers,
     totalRevenue,
   };
 }
