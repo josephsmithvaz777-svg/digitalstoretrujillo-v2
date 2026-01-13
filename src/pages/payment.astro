@@ -1208,12 +1208,16 @@ const description = "Choose your payment method";
                     );
                     const items = cartItems.get();
                     const totalPEN = cartTotal.get();
-                    const registeredUserId = localStorage.getItem("registeredUserId");
+                    const registeredUserId =
+                        localStorage.getItem("registeredUserId");
 
-                    const { data: { session } } = await supabase.auth.getSession();
+                    const {
+                        data: { session },
+                    } = await supabase.auth.getSession();
                     const headers: any = { "Content-Type": "application/json" };
                     if (session) {
-                        headers["Authorization"] = `Bearer ${session.access_token}`;
+                        headers["Authorization"] =
+                            `Bearer ${session.access_token}`;
                     }
 
                     const response = await fetch(
@@ -1283,12 +1287,16 @@ const description = "Choose your payment method";
                     );
                     const items = cartItems.get();
                     const totalPEN = cartTotal.get();
-                    const registeredUserId = localStorage.getItem("registeredUserId");
+                    const registeredUserId =
+                        localStorage.getItem("registeredUserId");
 
-                    const { data: { session } } = await supabase.auth.getSession();
+                    const {
+                        data: { session },
+                    } = await supabase.auth.getSession();
                     const headers: any = { "Content-Type": "application/json" };
                     if (session) {
-                        headers["Authorization"] = `Bearer ${session.access_token}`;
+                        headers["Authorization"] =
+                            `Bearer ${session.access_token}`;
                     }
 
                     const response = await fetch(
@@ -1527,6 +1535,8 @@ const description = "Choose your payment method";
         previewId: string,
         previewImgId: string,
         removeBtnId: string,
+        referenceInputId: string,
+        paymentMethod: string,
         closeFn: () => void,
     ) {
         const form = document.getElementById(formId) as HTMLFormElement;
@@ -1562,14 +1572,84 @@ const description = "Choose your payment method";
             });
 
         if (form) {
-            form.addEventListener("submit", (e) => {
+            form.addEventListener("submit", async (e) => {
                 e.preventDefault();
-                const screenshot = new FormData(form).get("screenshot");
+                const submitBtn = form.querySelector(
+                    'button[type="submit"]',
+                ) as HTMLButtonElement;
+                const originalText = submitBtn.innerHTML;
+
+                const formData = new FormData(form);
+                const screenshot = formData.get("screenshot");
+                const referenceCode = (
+                    document.getElementById(
+                        referenceInputId,
+                    ) as HTMLInputElement
+                )?.value;
+
                 if (!screenshot || !(screenshot as File).size) {
                     alert("Por favor sube una captura del pago.");
                     return;
                 }
-                showSuccessModal(closeFn);
+
+                if (!referenceCode) {
+                    alert("Por favor ingresa el código de referencia.");
+                    return;
+                }
+
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Enviando...`;
+
+                    const buyerInfo = localStorage.getItem("buyerInfo") || "{}";
+                    const items = JSON.stringify(cartItems.get());
+                    const totalPEN = cartTotal.get().toString();
+                    const registeredUserId =
+                        localStorage.getItem("registeredUserId") || "null";
+
+                    const sendData = new FormData();
+                    sendData.append("screenshot", screenshot);
+                    sendData.append("referenceCode", referenceCode);
+                    sendData.append("paymentMethod", paymentMethod);
+                    sendData.append("buyerInfo", buyerInfo);
+                    sendData.append("cartItems", items);
+                    sendData.append("totalPEN", totalPEN);
+                    sendData.append("userId", registeredUserId);
+
+                    const {
+                        data: { session },
+                    } = await supabase.auth.getSession();
+                    const headers: any = {};
+                    if (session) {
+                        headers["Authorization"] =
+                            `Bearer ${session.access_token}`;
+                    }
+
+                    const response = await fetch(
+                        "/api/payments/manual/create",
+                        {
+                            method: "POST",
+                            headers,
+                            body: sendData,
+                        },
+                    );
+
+                    const result = await response.json();
+
+                    if (!response.ok)
+                        throw new Error(
+                            result.error || "Error al procesar el pago",
+                        );
+
+                    showSuccessModal(closeFn);
+                } catch (error: any) {
+                    console.error("Manual Payment Error:", error);
+                    alert(
+                        `Error: ${error.message || "No se pudo enviar el comprobante."}`,
+                    );
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
             });
         }
     }
@@ -1582,6 +1662,8 @@ const description = "Choose your payment method";
         "yape-preview",
         "yape-preview-img",
         "yape-remove",
+        "yape-reference",
+        "yape",
         closeYapeModalFn,
     );
     setupForm(
@@ -1591,6 +1673,8 @@ const description = "Choose your payment method";
         "binance-preview",
         "binance-preview-img",
         "binance-remove",
+        "binance-txid",
+        "binance",
         closeBinanceModalFn,
     );
 
