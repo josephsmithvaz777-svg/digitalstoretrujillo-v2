@@ -4,7 +4,7 @@ const smtpHost = import.meta.env.SMTP_HOST;
 const smtpPort = parseInt(import.meta.env.SMTP_PORT || '465');
 const smtpUser = import.meta.env.SMTP_USER;
 const smtpPass = import.meta.env.SMTP_PASS;
-const smtpFromEmail = import.meta.env.SMTP_FROM_EMAIL;
+const smtpFromEmail = import.meta.env.SMTP_FROM_EMAIL || import.meta.env.MAILGUN_FROM_EMAIL || 'noreply@digitalstoretrujillo.store';
 const smtpFromName = import.meta.env.SMTP_FROM_NAME || 'Digital Store Trujillo';
 
 const transporter = nodemailer.createTransport({
