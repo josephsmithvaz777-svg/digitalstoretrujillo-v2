@@ -53,6 +53,11 @@ const orders = await getAllOrders();
                         <th
                             class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
+                            Productos
+                        </th>
+                        <th
+                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                        >
                             Total
                         </th>
                         <th
@@ -79,12 +84,12 @@ const orders = await getAllOrders();
                 </thead>
                 <tbody class="divide-y divide-border-dark">
                     {
-                        orders.length === 0 ? (
-                            <tr>
-                                <td colspan="8" class="px-6 py-12 text-center">
-                                    <span class="material-symbols-outlined text-text-muted text-5xl mb-4 block">
-                                        receipt_long
-                                    </span>
+                            orders.length === 0 ? (
+                                <tr>
+                                    <td colspan="9" class="px-6 py-12 text-center">
+                                        <span class="material-symbols-outlined text-text-muted text-5xl mb-4 block">
+                                            receipt_long
+                                        </span>
                                     <p class="text-text-muted">
                                         No hay órdenes aún
                                     </p>
@@ -123,6 +128,24 @@ const orders = await getAllOrders();
                                             <p class="text-text-muted text-sm">
                                                 {order.customer_email}
                                             </p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="space-y-1">
+                                            {order.items && order.items.length > 0 ? (
+                                                order.items.map((item: any) => (
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="w-6 h-6 rounded bg-background-dark overflow-hidden flex-shrink-0">
+                                                            <img src={item.image} alt="" class="w-full h-full object-cover" />
+                                                        </div>
+                                                        <p class="text-text-muted text-xs">
+                                                            <span class="text-white font-medium">{item.title}</span> (x{item.quantity})
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p class="text-text-muted text-xs italic">Sin productos</p>
+                                            )}
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
