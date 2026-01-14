@@ -344,53 +344,62 @@ const products = await getAllProducts();
             }, duration);
         }
 
-        // --- DRAG AND DROP LOGIC (Refined) ---
+        // --- DRAG AND DROP LOGIC (Optimized) ---
         const tableBody = document.querySelector('tbody');
         let draggedItem: HTMLElement | null = null;
         let placeholder: HTMLElement | null = null;
-
-        // Helper to get index of element
-        function getIndex(element: HTMLElement) {
-            return Array.from(element.parentNode!.children).indexOf(element);
-        }
+        let isDragging = false;
 
         if (tableBody) {
             // Drag Start
             tableBody.addEventListener('dragstart', (e) => {
                 const target = e.target as HTMLElement;
+                // Allow dragging from the handle OR the row
                 const row = target.closest('tr');
                 
-                // Only allow dragging if we are holding the handle or the row itself if intended
-                // But specifically we want to make sure we are dragging a valid row
                 if (!row || !row.classList.contains('draggable-row')) {
                     e.preventDefault();
                     return;
                 }
 
+                isDragging = true;
                 draggedItem = row;
                 
-                // Set drag effect
+                // Important: Set dataTransfer to allow drag
                 e.dataTransfer!.effectAllowed = 'move';
-                e.dataTransfer!.setData('text/plain', ''); // Required for Firefox
-
-                // Create a placeholder to show where it will land (optional, but good UX)
-                // For now we just use the native behavior but we add a class
+                e.dataTransfer!.setData('text/plain', row.dataset.id || '');
                 
-                // Delay class addition to ensure the drag ghost image is taken from the original look
+                // Create custom ghost image to avoid the "transparent row" effect being too confusing
+                // or just rely on browser default but style the original row
+                
+                // Defer style change to keep the drag image opaque
                 requestAnimationFrame(() => {
                     if (draggedItem) {
-                        draggedItem.classList.add('opacity-40', 'bg-primary/10');
+                        draggedItem.classList.add('opacity-0'); // Hide original while dragging
+                        // Create placeholder
+                        placeholder = document.createElement('tr');
+                        placeholder.innerHTML = `<td colspan="100%" class="h-[80px] bg-primary/10 border-2 border-dashed border-primary/50 rounded-lg"></td>`;
+                        // Insert placeholder after current item
+                        draggedItem.parentNode?.insertBefore(placeholder, draggedItem.nextSibling);
                     }
                 });
             });
 
             // Drag End
             tableBody.addEventListener('dragend', (e) => {
-                const row = e.target as HTMLElement;
+                isDragging = false;
                 if (draggedItem) {
-                    draggedItem.classList.remove('opacity-40', 'bg-primary/10');
+                    draggedItem.classList.remove('opacity-0');
+                    draggedItem.style.display = ''; // Ensure visibility
                 }
+                
+                // Remove placeholder
+                if (placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                }
+                
                 draggedItem = null;
+                placeholder = null;
                 
                 // Trigger save
                 saveNewOrder();
@@ -398,30 +407,32 @@ const products = await getAllProducts();
 
             // Drag Over
             tableBody.addEventListener('dragover', (e) => {
-                e.preventDefault(); // Necessary to allow dropping
-                if (!draggedItem) return;
+                e.preventDefault(); // Allow drop
+                if (!isDragging || !draggedItem || !placeholder) return;
 
                 const afterElement = getDragAfterElement(tableBody, e.clientY);
-                const currentRow = (e.target as HTMLElement).closest('tr');
                 
-                // If we are over the dragged item itself, do nothing
-                if (currentRow === draggedItem) return;
-
+                // Move placeholder, not the dragged item itself yet
                 if (afterElement == null) {
                     tableBody.appendChild(draggedItem);
                 } else {
                     tableBody.insertBefore(draggedItem, afterElement);
                 }
             });
+            
+            // Drop (safeguard)
+            tableBody.addEventListener('drop', (e) => {
+                e.preventDefault();
+            });
         }
 
         function getDragAfterElement(container: Element, y: number) {
-            const draggableElements = [...container.querySelectorAll('.draggable-row:not(.opacity-40)')];
+            const draggableElements = [...container.querySelectorAll('.draggable-row:not(.opacity-0)')];
 
             return draggableElements.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
                 const offset = y - box.top - box.height / 2;
-                // We want the element whose center is just below the cursor
+                
                 if (offset < 0 && offset > closest.offset) {
                     return { offset: offset, element: child };
                 } else {
