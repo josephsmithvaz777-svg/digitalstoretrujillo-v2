@@ -14,6 +14,21 @@ const orders = await getAllOrders();
         </p>
     </div>
 
+    <!-- Bulk Actions Bar (Hidden by default) -->
+    <div id="bulk-actions" class="hidden bg-primary/10 border border-primary/20 rounded-xl p-4 mb-6 flex items-center justify-between animate-fade-in">
+        <div class="flex items-center gap-3">
+            <span class="bg-primary text-white text-xs font-bold px-2 py-1 rounded-md" id="selected-count">0</span>
+            <span class="text-white text-sm font-medium">órdenes seleccionadas</span>
+        </div>
+        <button
+            id="bulk-delete-btn"
+            class="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all text-sm"
+        >
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+            Eliminar Seleccionados
+        </button>
+    </div>
+
     <!-- Orders Table -->
     <div
         class="bg-card-dark border border-border-dark rounded-xl overflow-hidden"
@@ -22,6 +37,9 @@ const orders = await getAllOrders();
             <table class="w-full">
                 <thead class="bg-background-dark border-b border-border-dark">
                     <tr>
+                        <th class="px-6 py-4 w-10">
+                            <input type="checkbox" id="select-all" class="rounded border-border-dark bg-background-dark text-primary focus:ring-primary cursor-pointer w-4 h-4">
+                        </th>
                         <th
                             class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
@@ -63,7 +81,7 @@ const orders = await getAllOrders();
                     {
                         orders.length === 0 ? (
                             <tr>
-                                <td colspan="7" class="px-6 py-12 text-center">
+                                <td colspan="8" class="px-6 py-12 text-center">
                                     <span class="material-symbols-outlined text-text-muted text-5xl mb-4 block">
                                         receipt_long
                                     </span>
@@ -75,6 +93,13 @@ const orders = await getAllOrders();
                         ) : (
                             orders.map((order) => (
                                 <tr class="hover:bg-background-dark/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <input 
+                                            type="checkbox" 
+                                            class="order-checkbox rounded border-border-dark bg-background-dark text-primary focus:ring-primary cursor-pointer w-4 h-4"
+                                            value={order.id}
+                                        >
+                                    </td>
                                     <td class="px-6 py-4">
                                         <div>
                                             <p class="text-white font-bold">
@@ -150,16 +175,14 @@ const orders = await getAllOrders();
                                     </td>
                                     <td class="px-6 py-4">
                                         <p class="text-white text-sm">
-                                            {new Date(
-                                                order.created_at,
-                                            ).toLocaleDateString("es-PE")}
+                                            {new Date(order.created_at).toLocaleDateString("es-PE", { timeZone: "America/Lima" })}
                                         </p>
                                         <p class="text-text-muted text-xs">
-                                            {new Date(
-                                                order.created_at,
-                                            ).toLocaleTimeString("es-PE", {
+                                            {new Date(order.created_at).toLocaleTimeString("es-PE", {
+                                                timeZone: "America/Lima",
                                                 hour: "2-digit",
                                                 minute: "2-digit",
+                                                hour12: true
                                             })}
                                         </p>
                                     </td>
@@ -325,6 +348,43 @@ const orders = await getAllOrders();
         </div>
     </div>
 
+    <!-- Bulk Delete Confirmation Modal -->
+    <div
+        id="bulk-delete-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-sm w-full p-6 text-center"
+        >
+            <div
+                class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+                <span class="material-symbols-outlined text-red-500 text-3xl">
+                    delete_sweep
+                </span>
+            </div>
+            <h2 class="text-white text-xl font-bold mb-2">¿Eliminar Seleccionados?</h2>
+            <p class="text-text-muted text-sm mb-6">
+                Se eliminarán <span id="bulk-delete-count" class="font-bold text-white">0</span> órdenes permanentemente. Esta acción no se puede deshacer.
+            </p>
+
+            <div class="flex gap-3">
+                <button
+                    id="cancel-bulk-delete"
+                    class="flex-1 px-4 py-2 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+                >
+                    Cancelar
+                </button>
+                <button
+                    id="confirm-bulk-delete"
+                    class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all"
+                >
+                    Eliminar Todo
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- View Proof Modal -->
     <div
         id="proof-modal"
@@ -398,10 +458,12 @@ const orders = await getAllOrders();
             supabase,
             updateOrderStatus,
             deleteOrder,
+            deleteOrders,
         } from "../../../lib/supabase";
 
         const statusModal = document.getElementById("status-modal");
         const deleteModal = document.getElementById("delete-modal");
+        const bulkDeleteModal = document.getElementById("bulk-delete-modal");
         const proofModal = document.getElementById("proof-modal");
 
         const orderStatusSelect = document.getElementById(
@@ -422,6 +484,10 @@ const orders = await getAllOrders();
             "confirm-delete",
         ) as HTMLButtonElement;
 
+        const cancelBulkDeleteBtn = document.getElementById("cancel-bulk-delete");
+        const confirmBulkDeleteBtn = document.getElementById("confirm-bulk-delete");
+        const bulkDeleteCount = document.getElementById("bulk-delete-count");
+
         const closeProofBtn = document.getElementById("close-proof-modal");
         const proofImage = document.getElementById(
             "proof-image",
@@ -434,6 +500,78 @@ const orders = await getAllOrders();
 
         let orderToUpdate: string | null = null;
         let orderToDelete: string | null = null;
+
+        // --- Bulk Actions Logic ---
+        const selectAllCheckbox = document.getElementById("select-all") as HTMLInputElement;
+        const orderCheckboxes = document.querySelectorAll(".order-checkbox") as NodeListOf<HTMLInputElement>;
+        const bulkActionsBar = document.getElementById("bulk-actions");
+        const selectedCountSpan = document.getElementById("selected-count");
+        const bulkDeleteBtn = document.getElementById("bulk-delete-btn");
+
+        function updateBulkUI() {
+            const selected = Array.from(orderCheckboxes).filter(cb => cb.checked);
+            const count = selected.length;
+
+            if (selectedCountSpan) selectedCountSpan.textContent = count.toString();
+
+            if (count > 0) {
+                bulkActionsBar?.classList.remove("hidden");
+            } else {
+                bulkActionsBar?.classList.add("hidden");
+            }
+        }
+
+        selectAllCheckbox?.addEventListener("change", (e) => {
+            const isChecked = (e.target as HTMLInputElement).checked;
+            orderCheckboxes.forEach(cb => {
+                cb.checked = isChecked;
+            });
+            updateBulkUI();
+        });
+
+        orderCheckboxes.forEach(cb => {
+            cb.addEventListener("change", () => {
+                const allChecked = Array.from(orderCheckboxes).every(cb => cb.checked);
+                if (selectAllCheckbox) selectAllCheckbox.checked = allChecked;
+                updateBulkUI();
+            });
+        });
+
+        bulkDeleteBtn?.addEventListener("click", () => {
+            const selected = Array.from(orderCheckboxes).filter(cb => cb.checked);
+            if (selected.length === 0) return;
+
+            if (bulkDeleteCount) bulkDeleteCount.textContent = selected.length.toString();
+            bulkDeleteModal?.classList.remove("hidden");
+        });
+
+        cancelBulkDeleteBtn?.addEventListener("click", () => {
+            bulkDeleteModal?.classList.add("hidden");
+        });
+
+        confirmBulkDeleteBtn?.addEventListener("click", async () => {
+            const selected = Array.from(orderCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+            if (selected.length === 0) return;
+
+            if (confirmBulkDeleteBtn) {
+                confirmBulkDeleteBtn.textContent = "Eliminando...";
+                (confirmBulkDeleteBtn as HTMLButtonElement).disabled = true;
+            }
+
+            const success = await deleteOrders(selected);
+
+            if (success) {
+                window.location.reload();
+            } else {
+                alert("Error al eliminar las órdenes seleccionadas.");
+                if (confirmBulkDeleteBtn) {
+                    confirmBulkDeleteBtn.textContent = "Eliminar Todo";
+                    (confirmBulkDeleteBtn as HTMLButtonElement).disabled = false;
+                }
+            }
+        });
+
+        // --- Existing Logic ---
 
         // Open status modal
         document.querySelectorAll(".update-status-btn").forEach((btn) => {
@@ -617,6 +755,9 @@ const orders = await getAllOrders();
             if (e.target === deleteModal) {
                 deleteModal?.classList.add("hidden");
                 orderToDelete = null;
+            }
+            if (e.target === bulkDeleteModal) {
+                bulkDeleteModal?.classList.add("hidden");
             }
             if (e.target === proofModal) {
                 proofModal?.classList.add("hidden");

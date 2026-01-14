@@ -632,6 +632,23 @@ export async function deleteOrder(orderId: string): Promise<boolean> {
 }
 
 /**
+ * Delete multiple orders (admin only)
+ */
+export async function deleteOrders(orderIds: string[]): Promise<boolean> {
+  const { error } = await supabase
+    .from('orders')
+    .delete()
+    .in('id', orderIds);
+
+  if (error) {
+    console.error('Error deleting orders:', error);
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Get dashboard statistics (admin only)
  */
 export async function getDashboardStats() {
