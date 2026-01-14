@@ -39,7 +39,14 @@ export const GET: APIRoute = async ({ request }) => {
                 if (result.success) {
                     logs.push(`✅ Email sent successfully. ID: ${result.messageId}`);
                 } else {
-                     logs.push(`❌ Email failed: ${JSON.stringify(result.error)}`);
+                     // Detailed error logging
+                     const err = result.error as any;
+                     logs.push(`❌ Email failed details:`);
+                     logs.push(`   Code: ${err.code}`);
+                     logs.push(`   Response: ${err.response}`);
+                     logs.push(`   Command: ${err.command}`);
+                     logs.push(`   Message: ${err.message}`);
+                     logs.push(`❌ Full error: ${JSON.stringify(result.error)}`);
                 }
             } catch (e: any) {
                 logs.push(`❌ Email exception: ${e.message}`);
