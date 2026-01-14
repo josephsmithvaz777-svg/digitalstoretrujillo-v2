@@ -45,6 +45,7 @@ export interface Product {
   stock_quantity: number;
   features: string[];
   is_active: boolean;
+  sort_order: number;
   created_at: string;
   updated_at: string;
 }
@@ -206,6 +207,7 @@ export async function getProductsByCategory(category: string): Promise<Product[]
     .eq('category', category)
     .eq('is_active', true)
     .eq('in_stock', true)
+    .order('sort_order', { ascending: true })
     .order('created_at', { ascending: false });
 
   if (error) {

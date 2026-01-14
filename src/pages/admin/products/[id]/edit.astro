@@ -1413,6 +1413,9 @@ if (!product) {
                 stock_quantity: parseInt(
                     formData.get("stock_quantity") as string,
                 ),
+                sort_order: parseInt(
+                    formData.get("sort_order") as string,
+                ) || 0,
                 features: features,
                 thumbnails: thumbnails,
                 show_gallery: (

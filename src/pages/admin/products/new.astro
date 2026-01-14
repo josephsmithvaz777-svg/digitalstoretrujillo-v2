@@ -908,6 +908,7 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
                 stock_quantity: parseInt(
                     formData.get("stock_quantity") as string,
                 ),
+                sort_order: parseInt(formData.get("sort_order") as string) || 0,
                 features,
                 is_active: (
                     document.getElementById("is_active") as HTMLInputElement
