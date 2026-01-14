@@ -486,46 +486,6 @@ const products = await getAllProducts();
 
         // --- END DRAG AND DROP LOGIC ---
 
-        // Sort Order Logic (Manual Input Fallback)
-            input.addEventListener("change", async (e) => {
-                const target = e.target as HTMLInputElement;
-                const productId = target.getAttribute("data-product-id");
-                const newOrder = parseInt(target.value);
-
-                if (!productId) return;
-
-                try {
-                    // Show loading state (optional, maybe disable input)
-                    target.disabled = true;
-                    
-                    const { data: { session } } = await supabase.auth.getSession();
-
-                    const response = await fetch(`/api/admin/products/${productId}`, {
-                        method: "PUT", // Or PATCH if supported by your API handler
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${session?.access_token}`,
-                        },
-                        body: JSON.stringify({ sort_order: newOrder }),
-                    });
-
-                    if (response.ok) {
-                        showToast("Orden actualizado", "success");
-                    } else {
-                        throw new Error("Error al actualizar orden");
-                    }
-                } catch (error) {
-                    console.error(error);
-                    showToast("Error al actualizar orden", "error");
-                    // Reset value? Or just leave it?
-                } finally {
-                    target.disabled = false;
-                    // Focus back to input to allow quick tabbing?
-                    target.focus();
-                }
-            });
-        });
-
         // Duplication Logic
         document.querySelectorAll(".duplicate-btn").forEach((btn) => {
             btn.addEventListener("click", async (e) => {
