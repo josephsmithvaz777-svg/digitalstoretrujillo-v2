@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { supabaseAdmin, getAdminUserFromToken } from '../../../../lib/supabase';
+import { notifyNewOrder } from '../../../../lib/notifications';
 
 export const POST: APIRoute = async ({ request }) => {
     try {
@@ -98,6 +99,9 @@ export const POST: APIRoute = async ({ request }) => {
             console.error('Order Update Error (Proof URL):', updateError);
             // Non-critical if we have the reference, but good to have
         }
+
+        // 5. Send Notifications (Async)
+        notifyNewOrder(order);
 
         return new Response(JSON.stringify({
             success: true,

@@ -82,6 +82,9 @@ export const POST: APIRoute = async ({ request }) => {
             .update({ payment_reference: cryptomusPayment.uuid })
             .eq('id', order.id);
 
+        // 5. Send Notifications
+        notifyNewOrder(order);
+
         return new Response(JSON.stringify({
             url: cryptomusPayment.url,
             orderId: order.id

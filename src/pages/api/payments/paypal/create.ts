@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { supabaseAdmin, getAdminUserFromToken } from '../../../../lib/supabase';
 import { PaypalService } from '../../../../lib/paypal';
+import { notifyNewOrder } from '../../../../lib/notifications';
 
 export const POST: APIRoute = async ({ request }) => {
     try {
@@ -70,6 +71,9 @@ export const POST: APIRoute = async ({ request }) => {
             .from('orders')
             .update({ payment_reference: paypalOrder.id })
             .eq('id', order.id);
+
+        // 5. Send Notifications
+        notifyNewOrder(order);
 
         return new Response(JSON.stringify({
             url: paypalOrder.url,
