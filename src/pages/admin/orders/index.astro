@@ -133,16 +133,29 @@ const orders = await getAllOrders();
                                     <td class="px-6 py-4">
                                         <div class="space-y-1">
                                             {order.items && order.items.length > 0 ? (
-                                                order.items.map((item: any) => (
-                                                    <div class="flex items-center gap-2">
-                                                        <div class="w-6 h-6 rounded bg-background-dark overflow-hidden flex-shrink-0">
-                                                            <img src={item.image} alt="" class="w-full h-full object-cover" />
+                                                order.items.map((item: any, idx: number) => {
+                                                    const delivery = order.delivery_info ? order.delivery_info.find((d: any) => d.title === item.title) : null;
+                                                    const expirationDate = delivery && delivery.expiration_date ? new Date(delivery.expiration_date).toLocaleDateString('es-PE') : null;
+                                                    
+                                                    return (
+                                                    <div class="flex flex-col gap-1 mb-2">
+                                                        <div class="flex items-center gap-2">
+                                                            <div class="w-6 h-6 rounded bg-background-dark overflow-hidden flex-shrink-0">
+                                                                <img src={item.image} alt="" class="w-full h-full object-cover" />
+                                                            </div>
+                                                            <p class="text-text-muted text-xs">
+                                                                <span class="text-white font-medium">{item.title}</span> (x{item.quantity})
+                                                            </p>
                                                         </div>
-                                                        <p class="text-text-muted text-xs">
-                                                            <span class="text-white font-medium">{item.title}</span> (x{item.quantity})
-                                                        </p>
+                                                        {expirationDate && (
+                                                            <div class="pl-8">
+                                                                <span class="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded border border-red-500/20 font-medium">
+                                                                    Vence: {expirationDate}
+                                                                </span>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                ))
+                                                )})
                                             ) : (
                                                 <p class="text-text-muted text-xs italic">Sin productos</p>
                                             )}
