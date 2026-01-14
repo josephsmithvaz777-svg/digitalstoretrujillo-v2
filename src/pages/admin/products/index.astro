@@ -38,6 +38,7 @@ const products = await getAllProducts();
             <table class="w-full">
                 <thead class="bg-background-dark border-b border-border-dark">
                     <tr>
+                        <th class="w-10 px-6 py-4"></th>
                         <th
                             class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
@@ -59,9 +60,9 @@ const products = await getAllProducts();
                             Stock
                         </th>
                         <th
-                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                            class="hidden px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
-                            Estado
+                            Orden
                         </th>
                         <th
                             class="px-6 py-4 text-right text-xs font-bold text-text-muted uppercase tracking-wider"
@@ -94,7 +95,10 @@ const products = await getAllProducts();
                             </tr>
                         ) : (
                             products.map((product) => (
-                                <tr class="hover:bg-background-dark/50 transition-colors">
+                                <tr class="hover:bg-background-dark/50 transition-colors group draggable-row cursor-grab active:cursor-grabbing" draggable="true" data-id={product.id}>
+                                    <td class="px-6 py-4 text-text-muted">
+                                        <span class="material-symbols-outlined cursor-grab active:cursor-grabbing hover:text-white transition-colors">drag_indicator</span>
+                                    </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <img
@@ -170,6 +174,15 @@ const products = await getAllProducts();
                                                 </>
                                             )}
                                         </span>
+                                    </td>
+                                    <td class="hidden px-6 py-4">
+                                        <input
+                                            type="number"
+                                            value={product.sort_order || 0}
+                                            class="sort-order-input w-20 bg-background-dark border border-border-dark rounded px-2 py-1 text-white text-sm focus:border-primary focus:outline-none"
+                                            data-product-id={product.id}
+                                            readonly
+                                        />
                                     </td>
                                     <td class="px-6 py-4">
                                         <span
