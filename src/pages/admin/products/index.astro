@@ -300,6 +300,7 @@ const products = await getAllProducts();
         function showToast(
             message: string,
             type: "success" | "error" = "success",
+            duration: number = 3000
         ) {
             const container = document.getElementById("toast-container");
             if (!container) return;
@@ -311,12 +312,16 @@ const products = await getAllProducts();
                 ${
                     type === "success"
                         ? "bg-green-500/10 border-green-500/20 text-green-400"
-                        : "bg-red-500/10 border-red-500/20 text-red-400"
+                        : type === "info" 
+                          ? "bg-blue-500/10 border-blue-500/20 text-blue-400"
+                          : "bg-red-500/10 border-red-500/20 text-red-400"
                 }
             `;
 
+            const icon = type === "success" ? "check_circle" : type === "info" ? "info" : "error";
+
             toast.innerHTML = `
-                <span class="material-symbols-outlined">${type === "success" ? "check_circle" : "error"}</span>
+                <span class="material-symbols-outlined">${icon}</span>
                 <span class="font-medium text-sm flex-1">${message}</span>
                 <button class="toast-close opacity-50 hover:opacity-100 transition-opacity">
                     <span class="material-symbols-outlined text-[18px]">close</span>
@@ -336,11 +341,141 @@ const products = await getAllProducts();
                     toast.classList.add("animate-fadeOut");
                     setTimeout(() => toast.remove(), 300);
                 }
-            }, 5000);
+            }, duration);
         }
 
-        // Sort Order Logic
-        document.querySelectorAll(".sort-order-input").forEach((input) => {
+        // --- DRAG AND DROP LOGIC (Refined) ---
+        const tableBody = document.querySelector('tbody');
+        let draggedItem: HTMLElement | null = null;
+        let placeholder: HTMLElement | null = null;
+
+        // Helper to get index of element
+        function getIndex(element: HTMLElement) {
+            return Array.from(element.parentNode!.children).indexOf(element);
+        }
+
+        if (tableBody) {
+            // Drag Start
+            tableBody.addEventListener('dragstart', (e) => {
+                const target = e.target as HTMLElement;
+                const row = target.closest('tr');
+                
+                // Only allow dragging if we are holding the handle or the row itself if intended
+                // But specifically we want to make sure we are dragging a valid row
+                if (!row || !row.classList.contains('draggable-row')) {
+                    e.preventDefault();
+                    return;
+                }
+
+                draggedItem = row;
+                
+                // Set drag effect
+                e.dataTransfer!.effectAllowed = 'move';
+                e.dataTransfer!.setData('text/plain', ''); // Required for Firefox
+
+                // Create a placeholder to show where it will land (optional, but good UX)
+                // For now we just use the native behavior but we add a class
+                
+                // Delay class addition to ensure the drag ghost image is taken from the original look
+                requestAnimationFrame(() => {
+                    if (draggedItem) {
+                        draggedItem.classList.add('opacity-40', 'bg-primary/10');
+                    }
+                });
+            });
+
+            // Drag End
+            tableBody.addEventListener('dragend', (e) => {
+                const row = e.target as HTMLElement;
+                if (draggedItem) {
+                    draggedItem.classList.remove('opacity-40', 'bg-primary/10');
+                }
+                draggedItem = null;
+                
+                // Trigger save
+                saveNewOrder();
+            });
+
+            // Drag Over
+            tableBody.addEventListener('dragover', (e) => {
+                e.preventDefault(); // Necessary to allow dropping
+                if (!draggedItem) return;
+
+                const afterElement = getDragAfterElement(tableBody, e.clientY);
+                const currentRow = (e.target as HTMLElement).closest('tr');
+                
+                // If we are over the dragged item itself, do nothing
+                if (currentRow === draggedItem) return;
+
+                if (afterElement == null) {
+                    tableBody.appendChild(draggedItem);
+                } else {
+                    tableBody.insertBefore(draggedItem, afterElement);
+                }
+            });
+        }
+
+        function getDragAfterElement(container: Element, y: number) {
+            const draggableElements = [...container.querySelectorAll('.draggable-row:not(.opacity-40)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                // We want the element whose center is just below the cursor
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        async function saveNewOrder() {
+            const items: { id: string, sort_order: number }[] = [];
+            const rows = document.querySelectorAll('.draggable-row');
+            
+            rows.forEach((row, index) => {
+                const input = row.querySelector('.sort-order-input') as HTMLInputElement;
+                if (input) {
+                    // Update the visual input too, for consistency
+                    input.value = index.toString();
+                    
+                    const productId = input.getAttribute('data-product-id');
+                    if (productId) {
+                        items.push({ id: productId, sort_order: index });
+                    }
+                }
+            });
+
+            if (items.length === 0) return;
+
+            showToast("Guardando nuevo orden...", "info", 2000);
+            
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                const res = await fetch('/api/admin/products/reorder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.access_token}`
+                    },
+                    body: JSON.stringify({ items })
+                });
+
+                if (res.ok) {
+                    showToast("Orden guardado correctamente", "success");
+                } else {
+                    throw new Error("Error al guardar");
+                }
+            } catch (err) {
+                console.error("Reorder error:", err);
+                showToast("Error al guardar el orden", "error");
+            }
+        }
+
+        // --- END DRAG AND DROP LOGIC ---
+
+        // Sort Order Logic (Manual Input Fallback)
             input.addEventListener("change", async (e) => {
                 const target = e.target as HTMLInputElement;
                 const productId = target.getAttribute("data-product-id");
