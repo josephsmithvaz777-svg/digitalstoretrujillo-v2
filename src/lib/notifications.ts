@@ -54,51 +54,115 @@ export async function notifyNewOrder(order: any) {
     `.trim();
 
     // 2. Email Content
-    const emailSubject = `Nueva Orden #${order.order_number} - ${order.customer_name}`;
+    const emailSubject = `🔔 Nueva Venta #${order.order_number} - ${currency} ${total}`;
     const emailHtml = `
-        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
-            <div style="background-color: #0f0f0f; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
-                <h2 style="color: #ffffff; margin: 0;">Digital Store Trujillo</h2>
-            </div>
-            <div style="border: 1px solid #ddd; padding: 20px; border-top: none; border-radius: 0 0 8px 8px;">
-                <h3 style="color: #E50914; margin-top: 0;">Nueva Orden Recibida</h3>
-                <p>Se ha generado una nueva orden en la tienda.</p>
-                
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; width: 40%;"><strong>Orden #:</strong></td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${order.order_number}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Cliente:</strong></td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${order.customer_name}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Email:</strong></td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${order.customer_email}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Monto Total:</strong></td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${currency} ${total}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Método de Pago:</strong></td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${order.payment_method}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Estado:</strong></td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee;">${order.payment_status}</td>
-                    </tr>
-                </table>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nueva Orden Recibida</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0f0f0f; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-font-smoothing: antialiased;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #0f0f0f;">
+            <tr>
+                <td align="center" style="padding: 40px 0;">
+                    <!-- Main Container -->
+                    <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #1a1a1a; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid #333;">
+                        
+                        <!-- Header -->
+                        <tr>
+                            <td align="center" style="padding: 30px 0; background-color: #1a1a1a; border-bottom: 1px solid #333;">
+                                <h2 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">
+                                    <span style="color: #E50914;">Digital</span>Store
+                                </h2>
+                            </td>
+                        </tr>
 
-                <div style="text-align: center; margin-top: 30px;">
-                    <a href="https://digitalstoretrujillo.store/admin/orders" style="background-color: #E50914; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;">Ver Orden en Admin</a>
-                </div>
-            </div>
-            <p style="text-align: center; color: #999; font-size: 12px; margin-top: 20px;">
-                Este es un mensaje automático del sistema.
-            </p>
-        </div>
+                        <!-- Content -->
+                        <tr>
+                            <td style="padding: 40px 30px;">
+                                <!-- Notification Badge -->
+                                <div style="text-align: center; margin-bottom: 25px;">
+                                    <span style="background-color: rgba(229, 9, 20, 0.1); color: #E50914; padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border: 1px solid rgba(229, 9, 20, 0.2);">
+                                        Nueva Venta
+                                    </span>
+                                </div>
+
+                                <!-- Main Title -->
+                                <h1 style="color: #ffffff; margin: 0 0 10px 0; font-size: 28px; font-weight: 700; text-align: center;">
+                                    ¡Orden Recibida!
+                                </h1>
+                                <p style="color: #a3a3a3; margin: 0 0 30px 0; font-size: 16px; text-align: center;">
+                                    Has recibido una nueva orden <strong>#${order.order_number}</strong>
+                                </p>
+
+                                <!-- Order Details Card -->
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #252525; border-radius: 12px; margin-bottom: 30px;">
+                                    <tr>
+                                        <td style="padding: 20px;">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td style="padding-bottom: 15px; border-bottom: 1px solid #333;">
+                                                        <p style="margin: 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Cliente</p>
+                                                        <p style="margin: 5px 0 0 0; color: #ffffff; font-size: 16px; font-weight: 600;">${order.customer_name}</p>
+                                                        <p style="margin: 2px 0 0 0; color: #a3a3a3; font-size: 14px;">${order.customer_email}</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 15px 0; border-bottom: 1px solid #333;">
+                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                            <tr>
+                                                                <td width="50%">
+                                                                    <p style="margin: 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Monto</p>
+                                                                    <p style="margin: 5px 0 0 0; color: #ffffff; font-size: 18px; font-weight: 700;">${currency} ${total}</p>
+                                                                </td>
+                                                                <td width="50%">
+                                                                    <p style="margin: 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Pago</p>
+                                                                    <p style="margin: 5px 0 0 0; color: #ffffff; font-size: 16px; font-weight: 600; text-transform: capitalize;">${order.payment_method}</p>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 15px;">
+                                                        <p style="margin: 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Estado</p>
+                                                        <p style="margin: 5px 0 0 0; color: #4ade80; font-size: 14px; font-weight: 600; text-transform: uppercase;">● ${order.payment_status}</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- CTA Button -->
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="center">
+                                            <a href="https://digitalstoretrujillo.store/admin/orders" style="background-color: #E50914; color: #ffffff; display: inline-block; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px; transition: all 0.3s ease;">
+                                                Gestionar Orden
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!-- Footer -->
+                        <tr>
+                            <td style="background-color: #252525; padding: 20px; text-align: center; border-top: 1px solid #333;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">
+                                    © 2024 Digital Store Trujillo. Panel de Administración.
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
     `;
 
     // Send both in parallel
