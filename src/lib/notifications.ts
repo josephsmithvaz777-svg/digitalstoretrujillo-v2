@@ -50,7 +50,7 @@ export async function notifyNewOrder(order: any) {
 <b>Estado:</b> ${order.payment_status}
 <b>Fecha:</b> ${date}
 
-<a href="https://digitalstoretrujillo.com/admin/orders">Ver detalles en Admin</a>
+<a href="https://digitalstoretrujillo.store/admin/orders">Ver detalles en Admin</a>
     `.trim();
 
     // 2. Email Content
