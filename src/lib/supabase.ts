@@ -166,8 +166,8 @@ export async function getFeaturedProducts(limit: number = 4): Promise<Product[]>
     .select('*')
     .eq('is_active', true)
     .eq('in_stock', true)
-    .eq('is_featured', true)
-    .order('created_at', { ascending: false })
+    .order('sort_order', { ascending: true }) // Primary sort: Manual order
+    .order('created_at', { ascending: false }) // Secondary sort: Newest
     .limit(limit);
 
   if (featuredError) {
@@ -180,12 +180,13 @@ export async function getFeaturedProducts(limit: number = 4): Promise<Product[]>
     return featured;
   }
 
-  // 2. Fallback: Automatic (Popularity/Reviews)
+  // 2. Fallback: Automatic (Popularity/Reviews) BUT still respect sort_order if set
   const { data: popular, error: popularError } = await supabase
     .from('products')
     .select('*')
     .eq('is_active', true)
     .eq('in_stock', true)
+    .order('sort_order', { ascending: true }) // Respect manual order even in fallback
     .order('review_count', { ascending: false })
     .limit(limit);
 
