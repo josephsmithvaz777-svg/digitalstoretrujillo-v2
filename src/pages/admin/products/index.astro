@@ -377,7 +377,7 @@ const products = await getAllProducts();
                         title: `${original.title} (Copia)`,
                         slug: `${original.slug}-copy-${Math.floor(Math.random() * 10000)}`,
                         is_active: false, // Create as inactive for safety
-                        rating: 0,
+                        rating: original.rating || 5, // Default to 5 if missing
                         review_count: 0,
                     };
 
