@@ -500,22 +500,22 @@ const description = "View your order history and credentials";
                 <div class="p-6 space-y-4">
                     <!-- Email -->
                     <div class="bg-black/40 rounded-lg p-3 border border-gray-800 flex justify-between items-center group hover:border-gray-600 transition-colors">
-                        <div>
+                        <div class="overflow-hidden mr-2">
                             <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Correo / Usuario</p>
-                            <p class="text-white font-mono text-sm select-all">${item.account_email}</p>
+                            <p class="text-white font-mono text-sm select-all truncate">${item.account_email}</p>
                         </div>
-                        <button class="text-gray-500 hover:text-white copy-btn" data-text="${item.account_email}">
+                        <button class="text-gray-500 hover:text-white copy-btn flex-shrink-0" data-text="${item.account_email}">
                             <span class="material-symbols-outlined text-lg">content_copy</span>
                         </button>
                     </div>
 
                     <!-- Password -->
                     <div class="bg-black/40 rounded-lg p-3 border border-gray-800 flex justify-between items-center group hover:border-gray-600 transition-colors">
-                        <div>
+                        <div class="overflow-hidden mr-2">
                             <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Contraseña</p>
-                            <p class="text-white font-mono text-sm select-all">${item.account_password}</p>
+                            <p class="text-white font-mono text-sm select-all truncate">${item.account_password}</p>
                         </div>
-                        <button class="text-gray-500 hover:text-white copy-btn" data-text="${item.account_password}">
+                        <button class="text-gray-500 hover:text-white copy-btn flex-shrink-0" data-text="${item.account_password}">
                             <span class="material-symbols-outlined text-lg">content_copy</span>
                         </button>
                     </div>
