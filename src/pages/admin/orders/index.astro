@@ -212,6 +212,18 @@ const orders = await getAllOrders();
                                                     </button>
                                                 )}
                                             <button
+                                                class="deliver-order-btn p-2 text-text-muted hover:text-yellow-500 hover:bg-yellow-500/10 rounded-lg transition-all"
+                                                data-order-id={order.id}
+                                                data-order-number={order.order_number}
+                                                data-items={JSON.stringify(order.items)}
+                                                data-delivery-info={JSON.stringify(order.delivery_info || [])}
+                                                title="Entregar Credenciales"
+                                            >
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    key
+                                                </span>
+                                            </button>
+                                            <button
                                                 class="whatsapp-btn p-2 text-text-muted hover:text-[#25D366] hover:bg-[#25D366]/10 rounded-lg transition-all"
                                                 data-order-number={
                                                     order.order_number
@@ -225,6 +237,7 @@ const orders = await getAllOrders();
                                                 data-items={JSON.stringify(
                                                     order.items,
                                                 )}
+                                                data-delivery-info={JSON.stringify(order.delivery_info || [])}
                                                 title="Enviar WhatsApp"
                                             >
                                                 <svg
@@ -385,6 +398,51 @@ const orders = await getAllOrders();
         </div>
     </div>
 
+    <!-- Delivery Modal -->
+    <div
+        id="delivery-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto"
+        >
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-white text-xl font-bold">Entregar Credenciales</h2>
+                <button id="close-delivery-modal" class="text-text-muted hover:text-white">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form id="delivery-form" class="space-y-6">
+                <div id="delivery-items-container" class="space-y-6">
+                    <!-- Items will be injected here -->
+                </div>
+
+                <div class="flex items-center gap-2 py-4 border-t border-border-dark">
+                    <input type="checkbox" id="mark-completed" class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary focus:ring-primary" checked>
+                    <label for="mark-completed" class="text-sm text-text-muted">Marcar orden como Completada y Verificada</label>
+                </div>
+
+                <div class="flex gap-3">
+                    <button
+                        type="button"
+                        id="cancel-delivery"
+                        class="flex-1 px-4 py-2 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type="submit"
+                        id="save-delivery"
+                        class="flex-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-bold rounded-lg transition-all"
+                    >
+                        Guardar y Entregar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- View Proof Modal -->
     <div
         id="proof-modal"
@@ -465,6 +523,7 @@ const orders = await getAllOrders();
         const deleteModal = document.getElementById("delete-modal");
         const bulkDeleteModal = document.getElementById("bulk-delete-modal");
         const proofModal = document.getElementById("proof-modal");
+        const deliveryModal = document.getElementById("delivery-modal");
 
         const orderStatusSelect = document.getElementById(
             "order-status",
@@ -498,8 +557,17 @@ const orders = await getAllOrders();
             "download-proof",
         ) as HTMLAnchorElement;
 
+        // Delivery Modal Elements
+        const closeDeliveryBtn = document.getElementById("close-delivery-modal");
+        const cancelDeliveryBtn = document.getElementById("cancel-delivery");
+        const deliveryForm = document.getElementById("delivery-form") as HTMLFormElement;
+        const deliveryItemsContainer = document.getElementById("delivery-items-container");
+        const saveDeliveryBtn = document.getElementById("save-delivery") as HTMLButtonElement;
+        const markCompletedCheckbox = document.getElementById("mark-completed") as HTMLInputElement;
+
         let orderToUpdate: string | null = null;
         let orderToDelete: string | null = null;
+        let orderToDeliver: string | null = null;
 
         // --- Bulk Actions Logic ---
         const selectAllCheckbox = document.getElementById("select-all") as HTMLInputElement;
@@ -598,6 +666,136 @@ const orders = await getAllOrders();
             });
         });
 
+        // Open Delivery Modal
+        document.querySelectorAll(".deliver-order-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const orderId = btn.getAttribute("data-order-id");
+                const itemsRaw = btn.getAttribute("data-items");
+                const deliveryInfoRaw = btn.getAttribute("data-delivery-info");
+
+                if (orderId && itemsRaw && deliveryItemsContainer) {
+                    orderToDeliver = orderId;
+                    const items = JSON.parse(itemsRaw);
+                    const existingInfo = JSON.parse(deliveryInfoRaw || "[]");
+
+                    deliveryItemsContainer.innerHTML = items.map((item: any, index: number) => {
+                        // Try to find existing data for this item (by product_id or just index)
+                        const saved = existingInfo.find((d: any) => d.product_id === item.id) || {};
+                        const defaultRules = "❌ No usar en 2 dispositivos.\n❌ No prestar su cuenta.\n❌ No cambiar contraseña.\n❌ No cambiar el perfil.";
+
+                        return `
+                            <div class="p-4 bg-background-dark border border-border-dark rounded-lg">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <img src="${item.image}" class="w-10 h-10 rounded object-cover">
+                                    <div>
+                                        <h3 class="text-white font-bold text-sm">${item.title}</h3>
+                                        <p class="text-text-muted text-xs">Cantidad: ${item.quantity}</p>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="items[${index}][product_id]" value="${item.id}">
+                                <input type="hidden" name="items[${index}][title]" value="${item.title}">
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-text-muted mb-1">Correo / Usuario</label>
+                                        <input type="text" name="items[${index}][account_email]" value="${saved.account_email || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-text-muted mb-1">Contraseña</label>
+                                        <input type="text" name="items[${index}][account_password]" value="${saved.account_password || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-text-muted mb-1">PIN / Perfil</label>
+                                        <input type="text" name="items[${index}][pin]" value="${saved.pin || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm" placeholder="Ej: 5532 (Perfil 3)">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-text-muted mb-1">Vencimiento</label>
+                                        <input type="date" name="items[${index}][expiration_date]" value="${saved.expiration_date || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs text-text-muted mb-1">Imagen (URL)</label>
+                                        <input type="text" name="items[${index}][image_url]" value="${saved.image_url || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm" placeholder="https://...">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs text-text-muted mb-1">Reglas de Uso</label>
+                                        <textarea name="items[${index}][instructions]" rows="3" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">${saved.instructions || defaultRules}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join("");
+
+                    deliveryModal?.classList.remove("hidden");
+                }
+            });
+        });
+
+        // Handle Delivery Form Submit
+        deliveryForm?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!orderToDeliver) return;
+
+            saveDeliveryBtn.disabled = true;
+            saveDeliveryBtn.innerHTML = "Guardando...";
+
+            // Collect Data manually because FormData with arrays is tricky
+            const formData = new FormData(deliveryForm);
+            const items = [];
+            const itemsContainer = document.getElementById("delivery-items-container");
+            const itemDivs = itemsContainer?.children;
+
+            if (itemDivs) {
+                for (let i = 0; i < itemDivs.length; i++) {
+                    items.push({
+                        product_id: formData.get(`items[${i}][product_id]`),
+                        title: formData.get(`items[${i}][title]`),
+                        account_email: formData.get(`items[${i}][account_email]`),
+                        account_password: formData.get(`items[${i}][account_password]`),
+                        pin: formData.get(`items[${i}][pin]`),
+                        expiration_date: formData.get(`items[${i}][expiration_date]`),
+                        image_url: formData.get(`items[${i}][image_url]`),
+                        instructions: formData.get(`items[${i}][instructions]`),
+                    });
+                }
+            }
+
+            try {
+                const session = await supabase.auth.getSession();
+                const response = await fetch("/api/admin/orders/deliver", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session.data.session?.access_token}`,
+                    },
+                    body: JSON.stringify({
+                        orderId: orderToDeliver,
+                        deliveryInfo: items,
+                        updateStatus: markCompletedCheckbox?.checked
+                    }),
+                });
+
+                if (response.ok) {
+                    alert("Credenciales guardadas correctamente.");
+                    window.location.reload();
+                } else {
+                    throw new Error("Error al guardar credenciales");
+                }
+            } catch (error: any) {
+                alert(error.message);
+                saveDeliveryBtn.disabled = false;
+                saveDeliveryBtn.innerHTML = "Guardar y Entregar";
+            }
+        });
+
+        // Close Delivery Modal
+        const closeDelivery = () => {
+            deliveryModal?.classList.add("hidden");
+            orderToDeliver = null;
+        }
+        closeDeliveryBtn?.addEventListener("click", closeDelivery);
+        cancelDeliveryBtn?.addEventListener("click", closeDelivery);
+
+
         // Open proof modal
         document.querySelectorAll(".view-proof-btn").forEach((btn) => {
             btn.addEventListener("click", () => {
@@ -628,18 +826,35 @@ const orders = await getAllOrders();
                 const name = btn.getAttribute("data-customer-name");
                 const phone = btn.getAttribute("data-customer-phone");
                 const itemsRaw = btn.getAttribute("data-items");
+                const deliveryInfoRaw = btn.getAttribute("data-delivery-info");
 
-                let productList = "";
-                try {
-                    const items = JSON.parse(itemsRaw || "[]");
-                    productList = items
-                        .map((i: any) => `- ${i.title} (x${i.quantity})`)
-                        .join("\n");
-                } catch (e) {
-                    productList = "Productos de tu orden";
+                let message = "";
+                const deliveryInfo = JSON.parse(deliveryInfoRaw || "[]");
+
+                // Check if we have delivery info to format the special message
+                if (deliveryInfo.length > 0) {
+                    // Create formatted message for delivered items
+                    const formattedItems = deliveryInfo.map((info: any) => {
+                        const date = info.expiration_date ? new Date(info.expiration_date).toLocaleDateString('es-PE') : 'N/A';
+                        
+                        return `⭕ *${info.title.toUpperCase()}* ⭕\n\n📧 *Correo:* ${info.account_email}\n🔑 *Contraseña:* ${info.account_password}\n\n${info.pin ? `🔒 *PIN/Perfil:* ${info.pin}\n` : ''}\n⚠️ *Reglas de uso* ⚠️\n${info.instructions}\n\n🗓️ *Vencimiento:* ${date}`;
+                    }).join("\n\n------------------\n\n");
+
+                    message = `¡Hola ${name}! 👋\nAquí tienes tu pedido *#${num}*:\n\n${formattedItems}\n\n¡Gracias por tu compra! ✨`;
+
+                } else {
+                    // Fallback to standard message
+                    let productList = "";
+                    try {
+                        const items = JSON.parse(itemsRaw || "[]");
+                        productList = items
+                            .map((i: any) => `- ${i.title} (x${i.quantity})`)
+                            .join("\n");
+                    } catch (e) {
+                        productList = "Productos de tu orden";
+                    }
+                    message = `¡Hola ${name}! 🛍️\n\nHemos verificado tu pago satisfactoriamente.\n\n✅ *Orden:* #${num}\n📦 *Productos:*\n${productList}\n\nYa puedes acceder a tus productos desde la sección *'Mi Cuenta'* en nuestra web.\n\n¡Gracias por tu confianza! ✨`;
                 }
-
-                const message = `¡Hola ${name}! 🛍️\n\nHemos verificado tu pago satisfactoriamente.\n\n✅ *Orden:* #${num}\n📦 *Productos:*\n${productList}\n\nYa puedes acceder a tus productos desde la sección *'Mi Cuenta'* en nuestra web.\n\n¡Gracias por tu confianza! ✨`;
 
                 // Copy to clipboard
                 navigator.clipboard.writeText(message).then(() => {
@@ -762,6 +977,10 @@ const orders = await getAllOrders();
             if (e.target === proofModal) {
                 proofModal?.classList.add("hidden");
                 document.body.style.overflow = "auto";
+            }
+            if (e.target === deliveryModal) {
+                deliveryModal?.classList.add("hidden");
+                orderToDeliver = null;
             }
         });
     </script>

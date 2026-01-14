@@ -67,6 +67,25 @@ const description = "View your order history and credentials";
             </div>
         </div>
 
+        <!-- Credentials Modal -->
+        <div
+            id="credentials-modal"
+            class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+        >
+            <div class="relative w-full max-w-md my-8">
+                <button
+                    id="close-credentials-modal"
+                    class="absolute -top-10 right-0 text-white hover:text-primary transition-colors z-50"
+                >
+                    <span class="material-symbols-outlined text-3xl">close</span>
+                </button>
+                
+                <div id="credentials-container" class="space-y-6">
+                    <!-- Cards will be injected here -->
+                </div>
+            </div>
+        </div>
+
         <!-- Dashboard Content -->
         <div id="dashboard" class="hidden space-y-8">
             <!-- Header -->
@@ -229,6 +248,11 @@ const description = "View your order history and credentials";
     const profileDate = document.getElementById("profile-date");
     const ordersContainer = document.getElementById("orders-container");
     const logoutBtn = document.getElementById("logout-btn");
+
+    // Credentials Modal
+    const credentialsModal = document.getElementById("credentials-modal");
+    const credentialsContainer = document.getElementById("credentials-container");
+    const closeCredentialsBtn = document.getElementById("close-credentials-modal");
 
     // Modal elements
     const confirmationModal = document.getElementById("confirmation-modal");
@@ -427,10 +451,12 @@ const description = "View your order history and credentials";
                             </div>
                             
                             ${
-                                order.status === "completed" ||
-                                order.payment_status === "verified"
+                                (order.status === "completed" || order.payment_status === "verified") && order.delivery_info
                                     ? `
-                                <button class="text-primary hover:text-white text-sm font-bold flex items-center gap-1 transition-colors">
+                                <button 
+                                    class="view-credentials-btn text-primary hover:text-white text-sm font-bold flex items-center gap-1 transition-colors"
+                                    data-delivery-info='${JSON.stringify(order.delivery_info)}'
+                                >
                                     <span class="material-symbols-outlined text-sm">key</span>
                                     View Credentials
                                 </button>
@@ -443,8 +469,132 @@ const description = "View your order history and credentials";
             `,
                 )
                 .join("");
+
+            // Add event listeners to buttons
+            document.querySelectorAll(".view-credentials-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const info = JSON.parse(btn.getAttribute("data-delivery-info") || "[]");
+                    openCredentialsModal(info);
+                });
+            });
         }
     }
+
+    function openCredentialsModal(info: any[]) {
+        if (!credentialsContainer) return;
+
+        credentialsContainer.innerHTML = info.map((item) => `
+            <div class="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-gray-800 rounded-2xl overflow-hidden shadow-2xl relative">
+                <!-- Top Glow -->
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+                
+                <!-- Header -->
+                <div class="p-6 text-center border-b border-gray-800 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-primary/5 blur-3xl"></div>
+                    <h3 class="text-2xl font-black text-white italic tracking-tighter uppercase relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                        ${item.title}
+                    </h3>
+                </div>
+
+                <!-- Credentials Body -->
+                <div class="p-6 space-y-4">
+                    <!-- Email -->
+                    <div class="bg-black/40 rounded-lg p-3 border border-gray-800 flex justify-between items-center group hover:border-gray-600 transition-colors">
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Correo / Usuario</p>
+                            <p class="text-white font-mono text-sm select-all">${item.account_email}</p>
+                        </div>
+                        <button class="text-gray-500 hover:text-white copy-btn" data-text="${item.account_email}">
+                            <span class="material-symbols-outlined text-lg">content_copy</span>
+                        </button>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="bg-black/40 rounded-lg p-3 border border-gray-800 flex justify-between items-center group hover:border-gray-600 transition-colors">
+                        <div>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Contraseña</p>
+                            <p class="text-white font-mono text-sm select-all">${item.account_password}</p>
+                        </div>
+                        <button class="text-gray-500 hover:text-white copy-btn" data-text="${item.account_password}">
+                            <span class="material-symbols-outlined text-lg">content_copy</span>
+                        </button>
+                    </div>
+
+                    <!-- Main Visual (PIN/Profile) -->
+                    ${item.image_url || item.pin ? `
+                    <div class="relative mt-6 mb-6 group cursor-pointer perspective-1000">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 rounded-xl"></div>
+                        <div class="bg-[#1e1e1e] rounded-xl overflow-hidden border border-gray-700 shadow-[0_0_30px_rgba(0,0,0,0.5)] relative">
+                            ${item.image_url ? `<img src="${item.image_url}" class="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500">` : `<div class="w-full h-32 bg-gray-900"></div>`}
+                            
+                            <div class="absolute inset-0 flex flex-col items-center justify-center z-20">
+                                ${item.pin ? `
+                                <div class="text-center">
+                                    <h4 class="text-yellow-400 font-black text-4xl tracking-tighter drop-shadow-[0_4px_0_rgba(0,0,0,1)] stroke-black" style="-webkit-text-stroke: 1px black;">PIN: ${item.pin}</h4>
+                                    <div class="mt-2 w-12 h-12 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center mx-auto border border-white/20">
+                                        <span class="material-symbols-outlined text-white">lock</span>
+                                    </div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- Rules -->
+                    <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
+                        <h4 class="text-red-400 font-bold text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">warning</span>
+                            Reglas de Uso
+                        </h4>
+                        <div class="text-gray-400 text-xs space-y-1">
+                            ${(item.instructions || '').split('\n').map((line: string) => `<p>${line}</p>`).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Expiration -->
+                    <div class="text-center pt-2">
+                        <div class="inline-flex items-center gap-2 bg-gray-800/50 px-4 py-1.5 rounded-full border border-gray-700">
+                            <span class="material-symbols-outlined text-gray-400 text-sm">event</span>
+                            <span class="text-gray-400 text-xs font-medium">Vencimiento:</span>
+                            <span class="text-white text-xs font-bold">${item.expiration_date ? formatDate(item.expiration_date) : 'Indefinido'}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join("");
+
+        credentialsModal?.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+
+        // Add copy functionality
+        document.querySelectorAll(".copy-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const text = btn.getAttribute("data-text");
+                if (text) {
+                    navigator.clipboard.writeText(text);
+                    const icon = btn.querySelector("span");
+                    if (icon) {
+                        icon.textContent = "check";
+                        setTimeout(() => icon.textContent = "content_copy", 2000);
+                    }
+                }
+            });
+        });
+    }
+
+    closeCredentialsBtn?.addEventListener("click", () => {
+        credentialsModal?.classList.add("hidden");
+        document.body.style.overflow = "auto";
+    });
+
+    // Close on backdrop click
+    credentialsModal?.addEventListener("click", (e) => {
+        if (e.target === credentialsModal) {
+            credentialsModal.classList.add("hidden");
+            document.body.style.overflow = "auto";
+        }
+    });
 
     // Listen for Auth Changes (This catches the hash redirect login)
     supabase.auth.onAuthStateChange((event, session) => {
