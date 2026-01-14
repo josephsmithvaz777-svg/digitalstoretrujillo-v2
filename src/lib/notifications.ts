@@ -92,7 +92,7 @@ export async function notifyNewOrder(order: any) {
                 </table>
 
                 <div style="text-align: center; margin-top: 30px;">
-                    <a href="https://digitalstoretrujillo.com/admin/orders" style="background-color: #E50914; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;">Ver Orden en Admin</a>
+                    <a href="https://digitalstoretrujillo.store/admin/orders" style="background-color: #E50914; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;">Ver Orden en Admin</a>
                 </div>
             </div>
             <p style="text-align: center; color: #999; font-size: 12px; margin-top: 20px;">
