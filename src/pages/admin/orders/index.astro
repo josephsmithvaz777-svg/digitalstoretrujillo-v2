@@ -736,8 +736,15 @@ const orders = await getAllOrders();
                                         <input type="date" name="items[${index}][expiration_date]" value="${saved.expiration_date || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
                                     </div>
                                     <div class="md:col-span-2">
-                                        <label class="block text-xs text-text-muted mb-1">Imagen (URL)</label>
-                                        <input type="text" name="items[${index}][image_url]" value="${saved.image_url || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm" placeholder="https://...">
+                                        <label class="block text-xs text-text-muted mb-1">Imagen (URL o Pegar Imagen)</label>
+                                        <div class="relative">
+                                            <input type="text" name="items[${index}][image_url]" value="${saved.image_url || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm pr-10 image-input" placeholder="https://... o Ctrl+V para pegar imagen">
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                                                <span class="material-symbols-outlined text-text-muted text-lg pointer-events-none">image</span>
+                                            </div>
+                                            <!-- Upload Status -->
+                                            <div class="upload-status hidden absolute -bottom-5 left-0 text-[10px] text-yellow-500">Subiendo imagen...</div>
+                                        </div>
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-xs text-text-muted mb-1">Reglas de Uso</label>
@@ -749,6 +756,62 @@ const orders = await getAllOrders();
                     }).join("");
 
                     deliveryModal?.classList.remove("hidden");
+                    
+                    // Attach Paste Events for Images
+                    document.querySelectorAll(".image-input").forEach((input: any) => {
+                        input.addEventListener("paste", async (e: ClipboardEvent) => {
+                            const items = e.clipboardData?.items;
+                            if (!items) return;
+
+                            for (const item of items) {
+                                if (item.type.indexOf("image") === 0) {
+                                    e.preventDefault();
+                                    const blob = item.getAsFile();
+                                    
+                                    // Show status
+                                    const container = input.parentElement;
+                                    const statusEl = container.querySelector(".upload-status");
+                                    if (statusEl) statusEl.classList.remove("hidden");
+                                    input.disabled = true;
+
+                                    try {
+                                        const formData = new FormData();
+                                        formData.append("file", blob!);
+                                        formData.append("upload_preset", "digitalstore_products"); // Using existing preset
+
+                                        const res = await fetch(
+                                            `https://api.cloudinary.com/v1_1/${import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                                            {
+                                                method: "POST",
+                                                body: formData,
+                                            }
+                                        );
+
+                                        const data = await res.json();
+                                        if (data.secure_url) {
+                                            input.value = data.secure_url;
+                                            if (statusEl) {
+                                                statusEl.textContent = "✅ Imagen subida correctamente";
+                                                statusEl.classList.remove("text-yellow-500");
+                                                statusEl.classList.add("text-green-500");
+                                            }
+                                        } else {
+                                            throw new Error("Error subiendo imagen");
+                                        }
+                                    } catch (err) {
+                                        console.error(err);
+                                        if (statusEl) {
+                                            statusEl.textContent = "❌ Error al subir imagen";
+                                            statusEl.classList.remove("text-yellow-500");
+                                            statusEl.classList.add("text-red-500");
+                                        }
+                                    } finally {
+                                        input.disabled = false;
+                                    }
+                                }
+                            }
+                        });
+                    });
                 }
             });
         });
