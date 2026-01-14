@@ -673,7 +673,19 @@ const description = "Complete your purchase securely";
                         }
                     });
 
-                    if (authError) throw authError;
+                    if (authError) {
+                        // Si el error es solo del envío del correo de confirmación, permitimos continuar
+                        // Esto pasa cuando el SMTP de Supabase falla o llega al límite
+                        if (authError.message && (
+                            authError.message.includes("confirmation email") || 
+                            authError.message.includes("rate limit")
+                        )) {
+                            console.warn("Alerta: Se creó el usuario pero falló el correo de confirmación:", authError);
+                            // No lanzamos el error para permitir que la compra continúe
+                        } else {
+                            throw authError;
+                        }
+                    }
                     
                     if (authData.user) {
                         registeredUserId = authData.user.id;

@@ -288,7 +288,15 @@ const description = "Create an account to track your orders";
                 },
             });
 
-            if (error) throw error;
+            if (error) {
+                // Ignore confirmation email error
+                const errorMsg = error.message?.toLowerCase() || "";
+                if (errorMsg.includes("confirmation email") || errorMsg.includes("rate limit") || errorMsg.includes("error sending")) {
+                    console.warn("Ignored email error:", error);
+                } else {
+                    throw error;
+                }
+            }
 
             if (data.user && data.user.identities && data.user.identities.length === 0) {
                  throw new Error("This email is already registered.");
