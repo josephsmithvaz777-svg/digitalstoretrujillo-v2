@@ -39,16 +39,33 @@ export async function notifyNewOrder(order: any) {
     const total = order.total || 0;
     const date = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' });
 
+    // Format Products List
+    const productsList = Array.isArray(order.items) 
+        ? order.items.map((item: any) => `• ${item.title} (x${item.quantity})`).join('\n')
+        : 'Sin productos';
+
+    const productsHtml = Array.isArray(order.items)
+        ? order.items.map((item: any) => `
+            <div style="margin-bottom: 8px; font-size: 14px; color: #fff;">
+                <span style="color: #a3a3a3;">•</span> ${item.title} <span style="color: #666; font-size: 12px;">(x${item.quantity})</span>
+            </div>
+        `).join('')
+        : '<p style="color: #666; font-size: 14px;">Sin información de productos</p>';
+
     // 1. Telegram Message
     const telegramMessage = `
 <b>🚨 Nueva Orden Recibida!</b>
 
 <b>Orden:</b> <code>${order.order_number}</code>
 <b>Cliente:</b> ${order.customer_name}
+<b>Email:</b> ${order.customer_email}
 <b>Monto:</b> ${currency} ${total}
 <b>Pago:</b> ${order.payment_method}
 <b>Estado:</b> ${order.payment_status}
 <b>Fecha:</b> ${date}
+
+<b>📦 Productos:</b>
+${productsList}
 
 <a href="https://digitalstoretrujillo.store/admin/orders">Ver detalles en Admin</a>
     `.trim();
@@ -107,6 +124,12 @@ export async function notifyNewOrder(order: any) {
                                                         <p style="margin: 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Cliente</p>
                                                         <p style="margin: 5px 0 0 0; color: #ffffff; font-size: 16px; font-weight: 600;">${order.customer_name}</p>
                                                         <p style="margin: 2px 0 0 0; color: #a3a3a3; font-size: 14px;">${order.customer_email}</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 15px 0; border-bottom: 1px solid #333;">
+                                                        <p style="margin: 0 0 10px 0; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Productos</p>
+                                                        ${productsHtml}
                                                     </td>
                                                 </tr>
                                                 <tr>

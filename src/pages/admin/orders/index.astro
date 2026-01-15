@@ -551,6 +551,22 @@ const orders = await getAllOrders();
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 right-4 z-[70] transform transition-all duration-300 translate-x-[150%] opacity-0">
+        <div class="bg-card-dark border border-border-dark rounded-xl shadow-2xl p-4 flex items-center gap-3 min-w-[300px]">
+            <div id="toast-icon-container" class="w-10 h-10 rounded-full flex items-center justify-center bg-green-500/20">
+                <span id="toast-icon" class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
+            </div>
+            <div>
+                <h4 id="toast-title" class="text-white font-bold text-sm">Éxito</h4>
+                <p id="toast-message" class="text-text-muted text-xs">Operación realizada correctamente</p>
+            </div>
+            <button id="close-toast" class="ml-auto text-text-muted hover:text-white">
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+        </div>
+    </div>
+
     <script>
         import {
             supabase,
@@ -558,6 +574,53 @@ const orders = await getAllOrders();
             deleteOrder,
             deleteOrders,
         } from "../../../lib/supabase";
+
+        // Toast Elements
+        const toast = document.getElementById("toast");
+        const toastTitle = document.getElementById("toast-title");
+        const toastMessage = document.getElementById("toast-message");
+        const toastIcon = document.getElementById("toast-icon");
+        const toastIconContainer = document.getElementById("toast-icon-container");
+        const closeToastBtn = document.getElementById("close-toast");
+        let toastTimeout: any;
+
+        function showToast(message: string, type: 'success' | 'error' = 'success') {
+            if (!toast || !toastTitle || !toastMessage || !toastIcon || !toastIconContainer) return;
+
+            // Set content
+            toastMessage.textContent = message;
+            toastTitle.textContent = type === 'success' ? 'Éxito' : 'Error';
+            
+            // Set styles based on type
+            if (type === 'success') {
+                toastIcon.textContent = 'check_circle';
+                toastIcon.classList.remove('text-red-500');
+                toastIcon.classList.add('text-green-500');
+                toastIconContainer.classList.remove('bg-red-500/20');
+                toastIconContainer.classList.add('bg-green-500/20');
+            } else {
+                toastIcon.textContent = 'error';
+                toastIcon.classList.remove('text-green-500');
+                toastIcon.classList.add('text-red-500');
+                toastIconContainer.classList.remove('bg-green-500/20');
+                toastIconContainer.classList.add('bg-red-500/20');
+            }
+
+            // Show toast
+            toast.classList.remove('translate-x-[150%]', 'opacity-0');
+            
+            // Hide after 3 seconds
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                hideToast();
+            }, 3000);
+        }
+
+        function hideToast() {
+            toast?.classList.add('translate-x-[150%]', 'opacity-0');
+        }
+
+        closeToastBtn?.addEventListener("click", hideToast);
 
         const statusModal = document.getElementById("status-modal");
         const deleteModal = document.getElementById("delete-modal");
@@ -878,13 +941,13 @@ const orders = await getAllOrders();
                 });
 
                 if (response.ok) {
-                    alert("Credenciales guardadas correctamente.");
-                    window.location.reload();
+                    showToast("Credenciales guardadas correctamente.");
+                    setTimeout(() => window.location.reload(), 1500);
                 } else {
                     throw new Error("Error al guardar credenciales");
                 }
             } catch (error: any) {
-                alert(error.message);
+                showToast(error.message, 'error');
                 saveDeliveryBtn.disabled = false;
                 saveDeliveryBtn.innerHTML = "Guardar y Entregar";
             }
@@ -1034,16 +1097,14 @@ const orders = await getAllOrders();
 
                 if (response.ok) {
                     // Show a quick success alert before reloading
-                    alert(
-                        "Estado actualizado y cliente notificado (vía Email/Web).",
-                    );
-                    window.location.reload();
+                    showToast("Estado actualizado y cliente notificado (vía Email/Web).");
+                    setTimeout(() => window.location.reload(), 1500);
                 } else {
                     const data = await response.json();
                     throw new Error(data.error || "Error al actualizar");
                 }
             } catch (error: any) {
-                alert(error.message);
+                showToast(error.message, 'error');
                 confirmUpdateBtn.disabled = false;
                 confirmUpdateBtn.textContent = "Actualizar";
             }
