@@ -253,58 +253,59 @@ const salesData = await getMonthlySales();
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script define:vars={{ salesData }}>
-        // Initialize Sales Chart
-        const ctx = document.getElementById('salesChart');
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: salesData.map(d => d.month),
-                    datasets: [{
-                        label: 'Ventas (S/)',
-                        data: salesData.map(d => d.total),
-                        backgroundColor: '#FF0055',
-                        borderRadius: 6,
-                        borderSkipped: false,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#1a1a1a',
-                            titleColor: '#fff',
-                            bodyColor: '#ccc',
-                            padding: 10,
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return 'S/ ' + context.parsed.y.toFixed(2);
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('salesChart');
+            if (ctx && typeof Chart !== 'undefined') {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: salesData.map(d => d.month),
+                        datasets: [{
+                            label: 'Ventas (S/)',
+                            data: salesData.map(d => d.total),
+                            backgroundColor: '#FF0055',
+                            borderRadius: 6,
+                            borderSkipped: false,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1a1a1a',
+                                titleColor: '#fff',
+                                bodyColor: '#ccc',
+                                padding: 10,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'S/ ' + context.parsed.y.toFixed(2);
+                                    }
                                 }
                             }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: '#333' },
-                            ticks: {
-                                color: '#888',
-                                callback: function(value) { return 'S/ ' + value; }
-                            }
                         },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#888' }
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#333' },
+                                ticks: {
+                                    color: '#888',
+                                    callback: function(value) { return 'S/ ' + value; }
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#888' }
+                            }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
+        });
 
         // WhatsApp Renew Buttons
         document.querySelectorAll('.whatsapp-renew-btn').forEach(btn => {

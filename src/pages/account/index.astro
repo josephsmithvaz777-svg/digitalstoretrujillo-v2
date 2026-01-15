@@ -522,6 +522,17 @@ const description = "View your order history and credentials";
                         </button>
                     </div>
 
+                    <!-- Expiration Date (Moved here) -->
+                    <div class="bg-black/40 rounded-lg p-3 border border-gray-800 flex justify-between items-center group hover:border-gray-600 transition-colors">
+                        <div class="overflow-hidden mr-2">
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Vencimiento</p>
+                            <p class="text-white font-mono text-sm font-bold">
+                                ${item.expiration_date ? formatDate(item.expiration_date) : 'Indefinido'}
+                            </p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-500">event_available</span>
+                    </div>
+
                     <!-- Main Visual (PIN/Profile) -->
                     ${item.image_url || item.pin ? `
                     <div class="relative mt-6 mb-6 group cursor-pointer perspective-1000">
@@ -553,15 +564,6 @@ const description = "View your order history and credentials";
                         </h4>
                         <div class="text-gray-400 text-xs space-y-1">
                             ${(item.instructions || '').split('\n').map((line: string) => `<p>${line}</p>`).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Expiration -->
-                    <div class="text-center pt-2">
-                        <div class="inline-flex items-center gap-2 bg-gray-800/50 px-4 py-1.5 rounded-full border border-gray-700">
-                            <span class="material-symbols-outlined text-gray-400 text-sm">event</span>
-                            <span class="text-gray-400 text-xs font-medium">Vencimiento:</span>
-                            <span class="text-white text-xs font-bold">${item.expiration_date ? formatDate(item.expiration_date) : 'Indefinido'}</span>
                         </div>
                     </div>
                 </div>
