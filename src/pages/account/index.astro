@@ -295,6 +295,13 @@ const description = "View your order history and credentials";
     });
 
     function formatDate(dateString: string) {
+        if (!dateString) return 'N/A';
+        // Check if dateString is YYYY-MM-DD (length 10)
+        if (dateString.length === 10 && dateString.includes('-')) {
+             const [year, month, day] = dateString.split('-');
+             return `${day}/${month}/${year}`;
+        }
+        
         return new Date(dateString).toLocaleDateString("es-PE", {
             year: "numeric",
             month: "short",

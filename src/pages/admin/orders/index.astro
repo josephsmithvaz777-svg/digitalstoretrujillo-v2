@@ -135,7 +135,11 @@ const orders = await getAllOrders();
                                             {order.items && order.items.length > 0 ? (
                                                 order.items.map((item: any, idx: number) => {
                                                     const delivery = order.delivery_info ? order.delivery_info.find((d: any) => d.title === item.title) : null;
-                                                    const expirationDate = delivery && delivery.expiration_date ? new Date(delivery.expiration_date).toLocaleDateString('es-PE') : null;
+                                                    let expirationDate = null;
+                                                    if (delivery && delivery.expiration_date) {
+                                                        const [year, month, day] = delivery.expiration_date.split('-');
+                                                        expirationDate = `${day}/${month}/${year}`;
+                                                    }
                                                     
                                                     return (
                                                     <div class="flex flex-col gap-1 mb-2">
@@ -248,15 +252,15 @@ const orders = await getAllOrders();
                                                     </button>
                                                 )}
                                             <button
-                                                class="deliver-order-btn p-2 text-text-muted hover:text-yellow-500 hover:bg-yellow-500/10 rounded-lg transition-all"
+                                                class={`deliver-order-btn p-2 rounded-lg transition-all ${order.status === 'completed' && order.delivery_info ? 'text-primary hover:text-white hover:bg-primary/20' : 'text-text-muted hover:text-yellow-500 hover:bg-yellow-500/10'}`}
                                                 data-order-id={order.id}
                                                 data-order-number={order.order_number}
                                                 data-items={JSON.stringify(order.items)}
                                                 data-delivery-info={JSON.stringify(order.delivery_info || [])}
-                                                title="Entregar Credenciales"
+                                                title={order.status === 'completed' && order.delivery_info ? "Editar Credenciales" : "Entregar Credenciales"}
                                             >
                                                 <span class="material-symbols-outlined text-[20px]">
-                                                    key
+                                                    {order.status === 'completed' && order.delivery_info ? 'edit_square' : 'key'}
                                                 </span>
                                             </button>
                                             <button
@@ -934,7 +938,10 @@ const orders = await getAllOrders();
                 if (deliveryInfo.length > 0) {
                     // Create formatted message for delivered items
                     const formattedItems = deliveryInfo.map((info: any) => {
-                        const date = info.expiration_date ? new Date(info.expiration_date).toLocaleDateString('es-PE') : 'N/A';
+                        const date = info.expiration_date ? (() => {
+                            const [y, m, d] = info.expiration_date.split('-');
+                            return `${d}/${m}/${y}`;
+                        })() : 'N/A';
                         
                         return `⭕ *${info.title.toUpperCase()}* ⭕\n\n📧 *Correo:* ${info.account_email}\n🔑 *Contraseña:* ${info.account_password}\n\n${info.pin ? `🔒 *PIN/Perfil:* ${info.pin}\n` : ''}\n⚠️ *Reglas de uso* ⚠️\n${info.instructions}\n\n🗓️ *Vencimiento:* ${date}`;
                     }).join("\n\n------------------\n\n");

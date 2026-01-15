@@ -119,7 +119,11 @@ const productsByUser = activeProducts.reduce((acc: any, product: any) => {
                                                             </div>
                                                             <div class="pl-4">
                                                                 <span class={'text-[10px] px-1.5 py-0.5 rounded border ' + (p.days_left <= 5 ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20')}>
-                                                                    Vence: {new Date(p.expiration_date).toLocaleDateString('es-PE')}
+                                                                    Vence: {(() => {
+                                                                        if (!p.expiration_date) return 'N/A';
+                                                                        const [y, m, d] = p.expiration_date.split('-');
+                                                                        return `${d}/${m}/${y}`;
+                                                                    })()}
                                                                 </span>
                                                             </div>
                                                         </div>
