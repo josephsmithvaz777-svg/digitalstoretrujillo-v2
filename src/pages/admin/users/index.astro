@@ -112,14 +112,16 @@ const productsByUser = activeProducts.reduce((acc: any, product: any) => {
                                             productsByUser[user.email?.toLowerCase()]?.length > 0 ? (
                                                 <div class="flex flex-col gap-1">
                                                     {productsByUser[user.email?.toLowerCase()].slice(0, 3).map((p: any) => (
-                                                        <div class="flex items-center gap-2 text-xs">
-                                                            <span class={'w-2 h-2 rounded-full flex-shrink-0 ' + (p.days_left <= 5 ? 'bg-red-500 animate-pulse' : 'bg-green-500')}></span>
-                                                            <span class="text-white truncate max-w-[150px]" title={p.title}>{p.title}</span>
-                                                            {p.days_left <= 5 && (
-                                                                <span class="text-red-400 font-bold text-[10px] ml-auto">
-                                                                    {p.days_left <= 0 ? 'Vencido' : p.days_left + 'd'}
+                                                        <div class="flex flex-col gap-0.5 text-xs mb-2 last:mb-0">
+                                                            <div class="flex items-center gap-2">
+                                                                <span class={'w-2 h-2 rounded-full flex-shrink-0 ' + (p.days_left <= 5 ? 'bg-red-500 animate-pulse' : 'bg-green-500')}></span>
+                                                                <span class="text-white truncate max-w-[150px]" title={p.title}>{p.title}</span>
+                                                            </div>
+                                                            <div class="pl-4">
+                                                                <span class={'text-[10px] px-1.5 py-0.5 rounded border ' + (p.days_left <= 5 ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20')}>
+                                                                    Vence: {new Date(p.expiration_date).toLocaleDateString('es-PE')}
                                                                 </span>
-                                                            )}
+                                                            </div>
                                                         </div>
                                                     ))}
                                                     {productsByUser[user.email?.toLowerCase()].length > 3 && (
