@@ -67,113 +67,51 @@ const salesData = await getMonthlySales();
         <!-- Total Users -->
         <div class="bg-card-dark border border-border-dark rounded-xl p-6">
             <div class="flex items-center justify-between mb-4">
-                <div
-                    class="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center"
-                >
-                    <span
-                        class="material-symbols-outlined text-pink-500 text-2xl"
-                    >
-                        group
-                    </span>
+                <div class="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-pink-500 text-2xl">group</span>
                 </div>
-                {
-                    stats.pendingUsers > 0 && (
-                        <span class="bg-pink-500/20 text-pink-500 text-xs font-bold px-2 py-1 rounded-full">
-                            {stats.pendingUsers} nuevos
-                        </span>
-                    )
-                }
             </div>
-            <h3 class="text-text-muted text-sm font-medium mb-1">
-                Total Usuarios
-            </h3>
+            <h3 class="text-text-muted text-sm font-medium mb-1">Total Usuarios</h3>
             <p class="text-white text-3xl font-bold">{stats.totalUsers}</p>
         </div>
 
         <!-- Total Revenue -->
         <div class="bg-card-dark border border-border-dark rounded-xl p-6">
             <div class="flex items-center justify-between mb-4">
-                <div
-                    class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center"
-                >
-                    <span
-                        class="material-symbols-outlined text-green-500 text-2xl"
-                    >
-                        payments
-                    </span>
+                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-green-500 text-2xl">payments</span>
                 </div>
                 <span class="text-green-500 text-sm font-medium">+12.5%</span>
             </div>
-            <h3 class="text-text-muted text-sm font-medium mb-1">
-                Ingresos Totales
-            </h3>
-            <p class="text-white text-3xl font-bold">
-                S/ {stats.totalRevenue.toFixed(2)}
-            </p>
+            <h3 class="text-text-muted text-sm font-medium mb-1">Ingresos Totales</h3>
+            <p class="text-white text-3xl font-bold">S/ {stats.totalRevenue.toFixed(2)}</p>
         </div>
 
         <!-- Total Orders -->
         <div class="bg-card-dark border border-border-dark rounded-xl p-6">
             <div class="flex items-center justify-between mb-4">
-                <div
-                    class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center"
-                >
-                    <span
-                        class="material-symbols-outlined text-blue-500 text-2xl"
-                    >
-                        receipt_long
-                    </span>
+                <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-blue-500 text-2xl">receipt_long</span>
                 </div>
             </div>
-            <h3 class="text-text-muted text-sm font-medium mb-1">
-                Total Órdenes
-            </h3>
+            <h3 class="text-text-muted text-sm font-medium mb-1">Total Órdenes</h3>
             <p class="text-white text-3xl font-bold">{stats.totalOrders}</p>
         </div>
 
         <!-- Pending Orders -->
         <div class="bg-card-dark border border-border-dark rounded-xl p-6">
             <div class="flex items-center justify-between mb-4">
-                <div
-                    class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center"
-                >
-                    <span
-                        class="material-symbols-outlined text-yellow-500 text-2xl"
-                    >
-                        pending_actions
-                    </span>
+                <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-yellow-500 text-2xl">pending_actions</span>
                 </div>
-                {
-                    stats.pendingOrders > 0 && (
-                        <span class="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-2 py-1 rounded-full">
-                            ¡Atención!
-                        </span>
-                    )
-                }
+                {stats.pendingOrders > 0 && (
+                    <span class="bg-yellow-500/20 text-yellow-500 text-xs font-bold px-2 py-1 rounded-full">
+                        ¡Atención!
+                    </span>
+                )}
             </div>
-            <h3 class="text-text-muted text-sm font-medium mb-1">
-                Órdenes Pendientes
-            </h3>
+            <h3 class="text-text-muted text-sm font-medium mb-1">Órdenes Pendientes</h3>
             <p class="text-white text-3xl font-bold">{stats.pendingOrders}</p>
-        </div>
-
-        <!-- Total Products -->
-        <div class="bg-card-dark border border-border-dark rounded-xl p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div
-                    class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center"
-                >
-                    <span
-                        class="material-symbols-outlined text-purple-500 text-2xl"
-                    >
-                        inventory_2
-                    </span>
-                </div>
-            </div>
-            <h3 class="text-text-muted text-sm font-medium mb-1">
-                Total Productos
-            </h3>
-            <p class="text-white text-3xl font-bold">{stats.totalProducts}</p>
         </div>
     </div>
 
@@ -194,52 +132,46 @@ const salesData = await getMonthlySales();
                 <span class="text-text-muted text-sm">Próximos 5 días</span>
             </div>
 
-            {
-                expiringProducts.length === 0 ? (
-                    <div class="text-center py-12">
-                        <span class="material-symbols-outlined text-green-500 text-5xl mb-4">
-                            event_available
-                        </span>
-                        <p class="text-text-muted">No hay cuentas próximas a vencer</p>
-                    </div>
-                ) : (
-                    <div class="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                        {expiringProducts.map((item: any) => (
-                            <div class="p-4 bg-background-dark rounded-lg border border-red-500/30 relative overflow-hidden group">
-                                <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-                                <div class="flex items-start gap-3 pl-2">
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex justify-between items-start mb-1">
-                                            <h3 class="text-white font-bold truncate pr-2">
-                                                {item.title}
-                                            </h3>
-                                            <span class={`text-xs font-bold px-2 py-0.5 rounded ${item.days_left <= 0 ? 'bg-red-500 text-white' : 'bg-yellow-500/20 text-yellow-500'}`}>
-                                                {item.days_left <= 0 ? 'Vencido' : `${item.days_left} días`}
-                                            </span>
-                                        </div>
-                                        <p class="text-text-muted text-xs mb-2">
-                                            Orden: #{item.order_number} • {item.customer_name}
-                                        </p>
-                                        
-                                        <div class="flex items-center gap-2 mt-2">
-                                            <button 
-                                                class="whatsapp-renew-btn flex-1 flex items-center justify-center gap-1 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-xs py-1.5 rounded transition-colors"
-                                                data-phone={item.customer_phone}
-                                                data-customer={item.customer_name}
-                                                data-title={item.title}
-                                                data-expiration={item.expiration_date}
-                                            >
-                                                <span class="material-symbols-outlined text-[16px]">chat</span>
-                                                Renovar
-                                            </button>
-                                        </div>
+            {expiringProducts.length === 0 ? (
+                <div class="text-center py-12">
+                    <span class="material-symbols-outlined text-green-500 text-5xl mb-4">event_available</span>
+                    <p class="text-text-muted">No hay cuentas próximas a vencer</p>
+                </div>
+            ) : (
+                <div class="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    {expiringProducts.map((item: any) => (
+                        <div class="p-4 bg-background-dark rounded-lg border border-red-500/30 relative overflow-hidden group">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                            <div class="flex items-start gap-3 pl-2">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <h3 class="text-white font-bold truncate pr-2">{item.title}</h3>
+                                        <span class={'text-xs font-bold px-2 py-0.5 rounded ' + (item.days_left <= 0 ? 'bg-red-500 text-white' : 'bg-yellow-500/20 text-yellow-500')}>
+                                            {item.days_left <= 0 ? 'Vencido' : item.days_left + ' días'}
+                                        </span>
+                                    </div>
+                                    <p class="text-text-muted text-xs mb-2">
+                                        Orden: #{item.order_number} • {item.customer_name}
+                                    </p>
+                                    
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <button 
+                                            class="whatsapp-renew-btn flex-1 flex items-center justify-center gap-1 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-xs py-1.5 rounded transition-colors"
+                                            data-phone={item.customer_phone}
+                                            data-customer={item.customer_name}
+                                            data-title={item.title}
+                                            data-expiration={item.expiration_date}
+                                        >
+                                            <span class="material-symbols-outlined text-[16px]">chat</span>
+                                            Renovar
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                )
-            }
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     </div>
 
@@ -248,117 +180,76 @@ const salesData = await getMonthlySales();
         <div class="bg-card-dark border border-border-dark rounded-xl p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-white text-xl font-bold">Órdenes Recientes</h2>
-                <a
-                    href="/admin/orders"
-                    class="text-primary hover:text-red-600 text-sm font-medium transition-colors"
-                >
+                <a href="/admin/orders" class="text-primary hover:text-red-600 text-sm font-medium transition-colors">
                     Ver todas →
                 </a>
             </div>
 
-            {
-                recentOrders.length === 0 ? (
-                    <div class="text-center py-12">
-                        <span class="material-symbols-outlined text-text-muted text-5xl mb-4">
-                            receipt_long
-                        </span>
-                        <p class="text-text-muted">No hay órdenes aún</p>
-                    </div>
-                ) : (
-                    <div class="space-y-4">
-                        {recentOrders.map((order) => (
-                            <div
-                                class="block p-4 bg-background-dark rounded-lg border border-border-dark"
-                            >
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-white font-medium">
-                                        {order.order_number}
-                                    </span>
-                                    <span
-                                        class={`text-xs font-bold px-2 py-1 rounded-full ${
-                                            order.status === "completed"
-                                                ? "bg-green-500/20 text-green-400"
-                                                : order.status === "processing"
-                                                  ? "bg-blue-500/20 text-blue-400"
-                                                  : order.status === "cancelled"
-                                                    ? "bg-red-500/20 text-red-400"
-                                                    : "bg-yellow-500/20 text-yellow-400"
-                                        }`}
-                                    >
-                                        {order.status === "completed"
-                                            ? "Completado"
-                                            : order.status === "processing"
-                                              ? "Procesando"
-                                              : order.status === "cancelled"
-                                                ? "Cancelado"
-                                                : "Pendiente"}
-                                    </span>
-                                </div>
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-text-muted">
-                                        {order.customer_email}
-                                    </span>
-                                    <span class="text-white font-bold">
-                                        S/ {Number(order.total).toFixed(2)}
-                                    </span>
-                                </div>
+            {recentOrders.length === 0 ? (
+                <div class="text-center py-12">
+                    <span class="material-symbols-outlined text-text-muted text-5xl mb-4">receipt_long</span>
+                    <p class="text-text-muted">No hay órdenes aún</p>
+                </div>
+            ) : (
+                <div class="space-y-4">
+                    {recentOrders.map((order) => (
+                        <div class="block p-4 bg-background-dark rounded-lg border border-border-dark">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-white font-medium">{order.order_number}</span>
+                                <span class={'text-xs font-bold px-2 py-1 rounded-full ' + (
+                                    order.status === "completed" ? "bg-green-500/20 text-green-400" :
+                                    order.status === "processing" ? "bg-blue-500/20 text-blue-400" :
+                                    order.status === "cancelled" ? "bg-red-500/20 text-red-400" :
+                                    "bg-yellow-500/20 text-yellow-400"
+                                )}>
+                                    {order.status === "completed" ? "Completado" :
+                                     order.status === "processing" ? "Procesando" :
+                                     order.status === "cancelled" ? "Cancelado" :
+                                     "Pendiente"}
+                                </span>
                             </div>
-                        ))}
-                    </div>
-                )
-            }
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-text-muted">{order.customer_email}</span>
+                                <span class="text-white font-bold">S/ {Number(order.total).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
 
         <!-- Low Stock Alert -->
         <div class="bg-card-dark border border-border-dark rounded-xl p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-white text-xl font-bold">Alertas de Stock</h2>
-                <a
-                    href="/admin/products"
-                    class="text-primary hover:text-red-600 text-sm font-medium transition-colors"
-                >
+                <a href="/admin/products" class="text-primary hover:text-red-600 text-sm font-medium transition-colors">
                     Ver productos →
                 </a>
             </div>
 
-            {
-                lowStockProducts.length === 0 ? (
-                    <div class="text-center py-12">
-                        <span class="material-symbols-outlined text-green-500 text-5xl mb-4">
-                            check_circle
-                        </span>
-                        <p class="text-text-muted">Todo el stock está bien</p>
-                    </div>
-                ) : (
-                    <div class="space-y-4">
-                        {lowStockProducts.map((product) => (
-                            <div class="p-4 bg-background-dark rounded-lg border border-yellow-500/30">
-                                <div class="flex items-start gap-3">
-                                    <img
-                                        src={product.image}
-                                        alt={product.title}
-                                        class="w-12 h-12 object-cover rounded-lg"
-                                    />
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="text-white font-medium mb-1 truncate">
-                                            {product.title}
-                                        </h3>
-                                        <div class="flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-yellow-500 text-[18px]">
-                                                warning
-                                            </span>
-                                            <span class="text-yellow-500 text-sm font-medium">
-                                                Stock: {product.stock_quantity}{" "}
-                                                unidades
-                                            </span>
-                                        </div>
+            {lowStockProducts.length === 0 ? (
+                <div class="text-center py-12">
+                    <span class="material-symbols-outlined text-green-500 text-5xl mb-4">check_circle</span>
+                    <p class="text-text-muted">Todo el stock está bien</p>
+                </div>
+            ) : (
+                <div class="space-y-4">
+                    {lowStockProducts.map((product) => (
+                        <div class="p-4 bg-background-dark rounded-lg border border-yellow-500/30">
+                            <div class="flex items-start gap-3">
+                                <img src={product.image} alt={product.title} class="w-12 h-12 object-cover rounded-lg" />
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-white font-medium mb-1 truncate">{product.title}</h3>
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-yellow-500 text-[18px]">warning</span>
+                                        <span class="text-yellow-500 text-sm font-medium">Stock: {product.stock_quantity} unidades</span>
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                )
-            }
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     </div>
 
@@ -383,9 +274,7 @@ const salesData = await getMonthlySales();
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                             backgroundColor: '#1a1a1a',
                             titleColor: '#fff',
@@ -402,23 +291,15 @@ const salesData = await getMonthlySales();
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: '#333'
-                            },
+                            grid: { color: '#333' },
                             ticks: {
                                 color: '#888',
-                                callback: function(value) {
-                                    return 'S/ ' + value;
-                                }
+                                callback: function(value) { return 'S/ ' + value; }
                             }
                         },
                         x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#888'
-                            }
+                            grid: { display: false },
+                            ticks: { color: '#888' }
                         }
                     }
                 }
@@ -437,8 +318,8 @@ const salesData = await getMonthlySales();
                     ? new Date(expirationRaw).toLocaleDateString('es-PE') 
                     : 'N/A';
 
-                const message = `Hola ${customer}, tu cuenta de *${title}* está por vencer el ${expiration}. ¿Deseas renovar?`;
-                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                const message = 'Hola ' + customer + ', tu cuenta de *' + title + '* está por vencer el ' + expiration + '. ¿Deseas renovar?';
+                const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message);
                 
                 window.open(url, '_blank');
             });
