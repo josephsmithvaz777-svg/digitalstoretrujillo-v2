@@ -4,6 +4,8 @@ import {
     getDashboardStats,
     getAllOrders,
     getProducts,
+    getExpiringProducts,
+    getMonthlySales
 } from "../../lib/supabase";
 
 const stats = await getDashboardStats();
@@ -11,6 +13,8 @@ const recentOrders = (await getAllOrders()).slice(0, 5);
 const lowStockProducts = (await getProducts()).filter(
     (p) => p.stock_quantity < 5,
 );
+const expiringProducts = await getExpiringProducts(5); // Next 5 days
+const salesData = await getMonthlySales();
 ---
 
 <AdminLayout title="Dashboard" activePage="dashboard">
@@ -173,6 +177,72 @@ const lowStockProducts = (await getProducts()).filter(
         </div>
     </div>
 
+    <!-- Analytics & Alerts -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Sales Chart -->
+        <div class="lg:col-span-2 bg-card-dark border border-border-dark rounded-xl p-6">
+            <h2 class="text-white text-xl font-bold mb-6">Ventas por Mes</h2>
+            <div class="relative h-[300px] w-full">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Expiring Accounts Alert -->
+        <div class="bg-card-dark border border-border-dark rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-white text-xl font-bold">Cuentas por Vencer</h2>
+                <span class="text-text-muted text-sm">Próximos 5 días</span>
+            </div>
+
+            {
+                expiringProducts.length === 0 ? (
+                    <div class="text-center py-12">
+                        <span class="material-symbols-outlined text-green-500 text-5xl mb-4">
+                            event_available
+                        </span>
+                        <p class="text-text-muted">No hay cuentas próximas a vencer</p>
+                    </div>
+                ) : (
+                    <div class="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                        {expiringProducts.map((item: any) => (
+                            <div class="p-4 bg-background-dark rounded-lg border border-red-500/30 relative overflow-hidden group">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                                <div class="flex items-start gap-3 pl-2">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex justify-between items-start mb-1">
+                                            <h3 class="text-white font-bold truncate pr-2">
+                                                {item.title}
+                                            </h3>
+                                            <span class={`text-xs font-bold px-2 py-0.5 rounded ${item.days_left <= 0 ? 'bg-red-500 text-white' : 'bg-yellow-500/20 text-yellow-500'}`}>
+                                                {item.days_left <= 0 ? 'Vencido' : `${item.days_left} días`}
+                                            </span>
+                                        </div>
+                                        <p class="text-text-muted text-xs mb-2">
+                                            Orden: #{item.order_number} • {item.customer_name}
+                                        </p>
+                                        
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <button 
+                                                class="whatsapp-renew-btn flex-1 flex items-center justify-center gap-1 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-xs py-1.5 rounded transition-colors"
+                                                data-phone={item.customer_phone}
+                                                data-customer={item.customer_name}
+                                                data-title={item.title}
+                                                data-expiration={item.expiration_date}
+                                            >
+                                                <span class="material-symbols-outlined text-[16px]">chat</span>
+                                                Renovar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Recent Orders -->
         <div class="bg-card-dark border border-border-dark rounded-xl p-6">
@@ -292,4 +362,86 @@ const lowStockProducts = (await getProducts()).filter(
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script define:vars={{ salesData }}>
+        // Initialize Sales Chart
+        const ctx = document.getElementById('salesChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: salesData.map(d => d.month),
+                    datasets: [{
+                        label: 'Ventas (S/)',
+                        data: salesData.map(d => d.total),
+                        backgroundColor: '#FF0055',
+                        borderRadius: 6,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#fff',
+                            bodyColor: '#ccc',
+                            padding: 10,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'S/ ' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#333'
+                            },
+                            ticks: {
+                                color: '#888',
+                                callback: function(value) {
+                                    return 'S/ ' + value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#888'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // WhatsApp Renew Buttons
+        document.querySelectorAll('.whatsapp-renew-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const phone = btn.getAttribute('data-phone')?.replace(/\D/g, '') || '';
+                const customer = btn.getAttribute('data-customer') || '';
+                const title = btn.getAttribute('data-title') || '';
+                const expirationRaw = btn.getAttribute('data-expiration');
+                
+                const expiration = expirationRaw 
+                    ? new Date(expirationRaw).toLocaleDateString('es-PE') 
+                    : 'N/A';
+
+                const message = `Hola ${customer}, tu cuenta de *${title}* está por vencer el ${expiration}. ¿Deseas renovar?`;
+                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                
+                window.open(url, '_blank');
+            });
+        });
+    </script>
 </AdminLayout>

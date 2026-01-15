@@ -703,6 +703,90 @@ export async function getDashboardStats() {
   };
 }
 
+/**
+ * Get products expiring soon (next N days)
+ */
+export async function getExpiringProducts(daysThreshold: number = 7) {
+  // Use admin client on server if available to bypass RLS
+  const client = (typeof window === 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+
+  const { data: orders, error } = await client
+    .from('orders')
+    .select('*')
+    .not('delivery_info', 'is', null); // Only orders with delivery info
+
+  if (error || !orders) return [];
+
+  const expiringItems: any[] = [];
+  const now = new Date();
+  const threshold = new Date();
+  threshold.setDate(now.getDate() + daysThreshold);
+
+  orders.forEach(order => {
+    if (Array.isArray(order.delivery_info)) {
+      order.delivery_info.forEach((item: any) => {
+        if (item.expiration_date) {
+          const expDate = new Date(item.expiration_date);
+          // Check if expiring soon (future but within threshold) or already expired
+          if (expDate <= threshold) {
+            expiringItems.push({
+              ...item,
+              order_number: order.order_number,
+              customer_name: order.customer_name,
+              customer_email: order.customer_email,
+              customer_phone: order.customer_phone,
+              days_left: Math.ceil((expDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+            });
+          }
+        }
+      });
+    }
+  });
+
+  // Sort by expiration date (soonest first)
+  return expiringItems.sort((a, b) => new Date(a.expiration_date).getTime() - new Date(b.expiration_date).getTime());
+}
+
+/**
+ * Get monthly sales data for chart
+ */
+export async function getMonthlySales() {
+  // Use admin client on server if available to bypass RLS
+  const client = (typeof window === 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+
+  const { data: orders, error } = await client
+    .from('orders')
+    .select('created_at, total')
+    .eq('payment_status', 'verified')
+    .order('created_at', { ascending: true });
+
+  if (error || !orders) return [];
+
+  const monthlyData: Record<string, number> = {};
+  
+  // Initialize last 6 months with 0
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    const key = d.toLocaleDateString('es-PE', { month: 'short', year: 'numeric' });
+    monthlyData[key] = 0;
+  }
+
+  orders.forEach(order => {
+    const date = new Date(order.created_at);
+    const key = date.toLocaleDateString('es-PE', { month: 'short', year: 'numeric' });
+    // Only count if it's within our initialized range (or add new keys dynamically)
+    if (monthlyData[key] !== undefined) {
+      monthlyData[key] += Number(order.total);
+    } else {
+       // If we want to include older data dynamically
+       // monthlyData[key] = (monthlyData[key] || 0) + Number(order.total);
+    }
+  });
+
+  return Object.entries(monthlyData).map(([month, total]) => ({ month, total }));
+}
+
 // ============================================
 // Cart Synchronization Functions
 // ============================================
