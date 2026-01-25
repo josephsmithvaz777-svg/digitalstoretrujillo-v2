@@ -11,6 +11,7 @@ export const POST: APIRoute = async ({ request }) => {
         const buyerInfoRaw = formData.get('buyerInfo') as string;
         const cartItemsRaw = formData.get('cartItems') as string;
         const totalPEN = parseFloat(formData.get('totalPEN') as string);
+        const totalUSD = parseFloat(formData.get('totalUSD') as string);
         const userId = formData.get('userId') as string;
 
         if (!screenshot || !referenceCode || !paymentMethod || !buyerInfoRaw || !cartItemsRaw || isNaN(totalPEN)) {
@@ -27,6 +28,11 @@ export const POST: APIRoute = async ({ request }) => {
 
         const buyerInfo = JSON.parse(buyerInfoRaw);
         const cartItems = JSON.parse(cartItemsRaw);
+
+        // Determine currency and total based on method
+        const isUSDMethod = paymentMethod === 'binance';
+        const finalCurrency = isUSDMethod ? 'USD' : 'PEN';
+        const finalTotal = isUSDMethod ? (isNaN(totalUSD) ? totalPEN / 3.8 : totalUSD) : totalPEN;
 
         // Check for authenticated user
         const authHeader = request.headers.get('Authorization');
@@ -55,9 +61,9 @@ export const POST: APIRoute = async ({ request }) => {
                 customer_name: `${buyerInfo.firstName} ${buyerInfo.lastName}`,
                 customer_phone: buyerInfo.phone || null,
                 items: cartItems,
-                subtotal: totalPEN,
-                total: totalPEN,
-                currency: 'PEN',
+                subtotal: finalTotal,
+                total: finalTotal,
+                currency: finalCurrency,
                 payment_method: paymentMethod,
                 payment_reference: referenceCode,
                 payment_status: 'pending',

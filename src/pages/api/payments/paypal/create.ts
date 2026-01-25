@@ -38,9 +38,9 @@ export const POST: APIRoute = async ({ request }) => {
                 customer_name: `${buyerInfo.firstName} ${buyerInfo.lastName}`,
                 customer_phone: buyerInfo.phone || null,
                 items: cartItems,
-                subtotal: totalPEN,
-                total: totalPEN,
-                currency: 'PEN',
+                subtotal: totalUSD || (totalPEN / 3.8),
+                total: totalUSD || (totalPEN / 3.8),
+                currency: 'USD',
                 payment_method: 'paypal', // We will update schema to allow this
                 payment_status: 'pending',
                 status: 'pending'

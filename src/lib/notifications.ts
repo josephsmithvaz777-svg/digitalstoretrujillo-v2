@@ -36,11 +36,12 @@ export async function sendTelegramNotification(message: string) {
 // --- Main Handler ---
 export async function notifyNewOrder(order: any) {
     const currency = order.currency || 'PEN';
-    const total = order.total || 0;
+    const totalRaw = order.total || 0;
+    const total = typeof totalRaw === 'number' ? totalRaw.toFixed(2) : parseFloat(totalRaw).toFixed(2);
     const date = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' });
 
     // Format Products List
-    const productsList = Array.isArray(order.items) 
+    const productsList = Array.isArray(order.items)
         ? order.items.map((item: any) => `• ${item.title} (x${item.quantity})`).join('\n')
         : 'Sin productos';
 

@@ -1614,6 +1614,7 @@ const description = "Choose your payment method";
                     const buyerInfo = localStorage.getItem("buyerInfo") || "{}";
                     const items = JSON.stringify(cartItems.get());
                     const totalPEN = cartTotalPEN.get().toString();
+                    const totalUSD = cartTotal.get().toString();
                     const registeredUserId =
                         localStorage.getItem("registeredUserId") || "null";
 
@@ -1624,6 +1625,7 @@ const description = "Choose your payment method";
                     sendData.append("buyerInfo", buyerInfo);
                     sendData.append("cartItems", items);
                     sendData.append("totalPEN", totalPEN);
+                    sendData.append("totalUSD", totalUSD);
                     sendData.append("userId", registeredUserId);
 
                     const {
