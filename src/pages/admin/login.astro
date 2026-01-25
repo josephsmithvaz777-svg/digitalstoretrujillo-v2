@@ -285,10 +285,10 @@ const description = "Acceso al panel de administración";
 
                 console.log("✅ Login successful for:", user.email);
 
-                // Success - redirect to home page
+                // Success - redirect to admin dashboard
                 // Add a small delay to ensure session is saved
                 setTimeout(() => {
-                    window.location.href = "/";
+                    window.location.href = "/admin";
                 }, 500);
             } catch (error: any) {
                 console.error("❌ Login failed:", error);
