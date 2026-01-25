@@ -15,26 +15,39 @@ const LATAM_COUNTRIES = [
  */
 export async function detectUserLanguage(): Promise<Language> {
     try {
-        // Check localStorage first
-        const stored = localStorage.getItem('user-language');
-        if (stored === 'en' || stored === 'es') {
-            return stored as Language;
+        // 1. Check localStorage first (User's manual choice)
+        if (typeof localStorage !== 'undefined') {
+            const stored = localStorage.getItem('user-language');
+            if (stored === 'en' || stored === 'es') {
+                return stored as Language;
+            }
         }
 
-        // Use ipapi.co (same as currency)
+        // 2. Check Browser Language (Highest reliability)
+        if (typeof navigator !== 'undefined') {
+            const browserLang = navigator.language.toLowerCase();
+            if (browserLang.startsWith('es')) {
+                return 'es';
+            }
+        }
+
+        // 3. Geolocation Fallback (User business rule: LATAM/ES -> Spanish)
         const response = await fetch('https://ipapi.co/json/');
-        if (!response.ok) return 'en';
+        if (response.ok) {
+            const data = await response.json();
+            const countryCode = data.country_code;
 
-        const data = await response.json();
-        const countryCode = data.country_code;
+            // Console log for debugging detection issues
+            console.log(`[i18n] Detected country: ${countryCode}`);
 
-        // If in LATAM, default to Spanish, otherwise English
-        const lang: Language = LATAM_COUNTRIES.includes(countryCode) ? 'es' : 'en';
+            if (LATAM_COUNTRIES.includes(countryCode) || countryCode === 'ES') {
+                return 'es';
+            }
+        }
 
-        localStorage.setItem('user-language', lang);
-        return lang;
+        return 'en';
     } catch (error) {
-        console.error('Error detecting language:', error);
+        console.warn('[i18n] Detection failed, defaulting to English');
         return 'en';
     }
 }
