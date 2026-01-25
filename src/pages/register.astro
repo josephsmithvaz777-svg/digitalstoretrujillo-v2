@@ -22,10 +22,16 @@ const description = "Create an account to track your orders";
         <div class="max-w-md w-full space-y-8">
             <!-- Header -->
             <div class="text-center">
-                <h2 class="text-3xl font-black text-white tracking-tight">
+                <h2
+                    class="text-3xl font-black text-white tracking-tight"
+                    data-i18n="auth_register_title"
+                >
                     Create Account
                 </h2>
-                <p class="mt-2 text-sm text-text-muted">
+                <p
+                    class="mt-2 text-sm text-text-muted"
+                    data-i18n="auth_register_desc"
+                >
                     Sign up to view your orders and credentials
                 </p>
             </div>
@@ -42,6 +48,7 @@ const description = "Create an account to track your orders";
                             <label
                                 for="firstName"
                                 class="block text-sm font-medium text-white mb-2"
+                                data-i18n="checkout_first_name"
                             >
                                 First Name
                             </label>
@@ -61,6 +68,7 @@ const description = "Create an account to track your orders";
                             <label
                                 for="lastName"
                                 class="block text-sm font-medium text-white mb-2"
+                                data-i18n="checkout_last_name"
                             >
                                 Last Name
                             </label>
@@ -81,6 +89,7 @@ const description = "Create an account to track your orders";
                         <label
                             for="phone"
                             class="block text-sm font-medium text-white mb-2"
+                            data-i18n="checkout_phone"
                         >
                             Phone Number
                         </label>
@@ -120,8 +129,12 @@ const description = "Create an account to track your orders";
                                 autocomplete="tel"
                                 class="w-full px-4 py-3 pl-32 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 placeholder="987 654 321"
+                                data-i18n="checkout_phone_placeholder"
                             />
-                            <span class="material-symbols-outlined absolute right-3 text-text-muted pointer-events-none">call</span>
+                            <span
+                                class="material-symbols-outlined absolute right-3 text-text-muted pointer-events-none"
+                                >call</span
+                            >
                         </div>
                     </div>
 
@@ -130,6 +143,7 @@ const description = "Create an account to track your orders";
                         <label
                             for="email"
                             class="block text-sm font-medium text-white mb-2"
+                            data-i18n="checkout_email"
                         >
                             Email Address
                         </label>
@@ -142,8 +156,12 @@ const description = "Create an account to track your orders";
                                 required
                                 class="w-full px-4 py-3 pl-10 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 placeholder="you@example.com"
+                                data-i18n="checkout_email_placeholder"
                             />
-                            <span class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]">mail</span>
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]"
+                                >mail</span
+                            >
                         </div>
                     </div>
 
@@ -152,6 +170,7 @@ const description = "Create an account to track your orders";
                         <label
                             for="password"
                             class="block text-sm font-medium text-white mb-2"
+                            data-i18n="checkout_password"
                         >
                             Password
                         </label>
@@ -166,12 +185,21 @@ const description = "Create an account to track your orders";
                                 class="w-full px-4 py-3 pl-10 pr-10 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                 placeholder="••••••••"
                             />
-                            <span class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]">lock</span>
-                            <button type="button" id="toggle-password" class="absolute right-3 top-3.5 text-text-muted hover:text-white transition-colors">
-                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]"
+                                >lock</span
+                            >
+                            <button
+                                type="button"
+                                id="toggle-password"
+                                class="absolute right-3 top-3.5 text-text-muted hover:text-white transition-colors"
+                            >
+                                <span
+                                    class="material-symbols-outlined text-[20px]"
+                                    >visibility</span
+                                >
                             </button>
                         </div>
-                        <p class="text-xs text-text-muted mt-1">Must be at least 6 characters</p>
                     </div>
 
                     <!-- Error Message -->
@@ -180,7 +208,9 @@ const description = "Create an account to track your orders";
                         class="hidden bg-red-500/10 border border-red-500/30 rounded-lg p-3"
                     >
                         <p class="text-red-400 text-sm flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">error</span>
+                            <span class="material-symbols-outlined text-sm"
+                                >error</span
+                            >
                             <span id="error-text"></span>
                         </p>
                     </div>
@@ -190,9 +220,16 @@ const description = "Create an account to track your orders";
                         id="success-message"
                         class="hidden bg-green-500/10 border border-green-500/30 rounded-lg p-3"
                     >
-                        <p class="text-green-400 text-sm flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">check_circle</span>
-                            <span>Registration successful! Please check your email to verify your account.</span>
+                        <p
+                            class="text-green-400 text-sm flex items-center gap-2"
+                        >
+                            <span class="material-symbols-outlined text-sm"
+                                >check_circle</span
+                            >
+                            <span data-i18n="pay_success_title"
+                                >Registration successful! Please check your
+                                email to verify your account.</span
+                            >
                         </p>
                     </div>
 
@@ -202,8 +239,11 @@ const description = "Create an account to track your orders";
                         id="submit-btn"
                         class="w-full flex justify-center items-center gap-2 py-3 px-4 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
                     >
-                        Create Account
-                        <span class="material-symbols-outlined">person_add</span>
+                        <span data-i18n="auth_register_title"
+                            >Create Account</span
+                        >
+                        <span class="material-symbols-outlined">person_add</span
+                        >
                     </button>
                 </form>
             </div>
@@ -211,8 +251,14 @@ const description = "Create an account to track your orders";
             <!-- Footer Links -->
             <div class="text-center text-sm">
                 <p class="text-text-muted">
-                    Already have an account? 
-                    <a href="/login" class="text-primary hover:underline font-bold">Sign in</a>
+                    <span data-i18n="auth_has_account"
+                        >Already have an account?</span
+                    >
+                    <a
+                        href="/login"
+                        class="text-primary hover:underline font-bold"
+                        data-i18n="auth_signin">Sign in</a
+                    >
                 </p>
             </div>
         </div>
@@ -224,23 +270,31 @@ const description = "Create an account to track your orders";
     import { supabase } from "../lib/supabase";
 
     const form = document.getElementById("register-form") as HTMLFormElement;
-    const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+    const submitBtn = document.getElementById(
+        "submit-btn",
+    ) as HTMLButtonElement;
     const errorMessage = document.getElementById("error-message");
     const errorText = document.getElementById("error-text");
     const successMessage = document.getElementById("success-message");
     const togglePasswordBtn = document.getElementById("toggle-password");
-    const passwordInput = document.getElementById("password") as HTMLInputElement;
+    const passwordInput = document.getElementById(
+        "password",
+    ) as HTMLInputElement;
 
     // Toggle Password Visibility
     if (togglePasswordBtn && passwordInput) {
         togglePasswordBtn.addEventListener("click", () => {
-            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            const type =
+                passwordInput.getAttribute("type") === "password"
+                    ? "text"
+                    : "password";
             passwordInput.setAttribute("type", type);
-            
+
             // Toggle icon
             const icon = togglePasswordBtn.querySelector("span");
             if (icon) {
-                icon.textContent = type === "password" ? "visibility" : "visibility_off";
+                icon.textContent =
+                    type === "password" ? "visibility" : "visibility_off";
             }
         });
     }
@@ -291,32 +345,41 @@ const description = "Create an account to track your orders";
             if (error) {
                 // Ignore confirmation email error
                 const errorMsg = error.message?.toLowerCase() || "";
-                if (errorMsg.includes("confirmation email") || errorMsg.includes("rate limit") || errorMsg.includes("error sending")) {
+                if (
+                    errorMsg.includes("confirmation email") ||
+                    errorMsg.includes("rate limit") ||
+                    errorMsg.includes("error sending")
+                ) {
                     console.warn("Ignored email error:", error);
                 } else {
                     throw error;
                 }
             }
 
-            if (data.user && data.user.identities && data.user.identities.length === 0) {
-                 throw new Error("This email is already registered.");
+            if (
+                data.user &&
+                data.user.identities &&
+                data.user.identities.length === 0
+            ) {
+                throw new Error("This email is already registered.");
             }
 
             // Success
             successMessage?.classList.remove("hidden");
             form.reset();
-            
+
             // Redirect after a few seconds or just show message
             setTimeout(() => {
                 // If email confirmation is enabled, they can't login yet usually,
                 // but if auto-confirm is on (dev), they might be logged in.
                 // For now, let's keep them here to see the message.
             }, 2000);
-
         } catch (error: any) {
             // Show error
             if (errorMessage && errorText) {
-                errorText.textContent = error.message || "Error creating account. Please try again.";
+                errorText.textContent =
+                    error.message ||
+                    "Error creating account. Please try again.";
                 errorMessage.classList.remove("hidden");
             }
         } finally {

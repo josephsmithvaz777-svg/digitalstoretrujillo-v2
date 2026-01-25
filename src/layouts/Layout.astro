@@ -40,11 +40,56 @@ const {
     <!-- Global Currency Initialization -->
     <script>
       import { initializeCurrency } from "../stores/currencyStore";
-      import { initializeLanguage } from "../stores/i18nStore";
+      import {
+        initializeLanguage,
+        currentLanguage,
+        useTranslation,
+      } from "../stores/i18nStore";
 
       // Initialize detection on page load
       initializeCurrency();
       initializeLanguage();
+
+      // Global translation helper
+      function translatePage(lang: string) {
+        // Use a fresh translation helper for the current language
+        const t = useTranslation();
+
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n") as any;
+          if (key) {
+            const translation = t(key);
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+              (el as HTMLInputElement).placeholder = translation;
+            } else {
+              el.textContent = translation;
+            }
+          }
+        });
+
+        // Specifically update search placeholders if any
+        const searchInput = document.getElementById(
+          "header-search-input",
+        ) as HTMLInputElement;
+        if (searchInput) {
+          searchInput.placeholder = t("search_placeholder");
+        }
+      }
+
+      // Run translation when DOM is ready
+      document.addEventListener("DOMContentLoaded", () => {
+        translatePage(currentLanguage.get());
+      });
+
+      // Listen for language changes
+      currentLanguage.subscribe((lang) => {
+        translatePage(lang);
+      });
+
+      // Also listen for custom event (extra safety)
+      window.addEventListener("language-changed", (e: any) => {
+        translatePage(e.detail);
+      });
     </script>
   </body>
 </html>

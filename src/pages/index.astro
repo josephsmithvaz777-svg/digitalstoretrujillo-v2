@@ -36,17 +36,24 @@ const products = await getFeaturedProducts(8);
 							<span class="material-symbols-outlined text-sm"
 								>bolt</span
 							>
-							Instant Delivery
+							<span data-i18n="hero_delivery"
+								>Instant Delivery</span
+							>
 						</div>
 						<h1
 							class="text-4xl md:text-6xl font-black text-white leading-[1.1] tracking-tight"
 						>
-							Best Digital Prices in <span class="text-primary"
-								>Trujillo</span
+							<span data-i18n="hero_title"
+								>Best Digital Prices in</span
+							>
+							<span
+								class="text-primary"
+								data-i18n="hero_title_accent">Trujillo</span
 							>.
 						</h1>
 						<p
 							class="text-lg text-gray-300 max-w-md leading-relaxed"
+							data-i18n="hero_subtitle"
 						>
 							Secure digital products delivered instantly to your
 							inbox. From software keys to gift cards, we have it
@@ -56,13 +63,14 @@ const products = await getFeaturedProducts(8);
 							<button
 								class="h-12 px-8 rounded-lg bg-primary hover:bg-red-700 text-white font-bold text-base transition-colors flex items-center gap-2"
 							>
-								Shop Now
+								<span data-i18n="prod_buy_now">Shop Now</span>
 								<span class="material-symbols-outlined"
 									>arrow_forward</span
 								>
 							</button>
 							<button
 								class="h-12 px-6 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold text-base backdrop-blur-sm transition-colors border border-white/10"
+								data-i18n="hero_offers"
 							>
 								View Offers
 							</button>
@@ -75,30 +83,41 @@ const products = await getFeaturedProducts(8);
 					<div
 						class="flex items-center justify-between flex-wrap gap-4"
 					>
-						<h3 class="text-2xl font-bold text-white">
+						<h3
+							class="text-2xl font-bold text-white"
+							data-i18n="featured_title"
+						>
 							Featured Products
 						</h3>
 						<div class="flex gap-2 overflow-x-auto pb-1">
 							<button
 								class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary px-4 transition-transform active:scale-95"
 							>
-								<p class="text-white text-sm font-bold">All</p>
+								<p
+									class="text-white text-sm font-bold"
+									data-i18n="footer_all_products"
+								>
+									All
+								</p>
 							</button>
 							<a
 								href="/category/software"
 								class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-[#3a2727] hover:bg-[#4a3232] px-4 transition-colors text-white text-sm font-medium"
+								data-i18n="nav_software"
 							>
 								Software
 							</a>
 							<a
 								href="/category/gift-cards"
 								class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-[#3a2727] hover:bg-[#4a3232] px-4 transition-colors text-white text-sm font-medium"
+								data-i18n="nav_games"
 							>
 								Gift Cards
 							</a>
 							<a
 								href="/category/services"
 								class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-[#3a2727] hover:bg-[#4a3232] px-4 transition-colors text-white text-sm font-medium"
+								data-i18n="nav_services"
 							>
 								Services
 							</a>
@@ -174,10 +193,14 @@ const products = await getFeaturedProducts(8);
 						</div>
 						<h2
 							class="text-3xl font-bold text-white tracking-tight"
+							data-i18n="trust_payments_title"
 						>
 							Secure Payments Accepted
 						</h2>
-						<p class="text-[#bc9b9a] max-w-lg">
+						<p
+							class="text-[#bc9b9a] max-w-lg"
+							data-i18n="trust_payments_desc"
+						>
 							Aceptamos pagos locales vía Yape, y pagos
 							internacionales mediante Binance Pay y Cryptomus
 							(Tarjetas y Cripto). Verificación instantánea.
@@ -244,12 +267,14 @@ const products = await getFeaturedProducts(8);
 							>
 							<h2
 								class="text-3xl font-bold text-white tracking-tight text-center"
+								data-i18n="trust_origin_title"
 							>
 								Origen de Nuestros Productos
 							</h2>
 						</div>
 						<p
 							class="text-[#bc9b9a] text-center mb-8 max-w-2xl mx-auto"
+							data-i18n="trust_origin_subtitle"
 						>
 							Transparencia total en nuestras operaciones
 						</p>
@@ -267,10 +292,16 @@ const products = await getFeaturedProducts(8);
 										>storefront</span
 									>
 								</div>
-								<h3 class="text-white font-bold text-lg mb-2">
+								<h3
+									class="text-white font-bold text-lg mb-2"
+									data-i18n="trust_g2a_title"
+								>
 									G2A Goldmine
 								</h3>
-								<p class="text-[#bc9b9a] text-sm">
+								<p
+									class="text-[#bc9b9a] text-sm"
+									data-i18n="trust_g2a_desc"
+								>
 									Programa de afiliados oficial de G2A
 									Marketplace, una de las plataformas más
 									grandes de claves digitales.
@@ -289,10 +320,16 @@ const products = await getFeaturedProducts(8);
 										>partner_exchange</span
 									>
 								</div>
-								<h3 class="text-white font-bold text-lg mb-2">
+								<h3
+									class="text-white font-bold text-lg mb-2"
+									data-i18n="trust_eneba_title"
+								>
 									Eneba Affiliates
 								</h3>
-								<p class="text-[#bc9b9a] text-sm">
+								<p
+									class="text-[#bc9b9a] text-sm"
+									data-i18n="trust_eneba_desc"
+								>
 									Programa de afiliados de Eneba, marketplace
 									reconocido internacionalmente para productos
 									digitales.
@@ -311,10 +348,16 @@ const products = await getFeaturedProducts(8);
 										>shopping_cart</span
 									>
 								</div>
-								<h3 class="text-white font-bold text-lg mb-2">
+								<h3
+									class="text-white font-bold text-lg mb-2"
+									data-i18n="trust_keys_title"
+								>
 									Keysforgames
 								</h3>
-								<p class="text-[#bc9b9a] text-sm">
+								<p
+									class="text-[#bc9b9a] text-sm"
+									data-i18n="trust_keys_desc"
+								>
 									Compras directas en plataforma de
 									comparación de precios, adquiriendo claves
 									de tiendas verificadas.
@@ -333,10 +376,14 @@ const products = await getFeaturedProducts(8);
 								<div>
 									<h4
 										class="text-white font-bold text-lg mb-2"
+										data-i18n="trust_warranty_title"
 									>
 										Garantía de Legitimidad
 									</h4>
-									<p class="text-[#bc9b9a] text-sm mb-3">
+									<p
+										class="text-[#bc9b9a] text-sm mb-3"
+										data-i18n="trust_warranty_desc1"
+									>
 										<strong class="text-white"
 											>No generamos claves por nuestra
 											cuenta ni utilizamos métodos
@@ -345,7 +392,10 @@ const products = await getFeaturedProducts(8);
 										y verificamos todas las claves antes de entregarlas
 										al cliente final.
 									</p>
-									<p class="text-[#bc9b9a] text-sm">
+									<p
+										class="text-[#bc9b9a] text-sm"
+										data-i18n="trust_warranty_desc2"
+									>
 										Cada producto es probado y validado para
 										garantizar su funcionamiento. Ofrecemos
 										soporte completo dentro de las 24-48
@@ -386,10 +436,16 @@ const products = await getFeaturedProducts(8);
 				>
 			</div>
 
-			<h3 class="text-white text-xl font-bold mb-2">
+			<h3
+				class="text-white text-xl font-bold mb-2"
+				data-i18n="auth_confirmed_title"
+			>
 				Account Confirmed!
 			</h3>
-			<p class="text-text-muted text-sm leading-relaxed mb-6">
+			<p
+				class="text-text-muted text-sm leading-relaxed mb-6"
+				data-i18n="auth_confirmed_desc"
+			>
 				Thank you for verifying your email. You can now access your
 				account and complete your purchases.
 			</p>

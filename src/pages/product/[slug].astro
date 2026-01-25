@@ -39,7 +39,8 @@ const description = product.description || "";
                 <!-- Breadcrumbs -->
                 <div class="flex flex-wrap gap-2 p-4 mb-4">
                     <a
-                        class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal prod-breadcrumb-home"
+                        class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal"
+                        data-i18n="prod_breadcrumb_home"
                         href="/">Home</a
                     >
                     <span
@@ -207,7 +208,8 @@ const description = product.description || "";
                                     )
                                 }
                                 <span
-                                    class="mb-1 ml-auto bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30 prod-stock-badge"
+                                    class="mb-1 ml-auto bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30"
+                                    data-i18n="product_in_stock"
                                 >
                                     IN STOCK
                                 </span>
@@ -243,7 +245,7 @@ const description = product.description || "";
                                     class="material-symbols-outlined text-primary text-lg"
                                     >bolt</span
                                 >
-                                <span class="prod-delivery-text"
+                                <span data-i18n="prod_instant_delivery"
                                     >Instant delivery via email</span
                                 >
                             </div>

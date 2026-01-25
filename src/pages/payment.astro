@@ -37,7 +37,7 @@ const description = "Choose your payment method";
                             </a>
                             <span
                                 class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs font-medium text-white"
-                                >Cart</span
+                                data-i18n="prod_breadcrumb_home">Cart</span
                             >
                         </li>
                         <li class="relative pr-8 sm:pr-20">
@@ -73,7 +73,7 @@ const description = "Choose your payment method";
                             </a>
                             <span
                                 class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs font-bold text-primary"
-                                >Payment</span
+                                data-i18n="pay_order_summary">Payment</span
                             >
                         </li>
                     </ol>
@@ -83,10 +83,14 @@ const description = "Choose your payment method";
                 <div class="mt-2">
                     <h1
                         class="text-3xl md:text-4xl font-black text-white tracking-tight"
+                        data-i18n="pay_title"
                     >
                         Choose Payment Method
                     </h1>
-                    <p class="text-text-muted mt-2 text-base">
+                    <p
+                        class="text-text-muted mt-2 text-base"
+                        data-i18n="pay_desc"
+                    >
                         Select your preferred payment method to complete your
                         purchase
                     </p>
@@ -988,10 +992,16 @@ const description = "Choose your payment method";
                 </div>
 
                 <div class="space-y-2">
-                    <h2 class="text-2xl font-black text-white">
+                    <h2
+                        class="text-2xl font-black text-white"
+                        data-i18n="pay_success_title"
+                    >
                         Payment Submitted!
                     </h2>
-                    <p class="text-text-muted text-sm leading-relaxed">
+                    <p
+                        class="text-text-muted text-sm leading-relaxed"
+                        data-i18n="pay_success_desc"
+                    >
                         We will verify your payment and send your products to
                         your email within <strong>5-10 minutes</strong>.
                     </p>
@@ -1000,6 +1010,7 @@ const description = "Choose your payment method";
                 <button
                     id="success-close-btn"
                     class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+                    data-i18n="nav_home"
                 >
                     Back to Home
                 </button>

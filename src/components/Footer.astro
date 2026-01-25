@@ -13,7 +13,7 @@
                 >
                 <span class="font-bold text-lg">DigitalStoreTrujillo</span>
             </div>
-            <p class="text-text-muted text-sm mb-3">
+            <p class="text-text-muted text-sm mb-3" data-i18n="footer_desc">
                 Tu fuente confiable de software, juegos y servicios digitales.
                 Entrega instantánea y pagos seguros.
             </p>
@@ -25,64 +25,78 @@
             </div>
         </div>
         <div>
-            <h4 class="text-white font-bold mb-4">Shop</h4>
+            <h4 class="text-white font-bold mb-4" data-i18n="footer_shop">
+                Shop
+            </h4>
             <ul class="flex flex-col gap-2 text-text-muted text-sm">
                 <li>
                     <a
                         class="hover:text-primary transition-colors"
-                        href="/product">All Products</a
+                        href="/product"
+                        data-i18n="footer_all_products">All Products</a
                     >
                 </li>
                 <li>
                     <a
                         class="hover:text-primary transition-colors"
-                        href="/category/software">Software</a
+                        href="/category/software"
+                        data-i18n="nav_software">Software</a
                     >
                 </li>
                 <li>
                     <a
                         class="hover:text-primary transition-colors"
-                        href="/category/games">Games</a
+                        href="/category/games"
+                        data-i18n="nav_games">Games</a
                     >
                 </li>
                 <li>
                     <a
                         class="hover:text-primary transition-colors"
-                        href="/category/services">Services</a
+                        href="/category/services"
+                        data-i18n="nav_services">Services</a
                     >
                 </li>
             </ul>
         </div>
         <div>
-            <h4 class="text-white font-bold mb-4">Support</h4>
+            <h4 class="text-white font-bold mb-4" data-i18n="footer_support">
+                Support
+            </h4>
             <ul class="flex flex-col gap-2 text-text-muted text-sm">
                 <li>
                     <a
                         class="hover:text-primary transition-colors"
-                        href="/about">Sobre Nosotros</a
-                    >
-                </li>
-                <li>
-                    <a class="hover:text-primary transition-colors" href="/help"
-                        >Help Center</a
+                        href="/about"
+                        data-i18n="footer_about">Sobre Nosotros</a
                     >
                 </li>
                 <li>
                     <a
                         class="hover:text-primary transition-colors"
-                        href="/terms">Terms of Service</a
+                        href="/help"
+                        data-i18n="footer_help">Help Center</a
                     >
                 </li>
                 <li>
                     <a
                         class="hover:text-primary transition-colors"
-                        href="/refund-policy">Refund Policy</a
+                        href="/terms"
+                        data-i18n="footer_terms">Terms of Service</a
                     >
                 </li>
                 <li>
                     <a
                         class="hover:text-primary transition-colors"
-                        href="/contact">Contact Us</a
+                        href="/refund-policy"
+                        data-i18n="footer_refund">Refund Policy</a
+                    >
+                </li>
+                <li>
+                    <a
+                        class="hover:text-primary transition-colors"
+                        href="/contact"
+                        data-i18n="footer_contact">Contact Us</a
                     >
                 </li>
             </ul>
@@ -92,7 +106,9 @@
         class="layout-content-container max-w-[1200px] mx-auto mt-12 pt-8 border-t border-border-dark flex flex-col md:flex-row justify-between items-center gap-4"
     >
         <p class="text-text-muted text-xs">
-            © 2026 DigitalStoreTrujillo. Todos los derechos reservados.
+            © 2026 DigitalStoreTrujillo. <span data-i18n="footer_rights"
+                >Todos los derechos reservados.</span
+            >
         </p>
         <div class="flex gap-4">
             <a

@@ -48,23 +48,23 @@ import CartIcon from "./CartIcon.astro";
     <div class="flex flex-1 justify-end gap-4 lg:gap-8 items-center">
         <div class="hidden lg:flex items-center gap-9">
             <a
-                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors nav-link"
-                data-key="nav_home"
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                data-i18n="nav_home"
                 href="/">Home</a
             >
             <a
-                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors nav-link"
-                data-key="nav_software"
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                data-i18n="nav_software"
                 href="/category/software">Software</a
             >
             <a
-                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors nav-link"
-                data-key="nav_games"
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                data-i18n="nav_games"
                 href="/category/games">Games</a
             >
             <a
-                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors nav-link"
-                data-key="nav_services"
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                data-i18n="nav_services"
                 href="/category/services">Services</a
             >
         </div>
@@ -74,7 +74,9 @@ import CartIcon from "./CartIcon.astro";
                 href="/login"
                 class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-red-700 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]"
             >
-                <span class="truncate" id="auth-text">Sign In</span>
+                <span class="truncate" id="auth-text" data-i18n="auth_signin"
+                    >Sign In</span
+                >
             </a>
 
             <button
@@ -126,6 +128,7 @@ import CartIcon from "./CartIcon.astro";
 
 <script>
     import { supabase } from "../lib/supabase";
+    import { useTranslation, currentLanguage } from "../stores/i18nStore";
 
     const authButton = document.getElementById(
         "auth-button",
@@ -136,8 +139,10 @@ import CartIcon from "./CartIcon.astro";
     if (authButton && authText && logoutBtn) {
         // Function to update UI state
         const updateUI = (session: any) => {
+            const t = useTranslation();
             if (session) {
-                authText.textContent = "My Account";
+                authText.textContent = t("auth_account");
+                authText.setAttribute("data-i18n", "auth_account");
                 authButton.href = "/account";
                 authButton.classList.remove("bg-primary", "hover:bg-red-700");
                 authButton.classList.add(
@@ -151,7 +156,8 @@ import CartIcon from "./CartIcon.astro";
                 logoutBtn.classList.remove("hidden");
                 logoutBtn.classList.add("flex");
             } else {
-                authText.textContent = "Sign In";
+                authText.textContent = t("auth_signin");
+                authText.setAttribute("data-i18n", "auth_signin");
                 authButton.href = "/login";
                 authButton.classList.add("bg-primary", "hover:bg-red-700");
                 authButton.classList.remove(
@@ -172,6 +178,13 @@ import CartIcon from "./CartIcon.astro";
             updateUI(session);
         });
 
+        // Listen for language changes to update auth text
+        currentLanguage.subscribe(() => {
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                updateUI(session);
+            });
+        });
+
         // Listen for auth changes
         supabase.auth.onAuthStateChange((event, session) => {
             updateUI(session);
@@ -183,18 +196,13 @@ import CartIcon from "./CartIcon.astro";
             window.location.href = "/login";
         });
     }
-    // Currency Switcher Logic
+    // Currency & Language Logic
     import {
         userCurrency,
         updateCurrency,
         initializeCurrency,
     } from "../stores/currencyStore";
-    import {
-        currentLanguage,
-        updateLanguage,
-        initializeLanguage,
-        useTranslation,
-    } from "../stores/i18nStore";
+    import { updateLanguage, initializeLanguage } from "../stores/i18nStore";
     import { CURRENCIES } from "../lib/currency";
 
     const currencyToggle = document.getElementById("currency-toggle");
@@ -204,9 +212,6 @@ import CartIcon from "./CartIcon.astro";
     // i18n Elements
     const languageToggle = document.getElementById("language-toggle");
     const langText = document.getElementById("lang-text");
-    const searchInput = document.getElementById(
-        "header-search-input",
-    ) as HTMLInputElement;
 
     if (currencyToggle && currencyFlag && currencyCode) {
         // Initialize stores
@@ -236,24 +241,8 @@ import CartIcon from "./CartIcon.astro";
 
     // Language Toggle logic
     if (languageToggle && langText) {
-        const t = useTranslation();
-
         const updateLanguageUI = (lang: string) => {
             langText.textContent = lang.toUpperCase();
-
-            // Translate nav links
-            document.querySelectorAll(".nav-link").forEach((el) => {
-                const key = el.getAttribute("data-key") as any;
-                if (key) el.textContent = t(key);
-            });
-
-            // Translate search placeholder
-            if (searchInput) searchInput.placeholder = t("search_placeholder");
-
-            // Translate Auth Button (if not logged in)
-            if (authText && !logoutBtn?.classList.contains("flex")) {
-                authText.textContent = t("auth_signin");
-            }
         };
 
         // Subscribe to language changes
@@ -265,11 +254,6 @@ import CartIcon from "./CartIcon.astro";
             const current = currentLanguage.get();
             const next = current === "en" ? "es" : "en";
             updateLanguage(next);
-        });
-
-        // Listen for custom event
-        window.addEventListener("language-changed", (e: any) => {
-            updateLanguageUI(e.detail);
         });
     }
 </script>

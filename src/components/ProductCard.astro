@@ -82,7 +82,10 @@ const {
         }
         {
             !inStock && (
-                <span class="bg-gray-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg prod-out-of-stock">
+                <span
+                    class="bg-gray-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg prod-out-of-stock"
+                    data-i18n="product_out_of_stock"
+                >
                     AGOTADO
                 </span>
             )
@@ -151,6 +154,7 @@ const {
                             <a
                                 href="#"
                                 class="text-primary hover:underline prod-review-link"
+                                data-i18n="product_review"
                             >
                                 Dejar reseña
                             </a>
@@ -215,7 +219,9 @@ const {
                     : "bg-gray-700 text-gray-400 cursor-not-allowed pointer-events-none",
             ]}
         >
-            <span class="btn-text"
+            <span
+                class="btn-text"
+                data-i18n={inStock ? "product_buy_now" : "product_notify_me"}
                 >{inStock ? "COMPRAR AHORA" : "NOTIFICARME"}</span
             >
         </a>
