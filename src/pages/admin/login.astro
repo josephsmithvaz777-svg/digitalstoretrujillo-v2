@@ -27,32 +27,6 @@ const description = "Acceso al panel de administración";
                 </p>
             </div>
 
-            <!-- Credentials Reminder -->
-            <div
-                class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-4"
-            >
-                <p class="text-blue-300 text-sm font-medium mb-2">
-                    📧 Credenciales de Admin:
-                </p>
-                <div class="text-xs text-blue-200 space-y-1">
-                    <p class="font-mono">
-                        Email: <span class="font-bold text-white"
-                            >admin@digitalstoretrujillo.store</span
-                        >
-                    </p>
-                    <p class="font-mono">
-                        Password: <span class="font-bold text-white"
-                            >stake123</span
-                        >
-                    </p>
-                    <p class="text-yellow-300 text-[11px] mt-2">
-                        ⚠️ Importante: Verifica que escribas <strong
-                            >.store</strong
-                        > correctamente
-                    </p>
-                </div>
-            </div>
-
             <!-- Login Form -->
             <div
                 class="bg-card-dark border border-border-dark rounded-xl p-8 shadow-lg"
@@ -133,38 +107,6 @@ const description = "Acceso al panel de administración";
                         Iniciar Sesión
                     </button>
                 </form>
-
-                <!-- Mobile Debug Info (only shows on mobile) -->
-                <div
-                    id="debug-info"
-                    class="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-xs text-yellow-300 hidden"
-                >
-                    <p class="font-bold mb-2">
-                        🔍 Debug Info (solo para testing):
-                    </p>
-                    <ul class="space-y-1 text-[11px]">
-                        <li id="debug-online">
-                            🌍 Online: <span class="font-mono"></span>
-                        </li>
-                        <li id="debug-storage">
-                            💾 LocalStorage: <span class="font-mono"></span>
-                        </li>
-                        <li id="debug-cookies">
-                            🍪 Cookies: <span class="font-mono"></span>
-                        </li>
-                        <li id="debug-platform">
-                            📱 Device: <span class="font-mono"></span>
-                        </li>
-                    </ul>
-                    <button
-                        id="debug-test-btn"
-                        type="button"
-                        class="mt-2 w-full py-1 px-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 text-xs rounded"
-                    >
-                        Test Supabase Connection
-                    </button>
-                    <p id="debug-result" class="mt-2 text-[10px] hidden"></p>
-                </div>
             </div>
 
             <!-- Back to Home -->
@@ -285,10 +227,10 @@ const description = "Acceso al panel de administración";
 
                 console.log("✅ Login successful for:", user.email);
 
-                // Success - redirect to admin dashboard
+                // Success - redirect to store homepage
                 // Add a small delay to ensure session is saved
                 setTimeout(() => {
-                    window.location.href = "/admin";
+                    window.location.href = "/";
                 }, 500);
             } catch (error: any) {
                 console.error("❌ Login failed:", error);
@@ -335,94 +277,6 @@ const description = "Acceso al panel de administración";
 					<span class="material-symbols-outlined">login</span>
 					Iniciar Sesión
 				`;
-            }
-        });
-    </script>
-
-    <script>
-        import { supabase } from "../../lib/supabase";
-
-        // Debug panel for mobile troubleshooting
-        const debugInfo = document.getElementById("debug-info");
-        const debugTestBtn = document.getElementById(
-            "debug-test-btn",
-        ) as HTMLButtonElement;
-        const debugResult = document.getElementById("debug-result");
-
-        // Detect if mobile device
-        function isMobile() {
-            return (
-                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-                    navigator.userAgent,
-                ) || window.innerWidth < 768
-            );
-        }
-
-        // Show debug panel only on mobile or if explicitly requested
-        if (isMobile() || window.location.search.includes("debug=true")) {
-            debugInfo?.classList.remove("hidden");
-
-            // Populate debug info
-            const onlineSpan = document.querySelector("#debug-online span");
-            const storageSpan = document.querySelector("#debug-storage span");
-            const cookiesSpan = document.querySelector("#debug-cookies span");
-            const platformSpan = document.querySelector("#debug-platform span");
-
-            if (onlineSpan)
-                onlineSpan.textContent = navigator.onLine ? "✅ Yes" : "❌ No";
-
-            // Test localStorage
-            if (storageSpan) {
-                try {
-                    localStorage.setItem("test", "test");
-                    localStorage.removeItem("test");
-                    storageSpan.textContent = "✅ Available";
-                } catch {
-                    storageSpan.textContent = "❌ Blocked";
-                }
-            }
-
-            // Test cookies
-            if (cookiesSpan) {
-                cookiesSpan.textContent = navigator.cookieEnabled
-                    ? "✅ Enabled"
-                    : "❌ Disabled";
-            }
-
-            // Platform info
-            if (platformSpan) {
-                const ua = navigator.userAgent;
-                let device = "Unknown";
-                if (/iPhone/i.test(ua)) device = "iPhone";
-                else if (/iPad/i.test(ua)) device = "iPad";
-                else if (/Android/i.test(ua)) device = "Android";
-                platformSpan.textContent = device;
-            }
-        }
-
-        // Test Supabase connection
-        debugTestBtn?.addEventListener("click", async () => {
-            if (!debugResult) return;
-
-            debugTestBtn.disabled = true;
-            debugTestBtn.textContent = "Testing...";
-            debugResult.classList.remove("hidden");
-            debugResult.textContent = "⏳ Probando conexión a Supabase...";
-
-            try {
-                // Try to fetch session
-                const { data, error } = await supabase.auth.getSession();
-
-                if (error) {
-                    debugResult.textContent = `❌ Error: ${error.message}`;
-                } else {
-                    debugResult.textContent = `✅ Conexión OK. Sesión: ${data.session ? "Activa" : "No activa"}`;
-                }
-            } catch (err: any) {
-                debugResult.textContent = `❌ Error de red: ${err.message}`;
-            } finally {
-                debugTestBtn.disabled = false;
-                debugTestBtn.textContent = "Test Supabase Connection";
             }
         });
     </script>
