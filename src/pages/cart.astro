@@ -70,9 +70,16 @@ const description = "Review your digital items before checkout";
             </a>
 
             <!-- Recommended Products (Only shown when cart is empty) -->
-            <div id="recommended-products" class="mt-16 border-t border-border-dark pt-12">
-                <h3 class="text-xl font-bold text-white mb-8 text-left">Popular Products</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+            <div
+                id="recommended-products"
+                class="mt-16 border-t border-border-dark pt-12"
+            >
+                <h3 class="text-xl font-bold text-white mb-8 text-left">
+                    Popular Products
+                </h3>
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left"
+                >
                     <!-- Products will be injected here via JS -->
                 </div>
             </div>
@@ -102,10 +109,12 @@ const description = "Review your digital items before checkout";
                             class="flex justify-between text-sm text-text-muted"
                         >
                             <span>Subtotal</span>
-                            <span id="subtotal">S/ 0.00</span>
+                            <span id="subtotal" class="cart-subtotal"
+                                >S/ 0.00</span
+                            >
                         </div>
                         <div
-                            class="flex justify-between text-sm text-text-muted"
+                            class="flex justify-between text-sm text-text-muted hidden"
                         >
                             <span>Discount</span>
                             <span class="text-green-500 font-medium"
@@ -125,7 +134,9 @@ const description = "Review your digital items before checkout";
                         <span class="text-base font-semibold text-white"
                             >Total</span
                         >
-                        <span id="total" class="text-3xl font-black text-white"
+                        <span
+                            id="total"
+                            class="text-3xl font-black text-white cart-total"
                             >S/ 0.00</span
                         >
                     </div>
@@ -257,13 +268,20 @@ const description = "Review your digital items before checkout";
         addToCart,
     } from "../stores/cart";
     import { getFeaturedProducts } from "../lib/supabase";
+    import { initializeCurrency, userCurrency } from "../stores/currencyStore";
+    import { getPrice, CURRENCIES } from "../lib/currency";
+
+    // Initialize currency detection
+    initializeCurrency();
 
     const removeModal = document.getElementById("remove-item-modal");
     const removeModalContent = document.getElementById("remove-modal-content");
     const removeItemNameEl = document.getElementById("remove-item-name");
     const cancelRemoveBtn = document.getElementById("cancel-remove");
     const confirmRemoveBtn = document.getElementById("confirm-remove");
-    const recommendedContainer = document.getElementById("recommended-products");
+    const recommendedContainer = document.getElementById(
+        "recommended-products",
+    );
     let itemToRemoveId: string | null = null;
     let productsLoaded = false;
 
@@ -274,13 +292,15 @@ const description = "Review your digital items before checkout";
 
         try {
             const products = await getFeaturedProducts(4); // Get top 4 popular products
-            
+
             if (products.length === 0) {
                 recommendedContainer?.classList.add("hidden");
                 return;
             }
 
-            container.innerHTML = products.map(product => `
+            container.innerHTML = products
+                .map(
+                    (product) => `
                 <div class="bg-card-dark border border-border-dark rounded-xl overflow-hidden hover:border-primary/50 transition-all group flex flex-col">
                     <a href="/products/${product.id}" class="aspect-video overflow-hidden">
                         <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -289,12 +309,13 @@ const description = "Review your digital items before checkout";
                         <h4 class="text-white font-bold text-sm mb-1 truncate">${product.title}</h4>
                         <p class="text-text-muted text-xs mb-4 line-clamp-1">${product.category}</p>
                         <div class="mt-auto flex items-center justify-between">
-                            <span class="text-white font-black text-base">S/ ${product.price.toFixed(2)}</span>
+                            <span class="text-white font-black text-base dynamic-price" data-price-usd="${product.price}" data-price-pen="${product.price_pen || ""}">${CURRENCIES[userCurrency.get()].symbol} ${product.price.toFixed(2)}</span>
                             <button 
                                 class="add-recommended size-8 bg-primary hover:bg-red-700 text-white rounded-lg flex items-center justify-center transition-colors shadow-lg shadow-primary/20"
                                 data-id="${product.id}"
                                 data-title="${product.title}"
                                 data-price="${product.price}"
+                                data-price-pen="${product.price_pen || ""}"
                                 data-image="${product.image}"
                             >
                                 <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
@@ -302,18 +323,23 @@ const description = "Review your digital items before checkout";
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `,
+                )
+                .join("");
 
             // Add event listeners to new buttons
-            container.querySelectorAll(".add-recommended").forEach(btn => {
+            container.querySelectorAll(".add-recommended").forEach((btn) => {
                 btn.addEventListener("click", (e) => {
                     const target = e.currentTarget as HTMLButtonElement;
                     const item = {
                         id: target.dataset.id!,
                         title: target.dataset.title!,
                         price: parseFloat(target.dataset.price!),
+                        price_pen: target.dataset.pricePen
+                            ? parseFloat(target.dataset.pricePen)
+                            : undefined,
                         image: target.dataset.image!,
-                        quantity: 1
+                        quantity: 1,
                     };
                     addToCart(item);
                     // Cart will re-render automatically via subscription
@@ -439,7 +465,9 @@ const description = "Review your digital items before checkout";
             
             <!-- Price -->
             <div class="text-right">
-              <span class="block text-xl font-bold text-white">S/ ${(item.price * item.quantity).toFixed(2)}</span>
+              <span class="block text-xl font-bold text-white cart-item-total" data-price-usd="${item.price}" data-price-pen="${item.price_pen || ""}">
+                ${CURRENCIES[userCurrency.get()].symbol} ${(getPrice(item.price, item.price_pen, userCurrency.get()) * item.quantity).toFixed(2)}
+              </span>
             </div>
           </div>
         </div>
@@ -448,12 +476,16 @@ const description = "Review your digital items before checkout";
             )
             .join("");
 
-        // Update totals
-        const total = cartTotal.get();
-        if (subtotalEl) subtotalEl.textContent = `S/ ${total.toFixed(2)}`;
-        if (totalEl) totalEl.textContent = `S/ ${total.toFixed(2)}`;
-
         // Add event listeners
+        addCartEventListeners();
+
+        // Update totals
+        updateDisplayPrices();
+    }
+
+    function addCartEventListeners() {
+        const items = cartItems.get();
+
         document.querySelectorAll(".remove-item").forEach((btn) => {
             btn.addEventListener("click", (e) => {
                 const target = e.currentTarget as HTMLButtonElement;
@@ -468,13 +500,12 @@ const description = "Review your digital items before checkout";
                 const target = e.currentTarget as HTMLButtonElement;
                 const id = target.dataset.id!;
                 const title = target.dataset.title!;
-                const item = items.find((i) => i.id === id);
+                const item = items.find((i: any) => i.id === id);
                 if (item) {
                     if (item.quantity > 1) {
                         updateQuantity(id, item.quantity - 1);
                         renderCart();
                     } else {
-                        // Show modal if quantity is 1
                         openRemoveModal(id, title);
                     }
                 }
@@ -484,7 +515,7 @@ const description = "Review your digital items before checkout";
         document.querySelectorAll(".increase-qty").forEach((btn) => {
             btn.addEventListener("click", (e) => {
                 const id = (e.currentTarget as HTMLButtonElement).dataset.id!;
-                const item = items.find((i) => i.id === id);
+                const item = items.find((i: any) => i.id === id);
                 if (item) {
                     updateQuantity(id, item.quantity + 1);
                     renderCart();
@@ -493,12 +524,69 @@ const description = "Review your digital items before checkout";
         });
     }
 
+    function updateDisplayPrices() {
+        const currency = userCurrency.get();
+        const symbol = CURRENCIES[currency].symbol;
+
+        // Update individual item prices in the list
+        document.querySelectorAll(".cart-item-total").forEach((el) => {
+            const priceUSD = parseFloat(
+                el.getAttribute("data-price-usd") || "0",
+            );
+            const pricePEN = el.getAttribute("data-price-pen")
+                ? parseFloat(el.getAttribute("data-price-pen") || "0")
+                : null;
+            const quantity = parseInt(
+                el.closest(".group")?.querySelector("input")?.value || "1",
+            );
+
+            const unitPrice = getPrice(priceUSD, pricePEN, currency);
+            (el as HTMLElement).textContent =
+                `${symbol} ${(unitPrice * quantity).toFixed(2)}`;
+        });
+
+        // Update recommended products prices
+        document.querySelectorAll(".dynamic-price").forEach((el) => {
+            const priceUSD = parseFloat(
+                el.getAttribute("data-price-usd") || "0",
+            );
+            const pricePEN = el.getAttribute("data-price-pen")
+                ? parseFloat(el.getAttribute("data-price-pen") || "0")
+                : null;
+            const price = getPrice(priceUSD, pricePEN, currency);
+            (el as HTMLElement).textContent = `${symbol} ${price.toFixed(2)}`;
+        });
+
+        // Update order summary
+        const subtotalEl = document.getElementById("subtotal");
+        const totalEl = document.getElementById("total");
+
+        const items = cartItems.get();
+        const totalValue = items.reduce((sum, item) => {
+            const price = getPrice(item.price, item.price_pen, currency);
+            return sum + price * item.quantity;
+        }, 0);
+
+        if (subtotalEl)
+            subtotalEl.textContent = `${symbol} ${totalValue.toFixed(2)}`;
+        if (totalEl) totalEl.textContent = `${symbol} ${totalValue.toFixed(2)}`;
+    }
+
     // Initial render
     renderCart();
 
     // Subscribe to cart changes
     cartItems.subscribe(() => {
         renderCart();
+    });
+
+    // Subscribe to currency changes
+    userCurrency.subscribe(() => {
+        updateDisplayPrices();
+    });
+
+    window.addEventListener("currency-changed", () => {
+        updateDisplayPrices();
     });
 
     // Checkout button

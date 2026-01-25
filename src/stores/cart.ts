@@ -4,7 +4,8 @@ import { persistentAtom } from '@nanostores/persistent';
 export interface CartItem {
     id: string;
     title: string;
-    price: number;
+    price: number; // USD base (or standard)
+    price_pen?: number; // Optional PEN price
     image: string;
     quantity: number;
     seller?: string;

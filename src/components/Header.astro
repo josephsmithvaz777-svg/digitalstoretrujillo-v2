@@ -7,7 +7,10 @@ import CartIcon from "./CartIcon.astro";
     class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-dark px-4 lg:px-40 py-3 bg-background-dark sticky top-0 z-50"
 >
     <div class="flex items-center gap-8 w-full">
-        <a href="/" class="flex items-center gap-4 text-white hover:opacity-80 transition-opacity">
+        <a
+            href="/"
+            class="flex items-center gap-4 text-white hover:opacity-80 transition-opacity"
+        >
             <div class="size-8 text-primary">
                 <span class="material-symbols-outlined text-4xl"
                     >local_mall</span
@@ -68,13 +71,30 @@ import CartIcon from "./CartIcon.astro";
             >
                 <span class="truncate" id="auth-text">Sign In</span>
             </a>
-            
-            <button 
-                id="header-logout-btn" 
+
+            <button
+                id="header-logout-btn"
                 class="hidden w-10 h-10 items-center justify-center rounded-lg bg-card-dark border border-border-dark hover:border-red-500 hover:text-red-500 transition-colors text-white"
                 title="Sign Out"
             >
                 <span class="material-symbols-outlined">logout</span>
+            </button>
+
+            <!-- Currency Switcher -->
+            <button
+                id="currency-toggle"
+                class="flex items-center gap-2 px-3 h-10 rounded-lg bg-card-dark border border-border-dark hover:border-text-muted transition-all group"
+                title="Cambiar moneda"
+            >
+                <span id="currency-flag" class="text-lg"></span>
+                <span
+                    id="currency-code"
+                    class="text-xs font-bold text-white uppercase"></span>
+                <span
+                    class="material-symbols-outlined text-[18px] text-text-muted group-hover:text-white transition-colors"
+                >
+                    swap_horiz
+                </span>
             </button>
 
             <CartIcon />
@@ -85,7 +105,9 @@ import CartIcon from "./CartIcon.astro";
 <script>
     import { supabase } from "../lib/supabase";
 
-    const authButton = document.getElementById("auth-button") as HTMLAnchorElement;
+    const authButton = document.getElementById(
+        "auth-button",
+    ) as HTMLAnchorElement;
     const authText = document.getElementById("auth-text");
     const logoutBtn = document.getElementById("header-logout-btn");
 
@@ -96,8 +118,13 @@ import CartIcon from "./CartIcon.astro";
                 authText.textContent = "My Account";
                 authButton.href = "/account";
                 authButton.classList.remove("bg-primary", "hover:bg-red-700");
-                authButton.classList.add("bg-card-dark", "border", "border-border-dark", "hover:border-primary");
-                
+                authButton.classList.add(
+                    "bg-card-dark",
+                    "border",
+                    "border-border-dark",
+                    "hover:border-primary",
+                );
+
                 // Show logout button
                 logoutBtn.classList.remove("hidden");
                 logoutBtn.classList.add("flex");
@@ -105,8 +132,13 @@ import CartIcon from "./CartIcon.astro";
                 authText.textContent = "Sign In";
                 authButton.href = "/login";
                 authButton.classList.add("bg-primary", "hover:bg-red-700");
-                authButton.classList.remove("bg-card-dark", "border", "border-border-dark", "hover:border-primary");
-                
+                authButton.classList.remove(
+                    "bg-card-dark",
+                    "border",
+                    "border-border-dark",
+                    "hover:border-primary",
+                );
+
                 // Hide logout button
                 logoutBtn.classList.add("hidden");
                 logoutBtn.classList.remove("flex");
@@ -127,6 +159,42 @@ import CartIcon from "./CartIcon.astro";
         logoutBtn.addEventListener("click", async () => {
             await supabase.auth.signOut();
             window.location.href = "/login";
+        });
+    }
+    // Currency Switcher Logic
+    import {
+        userCurrency,
+        updateCurrency,
+        initializeCurrency,
+    } from "../stores/currencyStore";
+    import { CURRENCIES } from "../lib/currency";
+
+    const currencyToggle = document.getElementById("currency-toggle");
+    const currencyFlag = document.getElementById("currency-flag");
+    const currencyCode = document.getElementById("currency-code");
+
+    if (currencyToggle && currencyFlag && currencyCode) {
+        // Initialize currency
+        initializeCurrency();
+
+        const updateCurrencyUI = (currency: any) => {
+            const config =
+                CURRENCIES[currency as keyof typeof CURRENCIES] ||
+                CURRENCIES.USD;
+            currencyCode.textContent = config.code;
+            currencyFlag.textContent = config.code === "PEN" ? "🇵🇪" : "🇺🇸";
+        };
+
+        // Subscribe to store changes
+        userCurrency.subscribe((currency) => {
+            updateCurrencyUI(currency);
+        });
+
+        // Handle toggle click
+        currencyToggle.addEventListener("click", () => {
+            const current = userCurrency.get();
+            const next = current === "PEN" ? "USD" : "PEN";
+            updateCurrency(next);
         });
     }
 </script>

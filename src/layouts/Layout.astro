@@ -36,5 +36,13 @@ const {
     class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden font-display text-white"
   >
     <slot />
+
+    <!-- Global Currency Initialization -->
+    <script>
+      import { initializeCurrency } from "../stores/currencyStore";
+
+      // Initialize currency detection on page load
+      initializeCurrency();
+    </script>
   </body>
 </html>

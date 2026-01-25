@@ -22,9 +22,12 @@ export interface Product {
   slug: string;
   title: string;
   description: string | null;
-  price: number;
-  original_price: number | null;
-  renewable_price: number | null;
+  price: number; // USD price
+  price_pen: number | null; // PEN price
+  original_price: number | null; // USD original
+  original_price_pen: number | null; // PEN original
+  renewable_price: number | null; // USD renewable
+  renewable_price_pen: number | null; // PEN renewable
   image: string;
   thumbnails: string[];
   category: string;
@@ -45,10 +48,12 @@ export interface Product {
   stock_quantity: number;
   features: string[];
   is_active: boolean;
+  is_featured: boolean;
   sort_order: number;
   created_at: string;
   updated_at: string;
 }
+
 
 export interface Order {
   id: string;
@@ -510,17 +515,17 @@ export async function getAllUsers() {
   // Since we can't directly list users from auth.users via client SDK without admin API,
   // we'll fetch from the auth admin API if on server, or rely on a specific table if we had a public profiles table.
   // BUT, supabaseAdmin (service role) HAS access to auth.admin.listUsers()!
-  
+
   if (typeof window === 'undefined' && supabaseAdmin) {
     const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
-    
+
     if (error) {
       console.error('Error fetching users:', error);
       return [];
     }
     return users || [];
   }
-  
+
   // Client side can't list users easily without a function or public table.
   // For this project, we are rendering mostly on server (Astro) for admin pages, 
   // so the component will call this and get data.
@@ -542,7 +547,7 @@ export async function deleteUser(userId: string): Promise<boolean> {
       },
       body: JSON.stringify({ userId })
     });
-    
+
     return response.ok;
   } catch (e) {
     console.error("Error deleting user:", e);
@@ -763,7 +768,7 @@ export async function getMonthlySales() {
   if (error || !orders) return [];
 
   const monthlyData: Record<string, number> = {};
-  
+
   // Initialize last 6 months with 0
   for (let i = 5; i >= 0; i--) {
     const d = new Date();
@@ -779,8 +784,8 @@ export async function getMonthlySales() {
     if (monthlyData[key] !== undefined) {
       monthlyData[key] += Number(order.total);
     } else {
-       // If we want to include older data dynamically
-       // monthlyData[key] = (monthlyData[key] || 0) + Number(order.total);
+      // If we want to include older data dynamically
+      // monthlyData[key] = (monthlyData[key] || 0) + Number(order.total);
     }
   });
 

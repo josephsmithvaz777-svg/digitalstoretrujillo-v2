@@ -1,9 +1,12 @@
 ---
 interface Props {
     title: string;
-    price: number;
-    originalPrice?: number;
-    renewablePrice?: number;
+    price: number; // USD price
+    pricePEN?: number; // PEN price
+    originalPrice?: number; // USD original
+    originalPricePEN?: number; // PEN original
+    renewablePrice?: number; // USD renewable
+    renewablePricePEN?: number; // PEN renewable
     image: string;
     badge?: string;
     badgeColor?: string;
@@ -25,8 +28,11 @@ interface Props {
 const {
     title,
     price,
+    pricePEN,
     originalPrice,
+    originalPricePEN,
     renewablePrice,
+    renewablePricePEN,
     image,
     badge,
     badgeColor,
@@ -156,7 +162,11 @@ const {
             {
                 originalPrice && inStock && (
                     <div class="flex items-center gap-2">
-                        <span class="text-sm text-text-muted line-through">
+                        <span
+                            class="text-sm text-text-muted line-through product-original-price"
+                            data-price-usd={originalPrice}
+                            data-price-pen={originalPricePEN}
+                        >
                             ${originalPrice.toFixed(2)}
                         </span>
                     </div>
@@ -168,7 +178,11 @@ const {
                         <span class="material-symbols-outlined text-green-500 text-sm">
                             autorenew
                         </span>
-                        <span class="text-sm text-green-400 font-semibold">
+                        <span
+                            class="text-sm text-green-400 font-semibold product-renewable-price"
+                            data-price-usd={renewablePrice}
+                            data-price-pen={renewablePricePEN}
+                        >
                             Renovable: ${renewablePrice.toFixed(2)}
                         </span>
                     </div>
@@ -177,11 +191,13 @@ const {
             <div class="flex items-baseline gap-2">
                 <span
                     class:list={[
-                        "text-2xl font-black",
+                        "text-2xl font-black product-price",
                         inStock ? "text-white" : "text-gray-500",
                     ]}
+                    data-price-usd={price}
+                    data-price-pen={pricePEN}
                 >
-                    S/ {price.toFixed(2)}
+                    $ {price.toFixed(2)}
                 </span>
             </div>
         </div>
@@ -200,3 +216,62 @@ const {
         </a>
     </div>
 </div>
+
+<script>
+    import { initializeCurrency, userCurrency } from "../stores/currencyStore";
+    import { getPrice, CURRENCIES } from "../lib/currency";
+
+    // Initialize currency detection
+    initializeCurrency();
+
+    // Update prices when currency changes
+    const updatePrices = () => {
+        const currency = userCurrency.get();
+        const symbol = CURRENCIES[currency].symbol;
+
+        // Main prices
+        document.querySelectorAll(".product-price").forEach((el) => {
+            const priceUSD = parseFloat(
+                el.getAttribute("data-price-usd") || "0",
+            );
+            const pricePEN = el.getAttribute("data-price-pen")
+                ? parseFloat(el.getAttribute("data-price-pen") || "0")
+                : null;
+
+            const price = getPrice(priceUSD, pricePEN, currency);
+            el.textContent = `${symbol} ${price.toFixed(2)}`;
+        });
+
+        // Original prices
+        document.querySelectorAll(".product-original-price").forEach((el) => {
+            const priceUSD = parseFloat(
+                el.getAttribute("data-price-usd") || "0",
+            );
+            const pricePEN = el.getAttribute("data-price-pen")
+                ? parseFloat(el.getAttribute("data-price-pen") || "0")
+                : null;
+
+            const price = getPrice(priceUSD, pricePEN, currency);
+            el.textContent = `${symbol}${price.toFixed(2)}`;
+        });
+
+        // Renewable prices
+        document.querySelectorAll(".product-renewable-price").forEach((el) => {
+            const priceUSD = parseFloat(
+                el.getAttribute("data-price-usd") || "0",
+            );
+            const pricePEN = el.getAttribute("data-price-pen")
+                ? parseFloat(el.getAttribute("data-price-pen") || "0")
+                : null;
+
+            const price = getPrice(priceUSD, pricePEN, currency);
+            el.textContent = `Renovable: ${symbol}${price.toFixed(2)}`;
+        });
+    };
+
+    // Subscribe to currency changes
+    userCurrency.subscribe(updatePrices);
+
+    // Listen for currency change events
+    window.addEventListener("currency-changed", updatePrices);
+</script>

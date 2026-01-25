@@ -172,13 +172,25 @@ const description = product.description || "";
                             class="p-5 rounded-xl bg-card-dark border border-border-dark"
                         >
                             <div class="flex items-end gap-3 mb-4">
-                                <p class="text-4xl font-bold text-white">
+                                <p
+                                    class="text-4xl font-bold text-white product-price"
+                                    data-price-usd={product.price}
+                                    data-price-pen={product.price_pen}
+                                >
                                     S/ {product.price.toFixed(2)}
                                 </p>
                                 {
                                     product.original_price && (
-                                        <p class="text-xl text-text-muted line-through mb-1">
-                                            S/{" "}
+                                        <p
+                                            class="text-xl text-text-m uted line-through mb-1 product-original-price"
+                                            data-price-usd={
+                                                product.original_price
+                                            }
+                                            data-price-pen={
+                                                product.original_price_pen
+                                            }
+                                        >
+                                            ${" "}
                                             {product.original_price.toFixed(2)}
                                         </p>
                                     )
@@ -196,8 +208,16 @@ const description = product.description || "";
                                             <span class="material-symbols-outlined text-green-500 text-lg">
                                                 autorenew
                                             </span>
-                                            <span class="text-green-400 font-semibold">
-                                                Renovable: S/
+                                            <span
+                                                class="text-green-400 font-semibold product-renewable-price"
+                                                data-price-usd={
+                                                    product.renewable_price
+                                                }
+                                                data-price-pen={
+                                                    product.renewable_price_pen
+                                                }
+                                            >
+                                                Renovable: $
                                                 {product.renewable_price.toFixed(
                                                     2,
                                                 )}
@@ -457,8 +477,81 @@ const description = product.description || "";
 
     <script>
         import { addToCart } from "../../stores/cart";
+        import {
+            initializeCurrency,
+            userCurrency,
+        } from "../../stores/currencyStore";
+        import { getPrice, CURRENCIES } from "../../lib/currency";
 
         document.addEventListener("DOMContentLoaded", () => {
+            // Initialize currency detection
+            initializeCurrency();
+
+            // Update prices when currency changes
+            const updatePrices = () => {
+                const currency = userCurrency.get();
+                const symbol = CURRENCIES[currency].symbol;
+
+                // Main price
+                const mainPriceEl = document.querySelector(".product-price");
+                if (mainPriceEl) {
+                    const priceUSD = parseFloat(
+                        mainPriceEl.getAttribute("data-price-usd") || "0",
+                    );
+                    const pricePEN = mainPriceEl.getAttribute("data-price-pen")
+                        ? parseFloat(
+                              mainPriceEl.getAttribute("data-price-pen") || "0",
+                          )
+                        : null;
+                    const price = getPrice(priceUSD, pricePEN, currency);
+                    mainPriceEl.textContent = `${symbol} ${price.toFixed(2)}`;
+                }
+
+                // Original price
+                const originalPriceEl = document.querySelector(
+                    ".product-original-price",
+                );
+                if (originalPriceEl) {
+                    const priceUSD = parseFloat(
+                        originalPriceEl.getAttribute("data-price-usd") || "0",
+                    );
+                    const pricePEN = originalPriceEl.getAttribute(
+                        "data-price-pen",
+                    )
+                        ? parseFloat(
+                              originalPriceEl.getAttribute("data-price-pen") ||
+                                  "0",
+                          )
+                        : null;
+                    const price = getPrice(priceUSD, pricePEN, currency);
+                    originalPriceEl.textContent = `${symbol}${price.toFixed(2)}`;
+                }
+
+                // Renewable price
+                const renewablePriceEl = document.querySelector(
+                    ".product-renewable-price",
+                );
+                if (renewablePriceEl) {
+                    const priceUSD = parseFloat(
+                        renewablePriceEl.getAttribute("data-price-usd") || "0",
+                    );
+                    const pricePEN = renewablePriceEl.getAttribute(
+                        "data-price-pen",
+                    )
+                        ? parseFloat(
+                              renewablePriceEl.getAttribute("data-price-pen") ||
+                                  "0",
+                          )
+                        : null;
+                    const price = getPrice(priceUSD, pricePEN, currency);
+                    renewablePriceEl.textContent = `Renovable: ${symbol}${price.toFixed(2)}`;
+                }
+            };
+
+            // Subscribe to currency changes
+            userCurrency.subscribe(updatePrices);
+            window.addEventListener("currency-changed", updatePrices);
+
             const buyNowBtn = document.getElementById("buy-now-btn");
 
             if (buyNowBtn) {

@@ -100,42 +100,84 @@ const description = "Complete your purchase securely";
 
                 <!-- Form -->
                 <form id="checkout-form" class="flex flex-col gap-6 mt-2">
-                    
                     <!-- Logged In Summary (Hidden by default) -->
-                    <div id="logged-in-summary" class="hidden p-6 rounded-xl bg-card-dark border border-border-dark animate-fade-in">
+                    <div
+                        id="logged-in-summary"
+                        class="hidden p-6 rounded-xl bg-card-dark border border-border-dark animate-fade-in"
+                    >
                         <div class="flex items-center gap-4 mb-6">
-                            <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                                <span class="material-symbols-outlined text-3xl">person</span>
+                            <div
+                                class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary"
+                            >
+                                <span class="material-symbols-outlined text-3xl"
+                                    >person</span
+                                >
                             </div>
                             <div>
-                                <h3 class="text-white font-bold text-xl" id="summary-name">Loading...</h3>
-                                <p class="text-text-muted" id="summary-email">Loading...</p>
+                                <h3
+                                    class="text-white font-bold text-xl"
+                                    id="summary-name"
+                                >
+                                    Loading...
+                                </h3>
+                                <p class="text-text-muted" id="summary-email">
+                                    Loading...
+                                </p>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div class="p-4 rounded-lg bg-background-dark/50 border border-border-dark">
-                                <span class="text-xs text-text-muted uppercase tracking-wider font-bold">Phone</span>
-                                <p class="text-white font-medium mt-1 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm text-primary">call</span>
+                            <div
+                                class="p-4 rounded-lg bg-background-dark/50 border border-border-dark"
+                            >
+                                <span
+                                    class="text-xs text-text-muted uppercase tracking-wider font-bold"
+                                    >Phone</span
+                                >
+                                <p
+                                    class="text-white font-medium mt-1 flex items-center gap-2"
+                                >
+                                    <span
+                                        class="material-symbols-outlined text-sm text-primary"
+                                        >call</span
+                                    >
                                     <span id="summary-phone">--</span>
                                 </p>
                             </div>
-                            <div class="p-4 rounded-lg bg-background-dark/50 border border-border-dark">
-                                <span class="text-xs text-text-muted uppercase tracking-wider font-bold">Status</span>
-                                <p class="text-green-400 font-medium mt-1 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">verified</span>
+                            <div
+                                class="p-4 rounded-lg bg-background-dark/50 border border-border-dark"
+                            >
+                                <span
+                                    class="text-xs text-text-muted uppercase tracking-wider font-bold"
+                                    >Status</span
+                                >
+                                <p
+                                    class="text-green-400 font-medium mt-1 flex items-center gap-2"
+                                >
+                                    <span
+                                        class="material-symbols-outlined text-sm"
+                                        >verified</span
+                                    >
                                     Verified Account
                                 </p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2 text-sm text-text-muted bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg">
-                            <span class="material-symbols-outlined text-blue-400">info</span>
+                        <div
+                            class="flex items-center gap-2 text-sm text-text-muted bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg"
+                        >
+                            <span
+                                class="material-symbols-outlined text-blue-400"
+                                >info</span
+                            >
                             Your order will be automatically linked to this account.
                         </div>
-                        
-                        <button type="button" id="edit-info-btn" class="mt-4 text-sm text-primary hover:text-white underline transition-colors">
+
+                        <button
+                            type="button"
+                            id="edit-info-btn"
+                            class="mt-4 text-sm text-primary hover:text-white underline transition-colors"
+                        >
                             Not you? Switch account or Edit info
                         </button>
                     </div>
@@ -146,204 +188,236 @@ const description = "Complete your purchase securely";
                         <div
                             class="p-6 rounded-xl bg-card-dark border border-border-dark"
                         >
-                        <h3
-                            class="text-white font-bold text-lg mb-6 flex items-center gap-2"
-                        >
-                            <span class="material-symbols-outlined text-primary"
-                                >contact_mail</span
+                            <h3
+                                class="text-white font-bold text-lg mb-6 flex items-center gap-2"
                             >
-                            Contact Details
-                        </h3>
-                        <div class="grid gap-6">
-                            <!-- Email Field -->
-                            <label class="flex flex-col gap-2">
-                                <span class="text-white text-sm font-medium"
-                                    >Email Address <span class="text-primary"
-                                        >*</span
-                                    ></span
+                                <span
+                                    class="material-symbols-outlined text-primary"
+                                    >contact_mail</span
                                 >
-                                <div class="relative flex items-center">
+                                Contact Details
+                            </h3>
+                            <div class="grid gap-6">
+                                <!-- Email Field -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-white text-sm font-medium"
+                                        >Email Address <span
+                                            class="text-primary">*</span
+                                        ></span
+                                    >
+                                    <div class="relative flex items-center">
+                                        <input
+                                            id="email"
+                                            name="email"
+                                            class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-11 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                            placeholder="you@example.com"
+                                            type="email"
+                                            required
+                                        />
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 text-text-muted pointer-events-none"
+                                            >mail</span
+                                        >
+                                    </div>
+                                    <p
+                                        class="text-xs text-text-muted flex items-center gap-1"
+                                    >
+                                        <span
+                                            class="material-symbols-outlined text-[16px]"
+                                            >info</span
+                                        >
+                                        Product link will be sent here.
+                                    </p>
+                                </label>
+
+                                <!-- Phone Field -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-white text-sm font-medium"
+                                        >Phone Number</span
+                                    >
+                                    <div
+                                        class="relative flex items-center group"
+                                    >
+                                        <div
+                                            class="absolute left-0 top-0 bottom-0 flex items-center border-r border-border-dark bg-background-dark/30 rounded-l-lg transition-colors group-focus-within:border-primary"
+                                        >
+                                            <select
+                                                id="countryCode"
+                                                name="countryCode"
+                                                class="bg-transparent text-white text-xs md:text-sm font-medium border-none focus:ring-0 cursor-pointer pl-3 pr-8 h-full appearance-none outline-none"
+                                            >
+                                                <option value="+51" selected
+                                                    >🇵🇪 +51</option
+                                                >
+                                                <option value="+57"
+                                                    >🇨🇴 +57</option
+                                                >
+                                                <option value="+56"
+                                                    >🇨🇱 +56</option
+                                                >
+                                                <option value="+54"
+                                                    >🇦🇷 +54</option
+                                                >
+                                                <option value="+593"
+                                                    >🇪🇨 +593</option
+                                                >
+                                                <option value="+591"
+                                                    >🇧🇴 +591</option
+                                                >
+                                                <option value="+52"
+                                                    >🇲🇽 +52</option
+                                                >
+                                                <option value="+34"
+                                                    >🇪🇸 +34</option
+                                                >
+                                                <option value="+1">🇺🇸 +1</option
+                                                >
+                                                <option value="+58"
+                                                    >🇻🇪 +58</option
+                                                >
+                                                <option value="+507"
+                                                    >🇵🇦 +507</option
+                                                >
+                                                <option value="+506"
+                                                    >🇨🇷 +506</option
+                                                >
+                                                <option value="+503"
+                                                    >🇸🇻 +503</option
+                                                >
+                                                <option value="+502"
+                                                    >🇬🇹 +502</option
+                                                >
+                                            </select>
+                                            <span
+                                                class="material-symbols-outlined absolute right-2 text-[16px] text-text-muted pointer-events-none"
+                                                >expand_more</span
+                                            >
+                                        </div>
+                                        <input
+                                            id="phone"
+                                            name="phone"
+                                            class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-32 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                            placeholder="987 654 321"
+                                            type="tel"
+                                        />
+                                        <span
+                                            class="material-symbols-outlined absolute right-3 text-text-muted pointer-events-none"
+                                            >call</span
+                                        >
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Section: Personal Info -->
+                        <div
+                            class="p-6 rounded-xl bg-card-dark border border-border-dark"
+                        >
+                            <h3
+                                class="text-white font-bold text-lg mb-6 flex items-center gap-2"
+                            >
+                                <span
+                                    class="material-symbols-outlined text-primary"
+                                    >person</span
+                                >
+                                Personal Information
+                            </h3>
+                            <div class="grid gap-6 md:grid-cols-2">
+                                <!-- First Name -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-white text-sm font-medium"
+                                        >First Name <span class="text-primary"
+                                            >*</span
+                                        ></span
+                                    >
                                     <input
-                                        id="email"
-                                        name="email"
-                                        class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-11 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
-                                        placeholder="you@example.com"
-                                        type="email"
+                                        id="firstName"
+                                        name="firstName"
+                                        class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                        placeholder="Juan"
+                                        type="text"
                                         required
                                     />
-                                    <span
-                                        class="material-symbols-outlined absolute left-3 text-text-muted pointer-events-none"
-                                        >mail</span
-                                    >
-                                </div>
-                                <p
-                                    class="text-xs text-text-muted flex items-center gap-1"
-                                >
-                                    <span
-                                        class="material-symbols-outlined text-[16px]"
-                                        >info</span
-                                    >
-                                    Product link will be sent here.
-                                </p>
-                            </label>
+                                </label>
 
-                            <!-- Phone Field -->
-                            <label class="flex flex-col gap-2">
-                                <span class="text-white text-sm font-medium"
-                                    >Phone Number</span
-                                >
-                                <div class="relative flex items-center group">
-                                    <div
-                                        class="absolute left-0 top-0 bottom-0 flex items-center border-r border-border-dark bg-background-dark/30 rounded-l-lg transition-colors group-focus-within:border-primary"
+                                <!-- Last Name -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-white text-sm font-medium"
+                                        >Last Name <span class="text-primary"
+                                            >*</span
+                                        ></span
                                     >
-                                        <select
-                                            id="countryCode"
-                                            name="countryCode"
-                                            class="bg-transparent text-white text-xs md:text-sm font-medium border-none focus:ring-0 cursor-pointer pl-3 pr-8 h-full appearance-none outline-none"
-                                        >
-                                            <option value="+51" selected
-                                                >🇵🇪 +51</option
-                                            >
-                                            <option value="+57">🇨🇴 +57</option>
-                                            <option value="+56">🇨🇱 +56</option>
-                                            <option value="+54">🇦🇷 +54</option>
-                                            <option value="+593">🇪🇨 +593</option
-                                            >
-                                            <option value="+591">🇧🇴 +591</option
-                                            >
-                                            <option value="+52">🇲🇽 +52</option>
-                                            <option value="+34">🇪🇸 +34</option>
-                                            <option value="+1">🇺🇸 +1</option>
-                                            <option value="+58">🇻🇪 +58</option>
-                                            <option value="+507">🇵🇦 +507</option
-                                            >
-                                            <option value="+506">🇨🇷 +506</option
-                                            >
-                                            <option value="+503">🇸🇻 +503</option
-                                            >
-                                            <option value="+502">🇬🇹 +502</option
-                                            >
-                                        </select>
-                                        <span
-                                            class="material-symbols-outlined absolute right-2 text-[16px] text-text-muted pointer-events-none"
-                                            >expand_more</span
-                                        >
-                                    </div>
                                     <input
-                                        id="phone"
-                                        name="phone"
-                                        class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-32 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
-                                        placeholder="987 654 321"
-                                        type="tel"
+                                        id="lastName"
+                                        name="lastName"
+                                        class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                        placeholder="Perez"
+                                        type="text"
+                                        required
                                     />
-                                    <span
-                                        class="material-symbols-outlined absolute right-3 text-text-muted pointer-events-none"
-                                        >call</span
-                                    >
-                                </div>
-                            </label>
-                        </div>
-                    </div>
+                                </label>
 
-                    <!-- Section: Personal Info -->
-                    <div
-                        class="p-6 rounded-xl bg-card-dark border border-border-dark"
-                    >
-                        <h3
-                            class="text-white font-bold text-lg mb-6 flex items-center gap-2"
-                        >
-                            <span class="material-symbols-outlined text-primary"
-                                >person</span
-                            >
-                            Personal Information
-                        </h3>
-                        <div class="grid gap-6 md:grid-cols-2">
-                            <!-- First Name -->
-                            <label class="flex flex-col gap-2">
-                                <span class="text-white text-sm font-medium"
-                                    >First Name <span class="text-primary"
-                                        >*</span
-                                    ></span
+                                <!-- Account Toggle -->
+                                <div
+                                    id="create-account-section"
+                                    class="md:col-span-2 flex flex-col gap-4 pt-2"
                                 >
-                                <input
-                                    id="firstName"
-                                    name="firstName"
-                                    class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
-                                    placeholder="Juan"
-                                    type="text"
-                                    required
-                                />
-                            </label>
-
-                            <!-- Last Name -->
-                            <label class="flex flex-col gap-2">
-                                <span class="text-white text-sm font-medium"
-                                    >Last Name <span class="text-primary"
-                                        >*</span
-                                    ></span
-                                >
-                                <input
-                                    id="lastName"
-                                    name="lastName"
-                                    class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
-                                    placeholder="Perez"
-                                    type="text"
-                                    required
-                                />
-                            </label>
-
-                            <!-- Account Toggle -->
-                            <div
-                                id="create-account-section"
-                                class="md:col-span-2 flex flex-col gap-4 pt-2"
-                            >
-                                <div class="flex items-start gap-3">
-                                    <div class="flex h-6 items-center">
-                                        <input
-                                            class="h-5 w-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary focus:ring-offset-background-dark"
-                                            id="create-account"
-                                            type="checkbox"
-                                        />
-                                    </div>
-                                    <div class="text-sm leading-6">
-                                        <label
-                                            class="font-medium text-white"
-                                            for="create-account"
-                                            >Create an account for faster checkout</label
-                                        >
-                                        <p class="text-text-muted">
-                                            Save your details for future purchases
-                                            securely.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <!-- Password Field (Hidden by default) -->
-                                <div id="password-container" class="hidden">
-                                    <label class="flex flex-col gap-2">
-                                        <span class="text-white text-sm font-medium"
-                                            >Create Password <span class="text-primary"
-                                                >*</span
-                                            ></span
-                                        >
-                                        <div class="relative">
+                                    <div class="flex items-start gap-3">
+                                        <div class="flex h-6 items-center">
                                             <input
-                                                id="password"
-                                                name="password"
-                                                class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-10 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
-                                                placeholder="Minimum 6 characters"
-                                                type="password"
-                                                minlength="6"
+                                                class="h-5 w-5 rounded border-border-dark bg-background-dark text-primary focus:ring-primary focus:ring-offset-background-dark"
+                                                id="create-account"
+                                                type="checkbox"
                                             />
-                                            <span class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]">lock</span>
                                         </div>
-                                        <p class="text-xs text-text-muted">Password must be at least 6 characters long.</p>
-                                    </label>
+                                        <div class="text-sm leading-6">
+                                            <label
+                                                class="font-medium text-white"
+                                                for="create-account"
+                                                >Create an account for faster
+                                                checkout</label
+                                            >
+                                            <p class="text-text-muted">
+                                                Save your details for future
+                                                purchases securely.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Password Field (Hidden by default) -->
+                                    <div id="password-container" class="hidden">
+                                        <label class="flex flex-col gap-2">
+                                            <span
+                                                class="text-white text-sm font-medium"
+                                                >Create Password <span
+                                                    class="text-primary">*</span
+                                                ></span
+                                            >
+                                            <div class="relative">
+                                                <input
+                                                    id="password"
+                                                    name="password"
+                                                    class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 pl-10 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-text-muted transition-colors"
+                                                    placeholder="Minimum 6 characters"
+                                                    type="password"
+                                                    minlength="6"
+                                                />
+                                                <span
+                                                    class="material-symbols-outlined absolute left-3 top-3.5 text-text-muted text-[20px]"
+                                                    >lock</span
+                                                >
+                                            </div>
+                                            <p class="text-xs text-text-muted">
+                                                Password must be at least 6
+                                                characters long.
+                                            </p>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    </div> <!-- End of form-sections -->
+                    <!-- End of form-sections -->
 
                     <!-- Actions -->
                     <div class="flex justify-end pt-4">
@@ -445,20 +519,35 @@ const description = "Complete your purchase securely";
     <Footer />
 
     <!-- Success Modal -->
-    <div id="success-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-card-dark border border-border-dark rounded-xl max-w-md w-full p-6 shadow-2xl transform transition-all scale-100">
+    <div
+        id="success-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-md w-full p-6 shadow-2xl transform transition-all scale-100"
+        >
             <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                <div
+                    class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center"
+                >
+                    <span class="material-symbols-outlined text-primary text-xl"
+                        >check_circle</span
+                    >
                 </div>
-                <h3 class="text-white text-lg font-bold">Registration Successful</h3>
+                <h3 class="text-white text-lg font-bold">
+                    Registration Successful
+                </h3>
             </div>
-            
+
             <p class="text-text-muted text-sm leading-relaxed mb-6">
-                Please check your email to confirm your account. You can proceed to payment, and your order will be linked to your account.
+                Please check your email to confirm your account. You can proceed
+                to payment, and your order will be linked to your account.
             </p>
 
-            <button id="modal-ok-btn" class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all">
+            <button
+                id="modal-ok-btn"
+                class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all"
+            >
                 Continue to Payment
             </button>
         </div>
@@ -468,19 +557,39 @@ const description = "Complete your purchase securely";
 <script>
     import { cartItems, cartTotal } from "../stores/cart";
     import { supabase } from "../lib/supabase";
+    import { initializeCurrency, userCurrency } from "../stores/currencyStore";
+    import { getPrice, CURRENCIES } from "../lib/currency";
+
+    // Initialize currency
+    initializeCurrency();
+
+    // Re-render summary when currency changes
+    userCurrency.subscribe(() => {
+        renderOrderSummary();
+    });
+
+    window.addEventListener("currency-changed", () => {
+        renderOrderSummary();
+    });
 
     function renderOrderSummary() {
         const items = cartItems.get();
         const orderItemsContainer = document.getElementById("order-items");
+        const currency = userCurrency.get();
+        const symbol = CURRENCIES[currency].symbol;
 
         if (!orderItemsContainer) return;
 
-        const total = cartTotal.get();
+        const totalValue = items.reduce((sum: number, item: any) => {
+            const price = getPrice(item.price, item.price_pen, currency);
+            return sum + price * item.quantity;
+        }, 0);
 
         orderItemsContainer.innerHTML = `
       ${items
-          .map(
-              (item) => `
+          .map((item: any) => {
+              const price = getPrice(item.price, item.price_pen, currency);
+              return `
         <div class="flex gap-4">
           <div class="h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden border border-border-dark">
             <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" />
@@ -490,11 +599,11 @@ const description = "Complete your purchase securely";
               <h4 class="text-white font-bold text-sm leading-tight">${item.title}</h4>
               <p class="text-text-muted text-xs mt-1">Quantity: ${item.quantity}</p>
             </div>
-            <p class="text-white font-bold">S/ ${(item.price * item.quantity).toFixed(2)}</p>
+            <p class="text-white font-bold">${symbol} ${(price * item.quantity).toFixed(2)}</p>
           </div>
         </div>
-      `,
-          )
+      `;
+          })
           .join('<hr class="border-border-dark"/>')}
       
       <hr class="border-border-dark"/>
@@ -503,7 +612,7 @@ const description = "Complete your purchase securely";
       <div class="flex flex-col gap-2">
         <div class="flex justify-between text-sm">
           <span class="text-text-muted">Subtotal</span>
-          <span class="text-white">S/ ${total.toFixed(2)}</span>
+          <span class="text-white">${symbol} ${totalValue.toFixed(2)}</span>
         </div>
         <div class="flex justify-between text-sm">
           <span class="text-text-muted">Tax</span>
@@ -511,7 +620,7 @@ const description = "Complete your purchase securely";
         </div>
         <div class="flex justify-between text-sm text-green-500">
           <span>Discount</span>
-          <span>-S/ 0.00</span>
+          <span>-${symbol} 0.00</span>
         </div>
       </div>
       
@@ -521,8 +630,8 @@ const description = "Complete your purchase securely";
       <div class="flex justify-between items-center">
         <span class="text-white font-bold text-lg">Total</span>
         <div class="text-right">
-          <span class="text-primary font-black text-2xl">S/ ${total.toFixed(2)}</span>
-          <p class="text-xs text-text-muted">PEN</p>
+          <span class="text-primary font-black text-2xl">${symbol} ${totalValue.toFixed(2)}</span>
+          <p class="text-xs text-text-muted">${currency}</p>
         </div>
       </div>
     `;
@@ -533,8 +642,10 @@ const description = "Complete your purchase securely";
 
     // Check auth status
     const checkAuth = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+
         const formSections = document.getElementById("form-sections");
         const loggedInSummary = document.getElementById("logged-in-summary");
         const summaryName = document.getElementById("summary-name");
@@ -544,8 +655,12 @@ const description = "Complete your purchase securely";
 
         // Input refs
         const emailInput = document.getElementById("email") as HTMLInputElement;
-        const firstNameInput = document.getElementById("firstName") as HTMLInputElement;
-        const lastNameInput = document.getElementById("lastName") as HTMLInputElement;
+        const firstNameInput = document.getElementById(
+            "firstName",
+        ) as HTMLInputElement;
+        const lastNameInput = document.getElementById(
+            "lastName",
+        ) as HTMLInputElement;
         const phoneInput = document.getElementById("phone") as HTMLInputElement;
 
         if (user) {
@@ -565,45 +680,52 @@ const description = "Complete your purchase securely";
             // (Assuming user wants "no form" if logged in)
             if (fullName && loggedInSummary && formSections) {
                 // Pre-fill hidden inputs so submission works
-                if (firstNameInput) firstNameInput.value = fullName.split(' ')[0] || "";
-                if (lastNameInput) lastNameInput.value = fullName.split(' ').slice(1).join(' ') || "."; // Fallback dot if no last name
+                if (firstNameInput)
+                    firstNameInput.value = fullName.split(" ")[0] || "";
+                if (lastNameInput)
+                    lastNameInput.value =
+                        fullName.split(" ").slice(1).join(" ") || "."; // Fallback dot if no last name
                 if (phoneInput) phoneInput.value = phone;
 
                 // Update Summary UI
                 if (summaryName) summaryName.textContent = fullName;
                 if (summaryEmail) summaryEmail.textContent = user.email || "";
-                if (summaryPhone) summaryPhone.textContent = phone || "Not provided";
+                if (summaryPhone)
+                    summaryPhone.textContent = phone || "Not provided";
 
                 // Toggle visibility
                 formSections.classList.add("hidden");
                 loggedInSummary.classList.remove("hidden");
             } else {
-                 // Partially fill what we have
-                 if (firstNameInput && fullName) {
-                    firstNameInput.value = fullName.split(' ')[0] || "";
-                    lastNameInput.value = fullName.split(' ').slice(1).join(' ') || "";
-                 }
-                 if (phoneInput && phone) phoneInput.value = phone;
-                 
-                 // Show form but maybe simplified
-                 // For now, keep form visible if data is missing
+                // Partially fill what we have
+                if (firstNameInput && fullName) {
+                    firstNameInput.value = fullName.split(" ")[0] || "";
+                    lastNameInput.value =
+                        fullName.split(" ").slice(1).join(" ") || "";
+                }
+                if (phoneInput && phone) phoneInput.value = phone;
+
+                // Show form but maybe simplified
+                // For now, keep form visible if data is missing
             }
 
             // Hide create account option in form (if form is visible)
-            const createAccountContainer = document.getElementById("create-account-section");
+            const createAccountContainer = document.getElementById(
+                "create-account-section",
+            );
             if (createAccountContainer) {
                 createAccountContainer.classList.add("hidden"); // Just hide it completely if logged in
             }
         } else {
-             // Not logged in - ensure form is visible
-             if (formSections) formSections.classList.remove("hidden");
-             if (loggedInSummary) loggedInSummary.classList.add("hidden");
+            // Not logged in - ensure form is visible
+            if (formSections) formSections.classList.remove("hidden");
+            if (loggedInSummary) loggedInSummary.classList.add("hidden");
         }
 
         // Edit button logic
         editInfoBtn?.addEventListener("click", () => {
-             if (formSections) formSections.classList.remove("hidden");
-             if (loggedInSummary) loggedInSummary.classList.add("hidden");
+            if (formSections) formSections.classList.remove("hidden");
+            if (loggedInSummary) loggedInSummary.classList.add("hidden");
         });
     };
 
@@ -611,15 +733,19 @@ const description = "Complete your purchase securely";
 
     // Listen for auth changes to update UI automatically
     supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' && session) {
+        if (event === "SIGNED_IN" && session) {
             checkAuth();
         }
     });
 
     // Handle create account toggle
-    const createAccountCheckbox = document.getElementById("create-account") as HTMLInputElement;
+    const createAccountCheckbox = document.getElementById(
+        "create-account",
+    ) as HTMLInputElement;
     const passwordContainer = document.getElementById("password-container");
-    const passwordInput = document.getElementById("password") as HTMLInputElement;
+    const passwordInput = document.getElementById(
+        "password",
+    ) as HTMLInputElement;
 
     if (createAccountCheckbox && passwordContainer) {
         createAccountCheckbox.addEventListener("change", (e) => {
@@ -640,9 +766,11 @@ const description = "Complete your purchase securely";
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+            const submitBtn = document.getElementById(
+                "submit-btn",
+            ) as HTMLButtonElement;
             const originalBtnText = submitBtn.innerHTML;
-            
+
             // Get form data
             const formData = new FormData(form as HTMLFormElement);
             const data = Object.fromEntries(formData);
@@ -661,45 +789,53 @@ const description = "Complete your purchase securely";
                 // Handle Registration
                 let registeredUserId = null;
                 if (createAccount && data.password) {
-                    const { data: authData, error: authError } = await supabase.auth.signUp({
-                        email: data.email as string,
-                        password: data.password as string,
-                        options: {
-                            data: {
-                                full_name: `${data.firstName} ${data.lastName}`,
-                                phone: data.phone,
+                    const { data: authData, error: authError } =
+                        await supabase.auth.signUp({
+                            email: data.email as string,
+                            password: data.password as string,
+                            options: {
+                                data: {
+                                    full_name: `${data.firstName} ${data.lastName}`,
+                                    phone: data.phone,
+                                },
+                                emailRedirectTo: `${window.location.origin}/`,
                             },
-                            emailRedirectTo: `${window.location.origin}/`,
-                        }
-                    });
+                        });
 
                     if (authError) {
                         // Si el error es solo del envío del correo de confirmación, permitimos continuar
                         // Esto pasa cuando el SMTP de Supabase falla o llega al límite
-                        if (authError.message && (
-                            authError.message.includes("confirmation email") || 
-                            authError.message.includes("rate limit")
-                        )) {
-                            console.warn("Alerta: Se creó el usuario pero falló el correo de confirmación:", authError);
+                        if (
+                            authError.message &&
+                            (authError.message.includes("confirmation email") ||
+                                authError.message.includes("rate limit"))
+                        ) {
+                            console.warn(
+                                "Alerta: Se creó el usuario pero falló el correo de confirmación:",
+                                authError,
+                            );
                             // No lanzamos el error para permitir que la compra continúe
                         } else {
                             throw authError;
                         }
                     }
-                    
+
                     if (authData.user) {
                         registeredUserId = authData.user.id;
-                        localStorage.setItem("registeredUserId", authData.user.id);
+                        localStorage.setItem(
+                            "registeredUserId",
+                            authData.user.id,
+                        );
                     }
 
                     if (authData.user && !authData.session) {
                         // Show success modal instead of alert
                         const modal = document.getElementById("success-modal");
                         const okBtn = document.getElementById("modal-ok-btn");
-                        
+
                         if (modal && okBtn) {
                             modal.classList.remove("hidden");
-                            
+
                             // Wait for user to click OK to proceed
                             await new Promise((resolve) => {
                                 okBtn.onclick = () => {
@@ -716,7 +852,6 @@ const description = "Complete your purchase securely";
 
                 // Redirect to payment page
                 window.location.href = "/payment";
-
             } catch (error: any) {
                 console.error("Checkout Error:", error);
                 alert(error.message || "An error occurred during checkout.");

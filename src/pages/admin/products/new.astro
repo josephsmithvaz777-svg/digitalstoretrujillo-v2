@@ -78,71 +78,151 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
             </div>
 
             <!-- Pricing -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Pricing Grid -->
+            <div class="space-y-6">
+                <!-- PEN Prices (Independent) -->
                 <div>
-                    <label
-                        for="price"
-                        class="block text-sm font-medium text-white mb-2"
+                    <h4
+                        class="text-white text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2"
                     >
-                        Precio (S/) *
-                    </label>
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        required
-                        step="0.01"
-                        min="0"
-                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="15.00"
-                    />
-                </div>
-
-                <div>
-                    <label
-                        for="original_price"
-                        class="block text-sm font-medium text-white mb-2"
-                    >
-                        Precio Original (S/)
-                    </label>
-                    <input
-                        type="number"
-                        id="original_price"
-                        name="original_price"
-                        step="0.01"
-                        min="0"
-                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="18.75"
-                    />
-                </div>
-
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <label
-                            for="renewable_price"
-                            class="block text-sm font-medium text-white"
-                        >
-                            Precio Renovable (S/)
-                        </label>
-                        <label class="flex items-center gap-1.5 cursor-pointer">
+                        <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                        Precios en Soles (PEN)
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label
+                                for="price_pen"
+                                class="block text-[11px] font-medium text-text-muted mb-2 uppercase tracking-wider"
+                            >
+                                Precio (S/) *
+                            </label>
                             <input
-                                type="checkbox"
-                                id="show_renewable_price"
-                                name="show_renewable_price"
-                                class="w-4 h-4 bg-background-dark border-border-dark rounded checked:bg-primary"
+                                type="number"
+                                id="price_pen"
+                                name="price_pen"
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="15.00"
                             />
-                            <span class="text-xs text-text-muted">Mostrar</span>
-                        </label>
+                        </div>
+                        <div>
+                            <label
+                                for="original_price_pen"
+                                class="block text-[11px] font-medium text-text-muted mb-2 uppercase tracking-wider"
+                            >
+                                Precio Original (S/)
+                            </label>
+                            <input
+                                type="number"
+                                id="original_price_pen"
+                                name="original_price_pen"
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="18.75"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="renewable_price_pen"
+                                class="block text-[11px] font-medium text-text-muted mb-2 uppercase tracking-wider"
+                            >
+                                Precio Renovable (S/)
+                            </label>
+                            <input
+                                type="number"
+                                id="renewable_price_pen"
+                                name="renewable_price_pen"
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="1.00"
+                            />
+                        </div>
                     </div>
-                    <input
-                        type="number"
-                        id="renewable_price"
-                        name="renewable_price"
-                        step="0.01"
-                        min="0"
-                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                        placeholder="1.00"
-                    />
+                </div>
+
+                <div class="h-px bg-border-dark/50"></div>
+
+                <!-- USD Prices (Independent) -->
+                <div>
+                    <h4
+                        class="text-white text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2"
+                    >
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Precios en Dólares (USD)
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label
+                                for="price"
+                                class="block text-[11px] font-medium text-text-muted mb-2 uppercase tracking-wider"
+                            >
+                                Precio ($) *
+                            </label>
+                            <input
+                                type="number"
+                                id="price"
+                                name="price"
+                                required
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="3.95"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="original_price"
+                                class="block text-[11px] font-medium text-text-muted mb-2 uppercase tracking-wider"
+                            >
+                                Original ($)
+                            </label>
+                            <input
+                                type="number"
+                                id="original_price"
+                                name="original_price"
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="5.00"
+                            />
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label
+                                    for="renewable_price"
+                                    class="block text-[11px] font-medium text-text-muted uppercase tracking-wider"
+                                >
+                                    Renovable ($)
+                                </label>
+                                <label
+                                    class="flex items-center gap-1.5 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        id="show_renewable_price"
+                                        name="show_renewable_price"
+                                        class="w-3 h-3 bg-background-dark border-border-dark rounded checked:bg-primary"
+                                    />
+                                    <span
+                                        class="text-[9px] text-text-muted uppercase"
+                                        >Mostrar</span
+                                    >
+                                </label>
+                            </div>
+                            <input
+                                type="number"
+                                id="renewable_price"
+                                name="renewable_price"
+                                step="0.01"
+                                min="0"
+                                class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="0.25"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -545,9 +625,14 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
                         name="is_featured"
                         class="w-5 h-5 bg-background-dark border-2 border-border-dark rounded checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-card-dark transition-all"
                     />
-                    <span class="text-white font-medium flex items-center gap-2">
+                    <span
+                        class="text-white font-medium flex items-center gap-2"
+                    >
                         Producto Destacado
-                        <span class="material-symbols-outlined text-yellow-400 text-[18px]">star</span>
+                        <span
+                            class="material-symbols-outlined text-yellow-400 text-[18px]"
+                            >star</span
+                        >
                     </span>
                 </label>
 
@@ -887,12 +972,21 @@ import AdminLayout from "../../../layouts/AdminLayout.astro";
                 title: formData.get("title") as string,
                 slug: formData.get("slug") as string,
                 description: (formData.get("description") as string) || null,
-                price: parseFloat(formData.get("price") as string),
+                price: parseFloat(formData.get("price") as string) || 0,
                 original_price: formData.get("original_price")
                     ? parseFloat(formData.get("original_price") as string)
                     : null,
                 renewable_price: formData.get("renewable_price")
                     ? parseFloat(formData.get("renewable_price") as string)
+                    : null,
+                price_pen: formData.get("price_pen")
+                    ? parseFloat(formData.get("price_pen") as string)
+                    : null,
+                original_price_pen: formData.get("original_price_pen")
+                    ? parseFloat(formData.get("original_price_pen") as string)
+                    : null,
+                renewable_price_pen: formData.get("renewable_price_pen")
+                    ? parseFloat(formData.get("renewable_price_pen") as string)
                     : null,
                 image: formData.get("image") as string,
                 thumbnails: [],
