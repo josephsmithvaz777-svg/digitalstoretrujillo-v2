@@ -27,6 +27,31 @@ const description = "Acceso al panel de administración";
                 </p>
             </div>
 
+            <!-- Credentials Reminder -->
+            <div
+                class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-4"
+            >
+                <p class="text-blue-300 text-sm font-medium mb-2">
+                    📧 Credenciales de Admin:
+                </p>
+                <div class="text-xs text-blue-200 space-y-1">
+                    <p class="font-mono">
+                        Email: <span class="font-bold text-white"
+                            >admin@digitalstoretrujillo.com</span
+                        >
+                    </p>
+                    <p class="font-mono">
+                        Password: <span class="font-bold text-white"
+                            >stake123</span
+                        >
+                    </p>
+                    <p class="text-yellow-300 text-[11px] mt-2">
+                        ⚠️ Importante: El email termina en <strong>.com</strong> (no
+                        .store)
+                    </p>
+                </div>
+            </div>
+
             <!-- Login Form -->
             <div
                 class="bg-card-dark border border-border-dark rounded-xl p-8 shadow-lg"
@@ -63,18 +88,30 @@ const description = "Acceso al panel de administración";
                         >
                             Contraseña
                         </label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            autocomplete="current-password"
-                            autocapitalize="off"
-                            autocorrect="off"
-                            spellcheck="false"
-                            required
-                            class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                            placeholder="••••••••"
-                        />
+                        <div class="relative">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                autocomplete="current-password"
+                                autocapitalize="off"
+                                autocorrect="off"
+                                spellcheck="false"
+                                required
+                                class="w-full px-4 py-3 pr-12 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                placeholder="••••••••"
+                            />
+                            <button
+                                type="button"
+                                id="toggle-password"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors p-1"
+                                aria-label="Mostrar contraseña"
+                            >
+                                <span class="material-symbols-outlined text-xl"
+                                    >visibility</span
+                                >
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Error Message -->
@@ -156,6 +193,19 @@ const description = "Acceso al panel de administración";
             "submit-btn",
         ) as HTMLButtonElement;
         const errorMessage = document.getElementById("error-message");
+        const togglePasswordBtn = document.getElementById("toggle-password");
+
+        // Toggle password visibility
+        togglePasswordBtn?.addEventListener("click", () => {
+            const icon = togglePasswordBtn.querySelector("span");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                if (icon) icon.textContent = "visibility_off";
+            } else {
+                passwordInput.type = "password";
+                if (icon) icon.textContent = "visibility";
+            }
+        });
 
         // Prevent autocomplete from adding spaces on mobile
         emailInput?.addEventListener("blur", () => {
