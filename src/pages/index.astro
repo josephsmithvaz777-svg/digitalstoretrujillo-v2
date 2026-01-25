@@ -115,11 +115,18 @@ const products = await getFeaturedProducts(8);
 							<ProductCard
 								title={product.title}
 								price={product.price}
+								pricePEN={product.price_pen ?? undefined}
 								originalPrice={
 									product.original_price ?? undefined
 								}
+								originalPricePEN={
+									product.original_price_pen ?? undefined
+								}
 								renewablePrice={
 									product.renewable_price ?? undefined
+								}
+								renewablePricePEN={
+									product.renewable_price_pen ?? undefined
 								}
 								image={product.image}
 								badge={product.badge ?? undefined}
@@ -356,66 +363,87 @@ const products = await getFeaturedProducts(8);
 	<Footer />
 
 	<!-- Success Modal for Email Confirmation (On Home Page) -->
-    <div id="confirmation-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-card-dark border border-border-dark rounded-xl max-w-sm w-full p-6 shadow-2xl transform transition-all scale-100 text-center relative">
-            <!-- Close Button -->
-            <button id="close-modal-btn" class="absolute top-4 right-4 text-text-muted hover:text-white">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+	<div
+		id="confirmation-modal"
+		class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+	>
+		<div
+			class="bg-card-dark border border-border-dark rounded-xl max-w-sm w-full p-6 shadow-2xl transform transition-all scale-100 text-center relative"
+		>
+			<!-- Close Button -->
+			<button
+				id="close-modal-btn"
+				class="absolute top-4 right-4 text-text-muted hover:text-white"
+			>
+				<span class="material-symbols-outlined">close</span>
+			</button>
 
-            <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                <span class="material-symbols-outlined text-green-500 text-3xl">mark_email_read</span>
-            </div>
-            
-            <h3 class="text-white text-xl font-bold mb-2">Account Confirmed!</h3>
-            <p class="text-text-muted text-sm leading-relaxed mb-6">
-                Thank you for verifying your email. You can now access your account and complete your purchases.
-            </p>
+			<div
+				class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce"
+			>
+				<span class="material-symbols-outlined text-green-500 text-3xl"
+					>mark_email_read</span
+				>
+			</div>
 
-            <button id="modal-continue-btn" class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all">
-                Continue Shopping
-            </button>
-        </div>
-    </div>
+			<h3 class="text-white text-xl font-bold mb-2">
+				Account Confirmed!
+			</h3>
+			<p class="text-text-muted text-sm leading-relaxed mb-6">
+				Thank you for verifying your email. You can now access your
+				account and complete your purchases.
+			</p>
+
+			<button
+				id="modal-continue-btn"
+				class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all"
+			>
+				Continue Shopping
+			</button>
+		</div>
+	</div>
 </Layout>
 
 <script>
-    import { supabase } from "../lib/supabase";
+	import { supabase } from "../lib/supabase";
 	import { cartCount } from "../stores/cart";
 
-    const confirmationModal = document.getElementById("confirmation-modal");
-    const closeModalBtn = document.getElementById("close-modal-btn");
-    const modalContinueBtn = document.getElementById("modal-continue-btn");
+	const confirmationModal = document.getElementById("confirmation-modal");
+	const closeModalBtn = document.getElementById("close-modal-btn");
+	const modalContinueBtn = document.getElementById("modal-continue-btn");
 
-    // Check for auth hash
-    const hasAuthHash = window.location.hash && (window.location.hash.includes("type=signup") || window.location.hash.includes("access_token"));
+	// Check for auth hash
+	const hasAuthHash =
+		window.location.hash &&
+		(window.location.hash.includes("type=signup") ||
+			window.location.hash.includes("access_token"));
 
-    if (hasAuthHash) {
+	if (hasAuthHash) {
 		// Show modal initially
 		// Note: session might not be fully established yet, but we show success UI
-        confirmationModal?.classList.remove("hidden");
-    }
+		confirmationModal?.classList.remove("hidden");
+	}
 
-    const closeModal = () => {
-        confirmationModal?.classList.add("hidden");
+	const closeModal = () => {
+		confirmationModal?.classList.add("hidden");
 		if (hasAuthHash) {
 			window.history.replaceState(null, "", window.location.pathname);
 		}
-    };
+	};
 
-    closeModalBtn?.addEventListener("click", closeModal);
-    modalContinueBtn?.addEventListener("click", () => {
-        closeModal();
+	closeModalBtn?.addEventListener("click", closeModal);
+	modalContinueBtn?.addEventListener("click", () => {
+		closeModal();
 		// If cart has items, go to checkout
 		if (cartCount.get() > 0) {
 			window.location.href = "/checkout";
 		}
-    });
+	});
 
 	// Wait for session to stabilize if hash exists
 	if (hasAuthHash) {
 		supabase.auth.onAuthStateChange((event, session) => {
-			if (event === 'SIGNED_IN') {
+			if (event === "SIGNED_IN") {
 				console.log("Session established via link");
 			}
 		});

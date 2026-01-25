@@ -90,11 +90,18 @@ const description = `Search results for ${query} in our digital store.`;
                                 <ProductCard
                                     title={product.title}
                                     price={product.price}
+                                    pricePEN={product.price_pen ?? undefined}
                                     originalPrice={
                                         product.original_price ?? undefined
                                     }
+                                    originalPricePEN={
+                                        product.original_price_pen ?? undefined
+                                    }
                                     renewablePrice={
                                         product.renewable_price ?? undefined
+                                    }
+                                    renewablePricePEN={
+                                        product.renewable_price_pen ?? undefined
                                     }
                                     image={product.image}
                                     badge={product.badge ?? undefined}

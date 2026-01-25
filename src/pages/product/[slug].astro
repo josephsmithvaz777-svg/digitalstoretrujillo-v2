@@ -10,13 +10,19 @@ import { getProductBySlug } from "../../lib/supabase";
 const { slug } = Astro.params;
 
 // Fetch product data dynamically
-// We explicitly check the slug and search by it
 const product = await getProductBySlug(slug as string);
 
 if (!product) {
     console.error(`Product not found for slug: ${slug}`);
     return Astro.redirect("/");
 }
+
+// Fetch related products (same category, excluding current)
+import { getProductsByCategory } from "../../lib/supabase";
+const allCategoryProducts = await getProductsByCategory(product.category);
+const relatedProducts = allCategoryProducts
+    .filter((p: any) => p.id !== product.id)
+    .slice(0, 4);
 
 const title = `${product.title} - DigitalStoreTrujillo`;
 const description = product.description || "";
@@ -182,7 +188,7 @@ const description = product.description || "";
                                     data-price-usd={product.price}
                                     data-price-pen={product.price_pen}
                                 >
-                                    S/ {product.price.toFixed(2)}
+                                    {product.price.toFixed(2)}
                                 </p>
                                 {
                                     product.original_price && (
@@ -280,6 +286,8 @@ const description = product.description || "";
                                     productId={product.id}
                                     productTitle={product.title}
                                     productPrice={product.price}
+                                    productPricePEN={product.price_pen ??
+                                        undefined}
                                     productImage={product.image}
                                     productSeller={product.seller ?? undefined}
                                     className="w-full bg-primary hover:bg-red-700 text-white font-bold py-3.5 rounded-lg transition-all transform active:scale-[0.98] shadow-[0_0_15px_rgba(224,7,0,0.3)] flex items-center justify-center gap-2"
@@ -289,6 +297,7 @@ const description = product.description || "";
                                     data-product-id={product.id}
                                     data-product-title={product.title}
                                     data-product-price={product.price}
+                                    data-product-price-pen={product.price_pen}
                                     data-product-image={product.image}
                                     data-product-seller={product.seller ??
                                         undefined}
@@ -455,38 +464,32 @@ const description = product.description || "";
                     <div
                         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                     >
-                        <ProductCard
-                            title="Office Suite Pro 2024"
-                            price={35.0}
-                            image="https://lh3.googleusercontent.com/aida-public/AB6AXuBzUsbUNMqEmcT3-tfPG5HQlWqOzy7S1Y65jJNsW2sNoGoG_tEf6oGdeZRcKcKowmhlYURWW4frPFWG7gn1b2d8IA9rB639n54Y-7oNI50z4KQpHp0OHJS_AZ8uDpObfEHnQnnEeHgcdp2-IqOKC-DKTkyKnZmRG_JLbRta7HLQ6-xC8i7O9Qlq56ITEAiZ9HOhO4CWRguD2nU1e7EE7Ay_QO3IkNM8bo-PJaNrgaSJCk4nWqZYBOE01T1kUplWdDADOdt_VF8cEw"
-                            seller="SOFTWARE STORE"
-                            rating={5}
-                            reviewCount={45}
-                        />
-                        <ProductCard
-                            title="FastVPN - 1 Year"
-                            price={19.99}
-                            image="https://lh3.googleusercontent.com/aida-public/AB6AXuD3FjjF_S1b0QEMwWGiFsxCHpqxxIDUcT1bLioCG6etTuUc81JDuq2jLFzZSVZPuAc66kxZ3xb_yOxwcnISkZ0jhrewoDGRC98GJbtBsgtgZHGCd7GNMhtze_U_A_gJzeUs3sz5gxC-Aa0dZ1rSkqO9I9EZNZIjWu-GHusSFqWs_V930dhwvxuX4qmvE5M8OsbnrutVS0Tnivl4VUYF2ofUdeU_-HEY6S5aK9gw8_eY96ozJ5InTfo63XHgCM85V3yu68H6RINORg"
-                            seller="VPN STORE"
-                            rating={4}
-                            reviewCount={32}
-                        />
-                        <ProductCard
-                            title="Steam Gift Card $50"
-                            price={50.0}
-                            image="https://lh3.googleusercontent.com/aida-public/AB6AXuDfYzSgjvVKl_tA35H3vBz9bPdgAK360U6TJQH6SJAhceegxlINm1rVhasibh-8404jLkjYsn2Elg13SCcu7E-joEuMaHlD9zpTT0OAaqyni_MGPOh2gYXaLfVjFog0eAcKjFHVoxhR4g2Qmq5IHGenxEe8pkesZMUwyBtuVQASU-y3Y67j8nx1GHIpHtry7pEZfVSpk4YBlheUch2INPDFzaISyNcopXRlm58POct_QU-mgHr_sd7qV0KhdZYZPx80qheykSn-Ww"
-                            seller="GAMING STORE"
-                            rating={5}
-                            reviewCount={78}
-                        />
-                        <ProductCard
-                            title="Cloud Space 2TB"
-                            price={89.99}
-                            image="https://lh3.googleusercontent.com/aida-public/AB6AXuCOPF4k11GiskHlXeRRjEpOGC2Xb5Iprh6UgsGbztJP_2GFapXKE7yQgWBXixuXH6im7pPi2U3seP9yQ-wcUGiD4GFuQT980QtxnLOKqI_UJ8FY4i4QXh2C9Xjd98_7GxJI2pn_oTN1t1q4XhjS6fVhmzzbVk_ywWL5J4ApvoOyf6ALHo75QZMOFc0LGRovcIlNrKXGQRbLNSxDUkZbd560UWP8X4hXFWr-3MOBXXVBIhQ2fVM-nOQwPQuUXrorfYih78zej8M5ZA"
-                            seller="CLOUD STORE"
-                            rating={5}
-                            reviewCount={23}
-                        />
+                        {
+                            relatedProducts.map((p: any) => (
+                                <ProductCard
+                                    title={p.title}
+                                    price={p.price}
+                                    pricePEN={p.price_pen}
+                                    originalPrice={p.original_price}
+                                    originalPricePEN={p.original_price_pen}
+                                    renewablePrice={p.renewable_price}
+                                    renewablePricePEN={p.renewable_price_pen}
+                                    image={p.image}
+                                    seller={p.seller ?? undefined}
+                                    rating={p.rating}
+                                    reviewCount={p.review_count}
+                                    productUrl={`/product/${p.slug}`}
+                                    inStock={p.in_stock}
+                                />
+                            ))
+                        }
+                        {
+                            relatedProducts.length === 0 && (
+                                <p class="col-span-full text-center text-text-muted py-8">
+                                    No related products found.
+                                </p>
+                            )
+                        }
                     </div>
                 </div>
             </div>
@@ -522,14 +525,19 @@ const description = product.description || "";
                 // Main price
                 const mainPriceEl = document.querySelector(".product-price");
                 if (mainPriceEl) {
-                    const priceUSD = parseFloat(
-                        mainPriceEl.getAttribute("data-price-usd") || "0",
-                    );
-                    const pricePEN = mainPriceEl.getAttribute("data-price-pen")
-                        ? parseFloat(
-                              mainPriceEl.getAttribute("data-price-pen") || "0",
-                          )
-                        : null;
+                    const priceUSDAttr =
+                        mainPriceEl.getAttribute("data-price-usd");
+                    const pricePENAttr =
+                        mainPriceEl.getAttribute("data-price-pen");
+
+                    const priceUSD = parseFloat(priceUSDAttr || "0");
+                    const pricePEN =
+                        pricePENAttr &&
+                        pricePENAttr !== "null" &&
+                        pricePENAttr !== "undefined"
+                            ? parseFloat(pricePENAttr)
+                            : null;
+
                     const price = getPrice(priceUSD, pricePEN, currency);
                     mainPriceEl.textContent = `${symbol} ${price.toFixed(2)}`;
                 }
@@ -539,19 +547,21 @@ const description = product.description || "";
                     ".product-original-price",
                 );
                 if (originalPriceEl) {
-                    const priceUSD = parseFloat(
-                        originalPriceEl.getAttribute("data-price-usd") || "0",
-                    );
-                    const pricePEN = originalPriceEl.getAttribute(
-                        "data-price-pen",
-                    )
-                        ? parseFloat(
-                              originalPriceEl.getAttribute("data-price-pen") ||
-                                  "0",
-                          )
-                        : null;
+                    const priceUSDAttr =
+                        originalPriceEl.getAttribute("data-price-usd");
+                    const pricePENAttr =
+                        originalPriceEl.getAttribute("data-price-pen");
+
+                    const priceUSD = parseFloat(priceUSDAttr || "0");
+                    const pricePEN =
+                        pricePENAttr &&
+                        pricePENAttr !== "null" &&
+                        pricePENAttr !== "undefined"
+                            ? parseFloat(pricePENAttr)
+                            : null;
+
                     const price = getPrice(priceUSD, pricePEN, currency);
-                    originalPriceEl.textContent = `${symbol}${price.toFixed(2)}`;
+                    originalPriceEl.textContent = `${symbol} ${price.toFixed(2)}`;
                 }
 
                 // Renewable price
@@ -559,19 +569,21 @@ const description = product.description || "";
                     ".product-renewable-price",
                 );
                 if (renewablePriceEl) {
-                    const priceUSD = parseFloat(
-                        renewablePriceEl.getAttribute("data-price-usd") || "0",
-                    );
-                    const pricePEN = renewablePriceEl.getAttribute(
-                        "data-price-pen",
-                    )
-                        ? parseFloat(
-                              renewablePriceEl.getAttribute("data-price-pen") ||
-                                  "0",
-                          )
-                        : null;
+                    const priceUSDAttr =
+                        renewablePriceEl.getAttribute("data-price-usd");
+                    const pricePENAttr =
+                        renewablePriceEl.getAttribute("data-price-pen");
+
+                    const priceUSD = parseFloat(priceUSDAttr || "0");
+                    const pricePEN =
+                        pricePENAttr &&
+                        pricePENAttr !== "null" &&
+                        pricePENAttr !== "undefined"
+                            ? parseFloat(pricePENAttr)
+                            : null;
+
                     const price = getPrice(priceUSD, pricePEN, currency);
-                    renewablePriceEl.textContent = `${t("product_renewable")}: ${symbol}${price.toFixed(2)}`;
+                    renewablePriceEl.textContent = `${t("product_renewable")}: ${symbol} ${price.toFixed(2)}`;
                 }
             };
 
@@ -676,6 +688,9 @@ const description = product.description || "";
                     const productId = btn.dataset.productId!;
                     const productTitle = btn.dataset.productTitle!;
                     const productPrice = parseFloat(btn.dataset.productPrice!);
+                    const productPricePEN = btn.dataset.productPricePen
+                        ? parseFloat(btn.dataset.productPricePen)
+                        : undefined;
                     const productImage = btn.dataset.productImage!;
                     const productSeller = btn.dataset.productSeller;
 
@@ -684,6 +699,7 @@ const description = product.description || "";
                         id: productId,
                         title: productTitle,
                         price: productPrice,
+                        price_pen: productPricePEN,
                         image: productImage,
                         seller: productSeller,
                     });

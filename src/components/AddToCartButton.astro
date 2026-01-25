@@ -3,6 +3,7 @@ interface Props {
     productId: string;
     productTitle: string;
     productPrice: number;
+    productPricePEN?: number;
     productImage: string;
     productSeller?: string;
     className?: string;
@@ -12,6 +13,7 @@ const {
     productId,
     productTitle,
     productPrice,
+    productPricePEN,
     productImage,
     productSeller,
     className = "",
@@ -23,6 +25,7 @@ const {
     data-product-id={productId}
     data-product-title={productTitle}
     data-product-price={productPrice}
+    data-product-price-pen={productPricePEN}
     data-product-image={productImage}
     data-product-seller={productSeller}
 >
@@ -45,6 +48,9 @@ const {
                 const productId = btn.dataset.productId!;
                 const productTitle = btn.dataset.productTitle!;
                 const productPrice = parseFloat(btn.dataset.productPrice!);
+                const productPricePEN = btn.dataset.productPricePen
+                    ? parseFloat(btn.dataset.productPricePen)
+                    : undefined;
                 const productImage = btn.dataset.productImage!;
                 const productSeller = btn.dataset.productSeller;
 
@@ -53,6 +59,7 @@ const {
                     id: productId,
                     title: productTitle,
                     price: productPrice,
+                    price_pen: productPricePEN,
                     image: productImage,
                     seller: productSeller,
                 });

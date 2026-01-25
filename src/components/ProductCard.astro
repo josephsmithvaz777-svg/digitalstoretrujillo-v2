@@ -239,12 +239,16 @@ const {
 
         // Main prices
         document.querySelectorAll(".product-price").forEach((el) => {
-            const priceUSD = parseFloat(
-                el.getAttribute("data-price-usd") || "0",
-            );
-            const pricePEN = el.getAttribute("data-price-pen")
-                ? parseFloat(el.getAttribute("data-price-pen") || "0")
-                : null;
+            const priceUSDAttr = el.getAttribute("data-price-usd");
+            const pricePENAttr = el.getAttribute("data-price-pen");
+
+            const priceUSD = parseFloat(priceUSDAttr || "0");
+            const pricePEN =
+                pricePENAttr &&
+                pricePENAttr !== "null" &&
+                pricePENAttr !== "undefined"
+                    ? parseFloat(pricePENAttr)
+                    : null;
 
             const price = getPrice(priceUSD, pricePEN, currency);
             el.textContent = `${symbol} ${price.toFixed(2)}`;
@@ -252,25 +256,33 @@ const {
 
         // Original prices
         document.querySelectorAll(".product-original-price").forEach((el) => {
-            const priceUSD = parseFloat(
-                el.getAttribute("data-price-usd") || "0",
-            );
-            const pricePEN = el.getAttribute("data-price-pen")
-                ? parseFloat(el.getAttribute("data-price-pen") || "0")
-                : null;
+            const priceUSDAttr = el.getAttribute("data-price-usd");
+            const pricePENAttr = el.getAttribute("data-price-pen");
+
+            const priceUSD = parseFloat(priceUSDAttr || "0");
+            const pricePEN =
+                pricePENAttr &&
+                pricePENAttr !== "null" &&
+                pricePENAttr !== "undefined"
+                    ? parseFloat(pricePENAttr)
+                    : null;
 
             const price = getPrice(priceUSD, pricePEN, currency);
-            el.textContent = `${symbol}${price.toFixed(2)}`;
+            el.textContent = `${symbol} ${price.toFixed(2)}`;
         });
 
         // Renewable prices
         document.querySelectorAll(".product-renewable-price").forEach((el) => {
-            const priceUSD = parseFloat(
-                el.getAttribute("data-price-usd") || "0",
-            );
-            const pricePEN = el.getAttribute("data-price-pen")
-                ? parseFloat(el.getAttribute("data-price-pen") || "0")
-                : null;
+            const priceUSDAttr = el.getAttribute("data-price-usd");
+            const pricePENAttr = el.getAttribute("data-price-pen");
+
+            const priceUSD = parseFloat(priceUSDAttr || "0");
+            const pricePEN =
+                pricePENAttr &&
+                pricePENAttr !== "null" &&
+                pricePENAttr !== "undefined"
+                    ? parseFloat(pricePENAttr)
+                    : null;
 
             const price = getPrice(priceUSD, pricePEN, currency);
             el.textContent = `${t("product_renewable")}: ${symbol}${price.toFixed(2)}`;
