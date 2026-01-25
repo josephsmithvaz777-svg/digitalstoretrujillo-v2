@@ -33,7 +33,7 @@ const description = product.description || "";
                 <!-- Breadcrumbs -->
                 <div class="flex flex-wrap gap-2 p-4 mb-4">
                     <a
-                        class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal"
+                        class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal prod-breadcrumb-home"
                         href="/">Home</a
                     >
                     <span
@@ -138,7 +138,12 @@ const description = product.description || "";
                                     >{product.rating}.0</span
                                 >
                                 <span class="text-text-muted text-sm"
-                                    >({product.review_count} reviews)</span
+                                    >(<span class="prod-review-count"
+                                        >{product.review_count}</span
+                                    >
+                                    <span class="prod-reviews-label"
+                                        >reviews</span
+                                    >)</span
                                 >
                             </div>
                             <div
@@ -196,7 +201,7 @@ const description = product.description || "";
                                     )
                                 }
                                 <span
-                                    class="mb-1 ml-auto bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30"
+                                    class="mb-1 ml-auto bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30 prod-stock-badge"
                                 >
                                     IN STOCK
                                 </span>
@@ -232,12 +237,15 @@ const description = product.description || "";
                                     class="material-symbols-outlined text-primary text-lg"
                                     >bolt</span
                                 >
-                                <span>Instant delivery via email</span>
+                                <span class="prod-delivery-text"
+                                    >Instant delivery via email</span
+                                >
                             </div>
                             <div class="flex flex-col gap-4">
                                 <!-- Quantity -->
                                 <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-white"
+                                    <span
+                                        class="text-sm font-medium text-white prod-quantity-label"
                                         >Quantity</span
                                     >
                                     <div
@@ -284,7 +292,7 @@ const description = product.description || "";
                                     data-product-image={product.image}
                                     data-product-seller={product.seller ??
                                         undefined}
-                                    class="w-full bg-transparent border-2 border-border-dark hover:border-white text-white font-bold py-3.5 rounded-lg transition-colors"
+                                    class="w-full bg-transparent border-2 border-border-dark hover:border-white text-white font-bold py-3.5 rounded-lg transition-colors prod-buy-now-btn"
                                 >
                                     Buy Now
                                 </button>
@@ -294,7 +302,7 @@ const description = product.description || "";
                         <!-- Payment Methods -->
                         <div class="flex flex-col gap-3">
                             <p
-                                class="text-xs font-bold text-text-muted uppercase tracking-wider"
+                                class="text-xs font-bold text-text-muted uppercase tracking-wider prod-secure-payment-label"
                             >
                                 Secure Payment with
                             </p>
@@ -374,11 +382,15 @@ const description = product.description || "";
                                     class="material-symbols-outlined text-primary text-2xl"
                                     >verified</span
                                 >
-                                <h3 class="text-white text-lg font-bold">
+                                <h3
+                                    class="text-white text-lg font-bold prod-origin-title"
+                                >
                                     Origen del Producto
                                 </h3>
                             </div>
-                            <p class="text-text-muted text-sm leading-relaxed">
+                            <p
+                                class="text-text-muted text-sm leading-relaxed prod-origin-text"
+                            >
                                 Este producto proviene de <strong
                                     class="text-white"
                                     >marketplaces oficiales verificados</strong
@@ -397,11 +409,15 @@ const description = product.description || "";
                                     class="material-symbols-outlined text-primary text-2xl"
                                     >support_agent</span
                                 >
-                                <h3 class="text-white text-lg font-bold">
+                                <h3
+                                    class="text-white text-lg font-bold prod-support-title"
+                                >
                                     Soporte y Garantía
                                 </h3>
                             </div>
-                            <p class="text-text-muted text-sm leading-relaxed">
+                            <p
+                                class="text-text-muted text-sm leading-relaxed prod-support-text"
+                            >
                                 Verificamos cada producto antes de la entrega.
                                 <strong class="text-white"
                                     >Soporte completo 24-48 horas</strong
@@ -415,7 +431,9 @@ const description = product.description || "";
 
                 <!-- Product Features -->
                 <div class="px-4 py-8 border-t border-border-dark">
-                    <h3 class="text-white text-xl font-bold mb-4">
+                    <h3
+                        class="text-white text-xl font-bold mb-4 prod-features-title"
+                    >
                         Key Features
                     </h3>
                     <ul class="list-disc pl-5 space-y-2 text-text-muted">
@@ -429,7 +447,9 @@ const description = product.description || "";
 
                 <!-- Related Products -->
                 <div class="px-4 py-12">
-                    <h2 class="text-2xl font-bold text-white mb-6">
+                    <h2
+                        class="text-2xl font-bold text-white mb-6 prod-related-title"
+                    >
                         Related Products
                     </h2>
                     <div
@@ -482,15 +502,22 @@ const description = product.description || "";
             userCurrency,
         } from "../../stores/currencyStore";
         import { getPrice, CURRENCIES } from "../../lib/currency";
+        import {
+            currentLanguage,
+            useTranslation,
+            initializeLanguage,
+        } from "../../stores/i18nStore";
 
         document.addEventListener("DOMContentLoaded", () => {
-            // Initialize currency detection
+            // Initialize stores
             initializeCurrency();
+            initializeLanguage();
 
             // Update prices when currency changes
             const updatePrices = () => {
                 const currency = userCurrency.get();
                 const symbol = CURRENCIES[currency].symbol;
+                const t = useTranslation();
 
                 // Main price
                 const mainPriceEl = document.querySelector(".product-price");
@@ -544,13 +571,102 @@ const description = product.description || "";
                           )
                         : null;
                     const price = getPrice(priceUSD, pricePEN, currency);
-                    renewablePriceEl.textContent = `Renovable: ${symbol}${price.toFixed(2)}`;
+                    renewablePriceEl.textContent = `${t("product_renewable")}: ${symbol}${price.toFixed(2)}`;
                 }
             };
 
-            // Subscribe to currency changes
+            const updateTranslations = () => {
+                const t = useTranslation();
+
+                // Breadcrumbs
+                const homeBreadcrumb = document.querySelector(
+                    ".prod-breadcrumb-home",
+                );
+                if (homeBreadcrumb)
+                    homeBreadcrumb.textContent = t("prod_breadcrumb_home");
+
+                // Reviews
+                const reviewsLabel = document.querySelector(
+                    ".prod-reviews-label",
+                );
+                if (reviewsLabel) reviewsLabel.textContent = t("prod_reviews");
+
+                // Stock
+                const stockBadge = document.querySelector(".prod-stock-badge");
+                if (stockBadge) stockBadge.textContent = t("prod_in_stock");
+
+                // Delivery
+                const deliveryText = document.querySelector(
+                    ".prod-delivery-text",
+                );
+                if (deliveryText)
+                    deliveryText.textContent = t("prod_instant_delivery");
+
+                // Quantity
+                const quantityLabel = document.querySelector(
+                    ".prod-quantity-label",
+                );
+                if (quantityLabel)
+                    quantityLabel.textContent = t("prod_quantity");
+
+                // Buttons
+                const buyNowBtn = document.querySelector(".prod-buy-now-btn");
+                if (buyNowBtn) buyNowBtn.textContent = t("prod_buy_now");
+
+                // Secure Payment
+                const secureLabel = document.querySelector(
+                    ".prod-secure-payment-label",
+                );
+                if (secureLabel)
+                    secureLabel.textContent = t("prod_secure_payment");
+
+                // Info Sections
+                const originTitle =
+                    document.querySelector(".prod-origin-title");
+                const originText = document.querySelector(".prod-origin-text");
+                if (originTitle)
+                    originTitle.textContent = t("prod_origin_title");
+                if (originText)
+                    originText.innerHTML = t("prod_origin_text").replace(
+                        "verified official marketplaces",
+                        "<strong>marketplaces oficiales verificados</strong>",
+                    );
+
+                const supportTitle = document.querySelector(
+                    ".prod-support-title",
+                );
+                const supportText =
+                    document.querySelector(".prod-support-text");
+                if (supportTitle)
+                    supportTitle.textContent = t("prod_support_title");
+                if (supportText)
+                    supportText.innerHTML = t("prod_support_text").replace(
+                        "24-48 hours full support",
+                        "<strong>Soporte completo 24-48 horas</strong>",
+                    );
+
+                const featuresTitle = document.querySelector(
+                    ".prod-features-title",
+                );
+                if (featuresTitle)
+                    featuresTitle.textContent = t("prod_features_title");
+
+                const relatedTitle = document.querySelector(
+                    ".prod-related-title",
+                );
+                if (relatedTitle)
+                    relatedTitle.textContent = t("prod_related_title");
+
+                // Update prices prefix
+                updatePrices();
+            };
+
+            // Subscribe to changes
             userCurrency.subscribe(updatePrices);
+            currentLanguage.subscribe(updateTranslations);
+
             window.addEventListener("currency-changed", updatePrices);
+            window.addEventListener("language-changed", updateTranslations);
 
             const buyNowBtn = document.getElementById("buy-now-btn");
 

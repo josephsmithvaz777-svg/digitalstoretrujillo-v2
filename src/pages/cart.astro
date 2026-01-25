@@ -35,11 +35,11 @@ const description = "Review your digital items before checkout";
         >
             <div>
                 <h1
-                    class="text-3xl md:text-4xl font-black tracking-tight text-white mb-2"
+                    class="text-3xl md:text-4xl font-black tracking-tight text-white mb-2 cart-title"
                 >
                     Your Shopping Cart
                 </h1>
-                <p class="text-text-muted">
+                <p class="text-text-muted cart-description">
                     Review your digital items before checkout
                 </p>
             </div>
@@ -56,15 +56,15 @@ const description = "Review your digital items before checkout";
                 class="material-symbols-outlined text-6xl text-text-muted mb-4"
                 >shopping_cart</span
             >
-            <h2 class="text-2xl font-bold text-white mb-2">
+            <h2 class="text-2xl font-bold text-white mb-2 empty-title">
                 Your cart is empty
             </h2>
-            <p class="text-text-muted mb-6">
+            <p class="text-text-muted mb-6 empty-description">
                 Add some products to get started!
             </p>
             <a
                 href="/"
-                class="inline-block bg-primary hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+                class="inline-block bg-primary hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-colors empty-btn"
             >
                 Continue Shopping
             </a>
@@ -99,7 +99,7 @@ const description = "Review your digital items before checkout";
                 <div
                     class="sticky top-24 rounded-xl bg-card-dark border border-border-dark p-6 shadow-sm"
                 >
-                    <h2 class="text-xl font-bold text-white mb-6">
+                    <h2 class="text-xl font-bold text-white mb-6 summary-title">
                         Order Summary
                     </h2>
 
@@ -108,7 +108,7 @@ const description = "Review your digital items before checkout";
                         <div
                             class="flex justify-between text-sm text-text-muted"
                         >
-                            <span>Subtotal</span>
+                            <span class="subtotal-label">Subtotal</span>
                             <span id="subtotal" class="cart-subtotal"
                                 >S/ 0.00</span
                             >
@@ -124,14 +124,15 @@ const description = "Review your digital items before checkout";
                         <div
                             class="flex justify-between text-sm text-text-muted"
                         >
-                            <span>Tax</span>
-                            <span>Included</span>
+                            <span class="tax-label">Tax</span>
+                            <span class="tax-value">Included</span>
                         </div>
                     </div>
 
                     <!-- Total -->
                     <div class="flex justify-between items-center py-6">
-                        <span class="text-base font-semibold text-white"
+                        <span
+                            class="text-base font-semibold text-white total-label"
                             >Total</span
                         >
                         <span
@@ -146,7 +147,7 @@ const description = "Review your digital items before checkout";
                         id="checkout-btn"
                         class="w-full py-4 bg-primary hover:bg-red-700 text-white rounded-lg font-bold text-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 group"
                     >
-                        Proceed to Checkout
+                        <span class="checkout-text">Proceed to Checkout</span>
                         <span
                             class="material-symbols-outlined group-hover:translate-x-1 transition-transform"
                             >arrow_forward</span
@@ -230,11 +231,11 @@ const description = "Review your digital items before checkout";
                         shopping_cart_off
                     </span>
                 </div>
-                <h2 class="text-white text-xl font-bold">
+                <h2 class="text-white text-xl font-bold modal-title">
                     ¿Eliminar producto?
                 </h2>
             </div>
-            <p class="text-text-muted mb-6 leading-relaxed">
+            <p class="text-text-muted mb-6 leading-relaxed modal-question">
                 ¿Estás seguro que deseas eliminar <strong
                     id="remove-item-name"
                     class="text-white"></strong> de tu carrito?
@@ -242,13 +243,13 @@ const description = "Review your digital items before checkout";
             <div class="flex gap-3">
                 <button
                     id="cancel-remove"
-                    class="flex-1 px-4 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-xl transition-all"
+                    class="flex-1 px-4 py-3 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-xl transition-all modal-cancel"
                 >
                     Cancelar
                 </button>
                 <button
                     id="confirm-remove"
-                    class="flex-1 px-4 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20"
+                    class="flex-1 px-4 py-3 bg-primary hover:bg-red-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20 modal-confirm"
                 >
                     Sí, eliminar
                 </button>
@@ -270,9 +271,15 @@ const description = "Review your digital items before checkout";
     import { getFeaturedProducts } from "../lib/supabase";
     import { initializeCurrency, userCurrency } from "../stores/currencyStore";
     import { getPrice, CURRENCIES } from "../lib/currency";
+    import {
+        currentLanguage,
+        useTranslation,
+        initializeLanguage,
+    } from "../stores/i18nStore";
 
-    // Initialize currency detection
+    // Initialize stores
     initializeCurrency();
+    initializeLanguage();
 
     const removeModal = document.getElementById("remove-item-modal");
     const removeModalContent = document.getElementById("remove-modal-content");
@@ -481,6 +488,48 @@ const description = "Review your digital items before checkout";
 
         // Update totals
         updateDisplayPrices();
+        updateTranslations();
+    }
+
+    function updateTranslations() {
+        const t = useTranslation();
+
+        // Main titles
+        const cartTitle = document.querySelector(".cart-title");
+        const cartDesc = document.querySelector(".cart-description");
+        if (cartTitle) cartTitle.textContent = t("cart_title");
+        // if (cartDesc) cartDesc.textContent = t('cart_description'); // Need to add to dict
+
+        // Empty state
+        const emptyTitle = document.querySelector(".empty-title");
+        const emptyDesc = document.querySelector(".empty-description");
+        const emptyBtn = document.querySelector(".empty-btn");
+        if (emptyTitle) emptyTitle.textContent = t("cart_empty");
+        if (emptyDesc) emptyDesc.textContent = t("cart_add_started");
+        if (emptyBtn) emptyBtn.textContent = t("cart_continue_shopping");
+
+        // Summary
+        const summaryTitle = document.querySelector(".summary-title");
+        const subtotalLabel = document.querySelector(".subtotal-label");
+        const taxLabel = document.querySelector(".tax-label");
+        const totalLabel = document.querySelector(".total-label");
+        const checkoutText = document.querySelector(".checkout-text");
+
+        if (summaryTitle) summaryTitle.textContent = t("cart_summary");
+        if (subtotalLabel) subtotalLabel.textContent = t("cart_subtotal");
+        if (taxLabel) taxLabel.textContent = t("cart_tax"); // Need to add to dict
+        if (totalLabel) totalLabel.textContent = t("cart_total");
+        if (checkoutText) checkoutText.textContent = t("cart_checkout");
+
+        // Modal
+        const modalTitle = document.querySelector(".modal-title");
+        const modalCancel = document.querySelector(".modal-cancel");
+        const modalConfirm = document.querySelector(".modal-confirm");
+        if (modalTitle) modalTitle.textContent = t("cart_remove_confirm");
+        if (modalCancel) modalCancel.textContent = t("cart_remove_cancel");
+        if (modalConfirm) modalConfirm.textContent = t("cart_remove_yes");
+
+        // We handle the question separately because it includes the product name
     }
 
     function addCartEventListeners() {
@@ -575,18 +624,25 @@ const description = "Review your digital items before checkout";
     // Initial render
     renderCart();
 
-    // Subscribe to cart changes
+    // Subscribe to stores
     cartItems.subscribe(() => {
         renderCart();
     });
 
-    // Subscribe to currency changes
     userCurrency.subscribe(() => {
         updateDisplayPrices();
     });
 
+    currentLanguage.subscribe(() => {
+        updateTranslations();
+    });
+
     window.addEventListener("currency-changed", () => {
         updateDisplayPrices();
+    });
+
+    window.addEventListener("language-changed", () => {
+        updateTranslations();
     });
 
     // Checkout button

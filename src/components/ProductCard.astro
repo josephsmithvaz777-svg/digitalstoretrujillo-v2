@@ -82,7 +82,7 @@ const {
         }
         {
             !inStock && (
-                <span class="bg-gray-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
+                <span class="bg-gray-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg prod-out-of-stock">
                     AGOTADO
                 </span>
             )
@@ -148,7 +148,10 @@ const {
                     {reviewCount > 0 && (
                         <span class="text-xs text-text-muted">
                             ({reviewCount}){" "}
-                            <a href="#" class="text-primary hover:underline">
+                            <a
+                                href="#"
+                                class="text-primary hover:underline prod-review-link"
+                            >
                                 Dejar reseña
                             </a>
                         </span>
@@ -212,7 +215,9 @@ const {
                     : "bg-gray-700 text-gray-400 cursor-not-allowed pointer-events-none",
             ]}
         >
-            {inStock ? "COMPRAR AHORA" : "NOTIFICARME"}
+            <span class="btn-text"
+                >{inStock ? "COMPRAR AHORA" : "NOTIFICARME"}</span
+            >
         </a>
     </div>
 </div>
@@ -220,6 +225,7 @@ const {
 <script>
     import { initializeCurrency, userCurrency } from "../stores/currencyStore";
     import { getPrice, CURRENCIES } from "../lib/currency";
+    import { currentLanguage, useTranslation } from "../stores/i18nStore";
 
     // Initialize currency detection
     initializeCurrency();
@@ -228,6 +234,8 @@ const {
     const updatePrices = () => {
         const currency = userCurrency.get();
         const symbol = CURRENCIES[currency].symbol;
+        const lang = currentLanguage.get();
+        const t = useTranslation();
 
         // Main prices
         document.querySelectorAll(".product-price").forEach((el) => {
@@ -265,13 +273,47 @@ const {
                 : null;
 
             const price = getPrice(priceUSD, pricePEN, currency);
-            el.textContent = `Renovable: ${symbol}${price.toFixed(2)}`;
+            el.textContent = `${t("product_renewable")}: ${symbol}${price.toFixed(2)}`;
         });
     };
 
-    // Subscribe to currency changes
-    userCurrency.subscribe(updatePrices);
+    // Update text translations
+    const updateTranslations = () => {
+        const t = useTranslation();
 
-    // Listen for currency change events
+        // Out of stock badge
+        document.querySelectorAll(".prod-out-of-stock").forEach((el) => {
+            el.textContent = t("product_out_of_stock");
+        });
+
+        // Review link
+        document.querySelectorAll(".prod-review-link").forEach((el) => {
+            el.textContent = t("product_review");
+        });
+
+        // Buttons
+        document.querySelectorAll(".group").forEach((card) => {
+            const btnText = card.querySelector(".btn-text");
+            const isOutOfStock = card.classList.contains("opacity-75"); // Check if out of stock based on class
+
+            if (btnText) {
+                if (isOutOfStock) {
+                    btnText.textContent = t("product_notify_me");
+                } else {
+                    btnText.textContent = t("product_buy_now");
+                }
+            }
+        });
+
+        // Price prefix (Renovable)
+        updatePrices();
+    };
+
+    // Subscribe to changes
+    userCurrency.subscribe(updatePrices);
+    currentLanguage.subscribe(updateTranslations);
+
+    // Listen for custom events
     window.addEventListener("currency-changed", updatePrices);
+    window.addEventListener("language-changed", updateTranslations);
 </script>

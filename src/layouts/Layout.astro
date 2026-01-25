@@ -40,9 +40,11 @@ const {
     <!-- Global Currency Initialization -->
     <script>
       import { initializeCurrency } from "../stores/currencyStore";
+      import { initializeLanguage } from "../stores/i18nStore";
 
-      // Initialize currency detection on page load
+      // Initialize detection on page load
       initializeCurrency();
+      initializeLanguage();
     </script>
   </body>
 </html>

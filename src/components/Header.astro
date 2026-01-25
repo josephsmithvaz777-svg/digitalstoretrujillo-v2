@@ -38,6 +38,7 @@ import CartIcon from "./CartIcon.astro";
                 <input
                     name="q"
                     type="search"
+                    id="header-search-input"
                     class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-border-dark focus:border-none h-full placeholder:text-text-muted px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
                     placeholder="Search products..."
                 />
@@ -47,19 +48,23 @@ import CartIcon from "./CartIcon.astro";
     <div class="flex flex-1 justify-end gap-4 lg:gap-8 items-center">
         <div class="hidden lg:flex items-center gap-9">
             <a
-                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors nav-link"
+                data-key="nav_home"
                 href="/">Home</a
             >
             <a
-                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors nav-link"
+                data-key="nav_software"
                 href="/category/software">Software</a
             >
             <a
-                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors nav-link"
+                data-key="nav_games"
                 href="/category/games">Games</a
             >
             <a
-                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors"
+                class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors nav-link"
+                data-key="nav_services"
                 href="/category/services">Services</a
             >
         </div>
@@ -78,6 +83,23 @@ import CartIcon from "./CartIcon.astro";
                 title="Sign Out"
             >
                 <span class="material-symbols-outlined">logout</span>
+            </button>
+
+            <!-- Language Switcher -->
+            <button
+                id="language-toggle"
+                class="flex items-center gap-2 px-3 h-10 rounded-lg bg-card-dark border border-border-dark hover:border-text-muted transition-all group"
+                title="Change language / Cambiar idioma"
+            >
+                <span
+                    id="lang-text"
+                    class="text-xs font-bold text-white uppercase">EN</span
+                >
+                <span
+                    class="material-symbols-outlined text-[18px] text-text-muted group-hover:text-white transition-colors"
+                >
+                    language
+                </span>
             </button>
 
             <!-- Currency Switcher -->
@@ -167,15 +189,29 @@ import CartIcon from "./CartIcon.astro";
         updateCurrency,
         initializeCurrency,
     } from "../stores/currencyStore";
+    import {
+        currentLanguage,
+        updateLanguage,
+        initializeLanguage,
+        useTranslation,
+    } from "../stores/i18nStore";
     import { CURRENCIES } from "../lib/currency";
 
     const currencyToggle = document.getElementById("currency-toggle");
     const currencyFlag = document.getElementById("currency-flag");
     const currencyCode = document.getElementById("currency-code");
 
+    // i18n Elements
+    const languageToggle = document.getElementById("language-toggle");
+    const langText = document.getElementById("lang-text");
+    const searchInput = document.getElementById(
+        "header-search-input",
+    ) as HTMLInputElement;
+
     if (currencyToggle && currencyFlag && currencyCode) {
-        // Initialize currency
+        // Initialize stores
         initializeCurrency();
+        initializeLanguage();
 
         const updateCurrencyUI = (currency: any) => {
             const config =
@@ -195,6 +231,45 @@ import CartIcon from "./CartIcon.astro";
             const current = userCurrency.get();
             const next = current === "PEN" ? "USD" : "PEN";
             updateCurrency(next);
+        });
+    }
+
+    // Language Toggle logic
+    if (languageToggle && langText) {
+        const t = useTranslation();
+
+        const updateLanguageUI = (lang: string) => {
+            langText.textContent = lang.toUpperCase();
+
+            // Translate nav links
+            document.querySelectorAll(".nav-link").forEach((el) => {
+                const key = el.getAttribute("data-key") as any;
+                if (key) el.textContent = t(key);
+            });
+
+            // Translate search placeholder
+            if (searchInput) searchInput.placeholder = t("search_placeholder");
+
+            // Translate Auth Button (if not logged in)
+            if (authText && !logoutBtn?.classList.contains("flex")) {
+                authText.textContent = t("auth_signin");
+            }
+        };
+
+        // Subscribe to language changes
+        currentLanguage.subscribe((lang) => {
+            updateLanguageUI(lang);
+        });
+
+        languageToggle.addEventListener("click", () => {
+            const current = currentLanguage.get();
+            const next = current === "en" ? "es" : "en";
+            updateLanguage(next);
+        });
+
+        // Listen for custom event
+        window.addEventListener("language-changed", (e: any) => {
+            updateLanguageUI(e.detail);
         });
     }
 </script>
