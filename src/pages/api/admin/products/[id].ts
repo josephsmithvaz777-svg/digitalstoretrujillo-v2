@@ -10,8 +10,13 @@ export const GET: APIRoute = async ({ params, request }) => {
 
     // Security Check: Verify admin session via token
     const authHeader = request.headers.get('Authorization');
+    console.log('🔐 [GET] Auth Header:', authHeader ? 'Present' : 'Missing');
+
     const user = await getAdminUserFromToken(authHeader);
+    console.log('👤 [GET] User from token:', user ? user.email : 'No user');
+
     if (!user || user.email !== 'admin@digitalstoretrujillo.com') {
+        console.error('❌ [GET] Unauthorized access attempt');
         return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 
@@ -45,10 +50,26 @@ export const PUT: APIRoute = async ({ params, request }) => {
 
     // Security Check: Verify admin session via token
     const authHeader = request.headers.get('Authorization');
+    console.log('🔐 Auth Header:', authHeader ? 'Present' : 'Missing');
+
     const user = await getAdminUserFromToken(authHeader);
-    if (!user || user.email !== 'admin@digitalstoretrujillo.com') {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    console.log('👤 User from token:', user ? user.email : 'No user');
+    console.log('✅ Expected admin email: admin@digitalstoretrujillo.com');
+
+    if (!user) {
+        console.error('❌ No user found from token');
+        return new Response(JSON.stringify({ error: 'Unauthorized - No user found' }), { status: 401 });
     }
+
+    if (user.email !== 'admin@digitalstoretrujillo.com') {
+        console.error('❌ User email mismatch:', user.email, '!== admin@digitalstoretrujillo.com');
+        return new Response(JSON.stringify({
+            error: 'Unauthorized - Invalid admin user',
+            userEmail: user.email
+        }), { status: 401 });
+    }
+
+    console.log('✅ Auth check passed for user:', user.email);
 
     try {
         const productData = await request.json();
