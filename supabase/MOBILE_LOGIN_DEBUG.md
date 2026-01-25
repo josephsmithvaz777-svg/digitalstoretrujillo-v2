@@ -2,7 +2,7 @@
 
 ## Credenciales Correctas
 ```
-Email: admin@digitalstoretrujillo.com
+Email: admin@digitalstoretrujillo.store
 Password: stake123
 ```
 
@@ -10,7 +10,7 @@ Password: stake123
 
 ### 1️⃣ PRIMERO: Verifica que escribes bien el email
 - ⚠️ **Muy Importante**: El autocorrector puede cambiar el email
-- Escribe letra por letra: `admin@digitalstoretrujillo.com`
+- Escribe letra por letra: `admin@digitalstoretrujillo.store`
 - NO copies y pegues (puede agregar espacios invisibles)
 - El sistema ya limpia espacios automáticamente, pero verifica
 
@@ -104,8 +104,8 @@ Cuando intentas login, busca estos mensajes:
 
 ✅ **Login Exitoso:**
 ```
-🔐 Attempting login with email: admin@digitalstoretrujillo.com
-✅ Login successful for: admin@digitalstoretrujillo.com
+🔐 Attempting login with email: admin@digitalstoretrujillo.store
+✅ Login successful for: admin@digitalstoretrujillo.store
 ```
 
 ❌ **Login Fallido:**
@@ -133,7 +133,7 @@ Error status: [status]
 2. **Limpia todos los campos**
 3. **Escribe el email manualmente** (sin copiar/pegar):
    ```
-   admin@digitalstoretrujillo.com
+   admin@digitalstoretrujillo.store
    ```
 4. **Escribe la contraseña**:
    ```
@@ -201,7 +201,7 @@ Marca lo que ya intentaste:
 
 Si después de intentar todo esto el problema persiste:
 
-**Email**: admin@digitalstoretrujillo.com  
+**Email**: admin@digitalstoretrujillo.store
 **Telegram**: t.me/netflixaccglobal
 
 Incluye en tu mensaje:

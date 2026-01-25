@@ -4,7 +4,7 @@
 -- ============================================
 
 -- This will create the admin user with email and password
--- Email: admin@digitalstoretrujillo.com
+-- Email: admin@digitalstoretrujillo.store
 -- Password: stake123
 
 -- Note: Supabase doesn't allow creating users directly via SQL for security reasons.
@@ -14,7 +14,7 @@
 -- 1. Go to: https://supabase.com/dashboard/project/vmbupmwlyfjmxjmenyid/auth/users
 -- 2. Click "Add user" → "Create new user"
 -- 3. Enter:
---    - Email: admin@digitalstoretrujillo.com
+--    - Email: admin@digitalstoretrujillo.store
 --    - Password: stake123
 --    - Auto Confirm User: ✅ ENABLED (important!)
 -- 4. Click "Create user"

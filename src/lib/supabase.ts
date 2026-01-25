@@ -443,8 +443,7 @@ export async function isAdmin(): Promise<boolean> {
   if (!user) return false;
 
   // Check if user email matches admin email
-  // You can change this to your admin email
-  return user.email === 'admin@digitalstoretrujillo.com';
+  return user.email === 'admin@digitalstoretrujillo.store';
 }
 
 // ============================================

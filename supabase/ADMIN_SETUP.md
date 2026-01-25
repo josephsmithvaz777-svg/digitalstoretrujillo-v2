@@ -13,7 +13,7 @@
 1. En Supabase, ve a **Authentication** → **Users**
 2. Click **Add user** → **Create new user**
 3. Ingresa:
-   - **Email**: `admin@digitalstoretrujillo.com` (o tu email preferido)
+   - **Email**: `admin@digitalstoretrujillo.store`
    - **Password**: Crea una contraseña segura
    - **Auto Confirm User**: ✅ Activado
 4. Click **Create user**

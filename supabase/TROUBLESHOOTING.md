@@ -29,7 +29,7 @@ Primero, asegúrate de haber ejecutado el script de configuración:
 
 3. **Completar el formulario:**
    ```
-   Email: admin@digitalstoretrujillo.com
+   Email: admin@digitalstoretrujillo.store
    Password: stake123
    ```
 
@@ -46,13 +46,13 @@ Después de crear el usuario, verifica:
 
 1. El usuario debe aparecer en la lista de usuarios
 2. El estado debe ser **"Confirmed"** (no "Waiting for verification")
-3. El email debe ser exactamente: `admin@digitalstoretrujillo.com`
+3. El email debe ser exactamente: `admin@digitalstoretrujillo.store`
 
 ### 4. Probar el Login
 
 1. Ve a: http://localhost:4321/admin/login
 2. Ingresa:
-   - Email: `admin@digitalstoretrujillo.com`
+   - Email: `admin@digitalstoretrujillo.store`
    - Password: `stake123`
 3. Click en "Iniciar Sesión"
 
@@ -94,7 +94,7 @@ Si usas "Modo Lite" o "Ahorro de datos" en Chrome móvil:
 
 ⚠️ **IMPORTANTE**: El autocorrector móvil puede cambiar tu email:
 
-1. Escribe el email letra por letra: `admin@digitalstoretrujillo.com`
+1. Escribe el email letra por letra: `admin@digitalstoretrujillo.store`
 2. **NO copies y pegues** desde otro lugar (puede agregar espacios invisibles)
 3. Asegúrate de que NO haya espacios antes o después del email
 4. El sistema ahora automáticamente limpia espacios, pero verifica manualmente
@@ -102,6 +102,7 @@ Si usas "Modo Lite" o "Ahorro de datos" en Chrome móvil:
 **Consejo**: Escribe el email sin usar autocorrector:
 - Mantén presionada la tecla del teclado para desactivar sugerencias
 - Usa el teclado de email (@ debe estar visible)
+- Asegúrate de escribir `.store` al final (no `.com`)
 
 #### Solución 4: Intentar con Modo Incógnito / Privado
 
@@ -222,7 +223,7 @@ Una vez creado el usuario, puedes verificar que funciona:
 2. **Click en "Add user"**
 3. **Seleccionar "Create new user"**
 4. **Completar formulario:**
-   - Email: admin@digitalstoretrujillo.com
+   - Email: admin@digitalstoretrujillo.store
    - Password: stake123
    - ✅ Auto Confirm User: ACTIVADO
 5. **Click "Create user"**
