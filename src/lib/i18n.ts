@@ -23,24 +23,29 @@ export async function detectUserLanguage(): Promise<Language> {
             }
         }
 
-        // 2. Check Browser Language (Highest reliability)
+        // 2. Geolocation (User business rule: LATAM/ES -> Spanish)
+        // High priority to ensure local relevance
+        try {
+            const response = await fetch('https://ipapi.co/json/');
+            if (response.ok) {
+                const data = await response.json();
+                const countryCode = data.country_code;
+
+                // Console log for debugging detection issues
+                console.log(`[i18n] Detected country: ${countryCode}`);
+
+                if (LATAM_COUNTRIES.includes(countryCode) || countryCode === 'ES') {
+                    return 'es';
+                }
+            }
+        } catch (e) {
+            console.warn('[i18n] Geolocation failed, falling back to browser language');
+        }
+
+        // 3. Browser Language (Fallback preference)
         if (typeof navigator !== 'undefined') {
             const browserLang = navigator.language.toLowerCase();
             if (browserLang.startsWith('es')) {
-                return 'es';
-            }
-        }
-
-        // 3. Geolocation Fallback (User business rule: LATAM/ES -> Spanish)
-        const response = await fetch('https://ipapi.co/json/');
-        if (response.ok) {
-            const data = await response.json();
-            const countryCode = data.country_code;
-
-            // Console log for debugging detection issues
-            console.log(`[i18n] Detected country: ${countryCode}`);
-
-            if (LATAM_COUNTRIES.includes(countryCode) || countryCode === 'ES') {
                 return 'es';
             }
         }
