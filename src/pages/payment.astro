@@ -1076,7 +1076,12 @@ const description = "Choose your payment method";
 </Layout>
 
 <script>
-    import { cartItems, cartTotal, clearCart } from "../stores/cart";
+    import {
+        cartItems,
+        cartTotal,
+        cartTotalPEN,
+        clearCart,
+    } from "../stores/cart";
     import { supabase } from "../lib/supabase";
 
     let selectedMethod: string | null = null;
@@ -1089,18 +1094,19 @@ const description = "Choose your payment method";
 
         if (!orderItemsList) return;
 
-        const totalPEN = cartTotal.get();
         const isUSD =
             method === "binance" || method === "crypto" || method === "paypal";
-        const rate = 3.8;
-        const total = isUSD ? totalPEN / rate : totalPEN;
         const symbol = isUSD ? "$" : "S/";
         const currencyText = isUSD ? "USD" : "PEN";
+        const totalAmount = isUSD ? cartTotal.get() : cartTotalPEN.get();
 
         // Render items
         orderItemsList.innerHTML = items
-            .map(
-                (item) => `
+            .map((item) => {
+                const price = isUSD
+                    ? item.price
+                    : (item.price_pen ?? item.price * 3.8);
+                return `
       <div class="flex gap-3 items-start">
         <div class="h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden border border-border-dark bg-background-dark">
           <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" />
@@ -1108,16 +1114,16 @@ const description = "Choose your payment method";
         <div class="flex-1 min-w-0">
           <h4 class="text-white font-bold text-sm leading-tight truncate">${item.title}</h4>
           <p class="text-text-muted text-xs mt-0.5">Qty: ${item.quantity}</p>
-          <p class="text-white font-bold text-sm mt-1">${symbol} ${(isUSD ? (item.price * item.quantity) / rate : item.price * item.quantity).toFixed(2)}</p>
+          <p class="text-white font-bold text-sm mt-1">${symbol} ${(price * item.quantity).toFixed(2)}</p>
         </div>
       </div>
-    `,
-            )
+    `;
+            })
             .join("");
 
         // Update total
         if (orderTotal) {
-            orderTotal.textContent = `${symbol} ${total.toFixed(2)}`;
+            orderTotal.textContent = `${symbol} ${totalAmount.toFixed(2)}`;
         }
         if (orderCurrency) {
             orderCurrency.textContent = currencyText;
@@ -1207,7 +1213,8 @@ const description = "Choose your payment method";
                         localStorage.getItem("buyerInfo") || "{}",
                     );
                     const items = cartItems.get();
-                    const totalPEN = cartTotal.get();
+                    const totalPEN = cartTotalPEN.get();
+                    const totalUSD = cartTotal.get();
                     const registeredUserId =
                         localStorage.getItem("registeredUserId");
 
@@ -1229,6 +1236,7 @@ const description = "Choose your payment method";
                                 buyerInfo,
                                 cartItems: items,
                                 totalPEN,
+                                totalUSD,
                                 userId: registeredUserId,
                             }),
                         },
@@ -1286,7 +1294,8 @@ const description = "Choose your payment method";
                         localStorage.getItem("buyerInfo") || "{}",
                     );
                     const items = cartItems.get();
-                    const totalPEN = cartTotal.get();
+                    const totalPEN = cartTotalPEN.get();
+                    const totalUSD = cartTotal.get();
                     const registeredUserId =
                         localStorage.getItem("registeredUserId");
 
@@ -1308,6 +1317,7 @@ const description = "Choose your payment method";
                                 buyerInfo,
                                 cartItems: items,
                                 totalPEN,
+                                totalUSD,
                                 userId: registeredUserId,
                             }),
                         },
@@ -1410,7 +1420,7 @@ const description = "Choose your payment method";
 
     function openYapeModal() {
         if (yapeModal && yapeAmount) {
-            const total = cartTotal.get();
+            const total = cartTotalPEN.get();
             yapeAmount.textContent = `S/ ${total.toFixed(2)}`;
             yapeModal.classList.remove("hidden");
             document.body.style.overflow = "hidden";
@@ -1458,12 +1468,12 @@ const description = "Choose your payment method";
 
     function openBinanceModal() {
         if (binanceModal && binanceAmount) {
-            const totalPEN = cartTotal.get();
-            const totalUSD = (totalPEN / 2.4).toFixed(2);
+            const totalPEN = cartTotalPEN.get();
+            const totalUSD = cartTotal.get();
             binanceAmount.innerHTML = `
                 <div class="flex flex-col items-center">
                     <span class="text-xs text-text-muted line-through">S/ ${totalPEN.toFixed(2)}</span>
-                    <span>$ ${totalUSD} USD</span>
+                    <span>$ ${totalUSD.toFixed(2)} USD</span>
                 </div>
             `;
             binanceModal.classList.remove("hidden");
@@ -1603,7 +1613,7 @@ const description = "Choose your payment method";
 
                     const buyerInfo = localStorage.getItem("buyerInfo") || "{}";
                     const items = JSON.stringify(cartItems.get());
-                    const totalPEN = cartTotal.get().toString();
+                    const totalPEN = cartTotalPEN.get().toString();
                     const registeredUserId =
                         localStorage.getItem("registeredUserId") || "null";
 

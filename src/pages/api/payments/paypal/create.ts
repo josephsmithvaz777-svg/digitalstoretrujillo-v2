@@ -6,7 +6,7 @@ import { notifyNewOrder } from '../../../../lib/notifications';
 export const POST: APIRoute = async ({ request }) => {
     try {
         const body = await request.json();
-        const { buyerInfo, cartItems, totalPEN, userId } = body;
+        const { buyerInfo, cartItems, totalPEN, totalUSD, userId } = body;
 
         // Check for authenticated user
         const authHeader = request.headers.get('Authorization');
@@ -55,8 +55,8 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         // 3. Create PayPal Order
-        const conversionRate = 3.8; // PEN to USD rate
-        const amountUSD = (totalPEN / conversionRate).toFixed(2);
+        const conversionRate = 3.8; // PEN to USD rate fallback
+        const amountUSD = totalUSD ? totalUSD.toFixed(2) : (totalPEN / conversionRate).toFixed(2);
 
         const paypalOrder = await PaypalService.createOrder({
             amount: parseFloat(amountUSD),

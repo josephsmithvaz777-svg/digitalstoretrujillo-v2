@@ -26,12 +26,23 @@ cartItems.subscribe((items) => {
     cartCount.set(total);
 });
 
-// Computed: cart total price
+// Computed: cart total price (USD)
 export const cartTotal = atom(0);
 
 cartItems.subscribe((items) => {
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     cartTotal.set(total);
+});
+
+// Computed: cart total price (PEN)
+export const cartTotalPEN = atom(0);
+
+cartItems.subscribe((items) => {
+    const total = items.reduce((sum, item) => {
+        const pricePEN = item.price_pen ?? (item.price * 3.8);
+        return sum + pricePEN * item.quantity;
+    }, 0);
+    cartTotalPEN.set(total);
 });
 
 // Add item to cart

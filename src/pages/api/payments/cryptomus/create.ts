@@ -1,16 +1,17 @@
 import type { APIRoute } from 'astro';
 import { supabaseAdmin, getAdminUserFromToken } from '../../../../lib/supabase';
 import { CryptomusService } from '../../../../lib/cryptomus';
+import { notifyNewOrder } from '../../../../lib/notifications';
 
 export const POST: APIRoute = async ({ request }) => {
     try {
         const body = await request.json();
-        const { buyerInfo, cartItems, totalPEN, userId } = body;
+        const { buyerInfo, cartItems, totalPEN, totalUSD, userId } = body;
 
         // Check for authenticated user
         const authHeader = request.headers.get('Authorization');
         const user = await getAdminUserFromToken(authHeader);
-        
+
         // Use authenticated user ID or fallback to provided userId (for pending verification)
         const finalUserId = user?.id || userId || null;
 
@@ -58,12 +59,8 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         // 3. Create Cryptomus Payment
-        // Convert PEN to USD for Cryptomus if needed, or send as PEN if supported.
-        // Cryptomus supports PEN? Let's assume USD for better compatibility as per current logic in payment.astro
-        const totalUSD = (totalPEN / 3.75).toFixed(2); // Using a more realistic rate or keeping 2.4 if user prefers? 
-        // Wait, payment.astro used 2.4. I'll stick to 2.4 as specified in the UI/Logic of the site.
-        const conversionRate = 2.4;
-        const amountUSD = (totalPEN / conversionRate).toFixed(2);
+        const conversionRate = 3.8;
+        const amountUSD = totalUSD ? totalUSD.toFixed(2) : (totalPEN / conversionRate).toFixed(2);
 
         const cryptomusPayment = await CryptomusService.createPayment({
             amount: amountUSD,
