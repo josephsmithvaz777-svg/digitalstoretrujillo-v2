@@ -9,7 +9,17 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create Supabase client with proper configuration for mobile support
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    // Force localStorage even on mobile browsers
+    storageKey: 'digitalstore-supabase-auth-token',
+  },
+});
 
 // Admin client for server-side operations (bypasses RLS)
 export const supabaseAdmin = supabaseServiceKey

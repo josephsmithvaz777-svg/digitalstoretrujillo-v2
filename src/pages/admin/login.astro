@@ -45,6 +45,10 @@ const description = "Acceso al panel de administración";
                             name="email"
                             type="email"
                             autocomplete="email"
+                            autocapitalize="off"
+                            autocorrect="off"
+                            spellcheck="false"
+                            inputmode="email"
                             required
                             class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             placeholder="admin@digitalstoretrujillo.com"
@@ -64,6 +68,9 @@ const description = "Acceso al panel de administración";
                             name="password"
                             type="password"
                             autocomplete="current-password"
+                            autocapitalize="off"
+                            autocorrect="off"
+                            spellcheck="false"
                             required
                             class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             placeholder="••••••••"
@@ -88,6 +95,38 @@ const description = "Acceso al panel de administración";
                         Iniciar Sesión
                     </button>
                 </form>
+
+                <!-- Mobile Debug Info (only shows on mobile) -->
+                <div
+                    id="debug-info"
+                    class="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-xs text-yellow-300 hidden"
+                >
+                    <p class="font-bold mb-2">
+                        🔍 Debug Info (solo para testing):
+                    </p>
+                    <ul class="space-y-1 text-[11px]">
+                        <li id="debug-online">
+                            🌍 Online: <span class="font-mono"></span>
+                        </li>
+                        <li id="debug-storage">
+                            💾 LocalStorage: <span class="font-mono"></span>
+                        </li>
+                        <li id="debug-cookies">
+                            🍪 Cookies: <span class="font-mono"></span>
+                        </li>
+                        <li id="debug-platform">
+                            📱 Device: <span class="font-mono"></span>
+                        </li>
+                    </ul>
+                    <button
+                        id="debug-test-btn"
+                        type="button"
+                        class="mt-2 w-full py-1 px-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 text-xs rounded"
+                    >
+                        Test Supabase Connection
+                    </button>
+                    <p id="debug-result" class="mt-2 text-[10px] hidden"></p>
+                </div>
             </div>
 
             <!-- Back to Home -->
@@ -109,17 +148,58 @@ const description = "Acceso al panel de administración";
         import { signInAdmin } from "../../lib/supabase";
 
         const form = document.getElementById("login-form") as HTMLFormElement;
+        const emailInput = document.getElementById("email") as HTMLInputElement;
+        const passwordInput = document.getElementById(
+            "password",
+        ) as HTMLInputElement;
         const submitBtn = document.getElementById(
             "submit-btn",
         ) as HTMLButtonElement;
         const errorMessage = document.getElementById("error-message");
 
+        // Prevent autocomplete from adding spaces on mobile
+        emailInput?.addEventListener("blur", () => {
+            if (emailInput.value) {
+                emailInput.value = emailInput.value.trim().toLowerCase();
+            }
+        });
+
         form?.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const formData = new FormData(form);
-            const email = formData.get("email") as string;
-            const password = formData.get("password") as string;
+            // Trim and sanitize inputs to prevent mobile autocomplete issues
+            const email = (formData.get("email") as string)
+                ?.trim()
+                .toLowerCase();
+            const password = (formData.get("password") as string)?.trim();
+
+            // Basic validation
+            if (!email || !password) {
+                if (errorMessage) {
+                    const errorText = errorMessage.querySelector("p");
+                    if (errorText) {
+                        errorText.textContent =
+                            "Por favor, completa todos los campos.";
+                    }
+                    errorMessage.classList.remove("hidden");
+                }
+                return;
+            }
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                if (errorMessage) {
+                    const errorText = errorMessage.querySelector("p");
+                    if (errorText) {
+                        errorText.textContent =
+                            "Por favor, ingresa un email válido.";
+                    }
+                    errorMessage.classList.remove("hidden");
+                }
+                return;
+            }
 
             // Disable button and show loading
             submitBtn.disabled = true;
@@ -132,24 +212,68 @@ const description = "Acceso al panel de administración";
             errorMessage?.classList.add("hidden");
 
             try {
+                console.log("🔐 Attempting login with email:", email);
+                console.log("📱 User Agent:", navigator.userAgent);
+                console.log("🌍 Online status:", navigator.onLine);
+
                 const { user, error } = await signInAdmin(email, password);
 
-                if (error || !user) {
+                if (error) {
+                    console.error("❌ Login error:", error);
+                    console.error("Error code:", error.message);
+                    console.error("Error status:", error.status);
+                    throw new Error(error.message || "Error al iniciar sesión");
+                }
+
+                if (!user) {
+                    console.error("❌ No user returned from signInAdmin");
                     throw new Error(
-                        error?.message || "Error al iniciar sesión",
+                        "Error al iniciar sesión - usuario no encontrado",
                     );
                 }
 
+                console.log("✅ Login successful for:", user.email);
+
                 // Success - redirect to home page
-                window.location.href = "/";
+                // Add a small delay to ensure session is saved
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 500);
             } catch (error: any) {
+                console.error("❌ Login failed:", error);
+
                 // Show error
                 if (errorMessage) {
                     const errorText = errorMessage.querySelector("p");
                     if (errorText) {
-                        errorText.textContent =
-                            error.message ||
+                        let errorMsg =
                             "Credenciales incorrectas. Por favor, intenta de nuevo.";
+
+                        // Provide more specific error messages
+                        if (
+                            error.message?.includes("Invalid login credentials")
+                        ) {
+                            errorMsg =
+                                "Email o contraseña incorrectos. Verifica tus credenciales.";
+                        } else if (
+                            error.message?.includes("Email not confirmed")
+                        ) {
+                            errorMsg =
+                                "Tu email no ha sido confirmado. Contacta al administrador.";
+                        } else if (
+                            error.message?.includes("Too many requests")
+                        ) {
+                            errorMsg =
+                                "Demasiados intentos. Espera unos minutos e intenta de nuevo.";
+                        } else if (error.message?.includes("Network")) {
+                            errorMsg =
+                                "Error de conexión. Verifica tu internet e intenta de nuevo.";
+                        } else if (error.message) {
+                            // Use the actual error message for better debugging
+                            errorMsg = error.message;
+                        }
+
+                        errorText.textContent = errorMsg;
                     }
                     errorMessage.classList.remove("hidden");
                 }
@@ -160,6 +284,94 @@ const description = "Acceso al panel de administración";
 					<span class="material-symbols-outlined">login</span>
 					Iniciar Sesión
 				`;
+            }
+        });
+    </script>
+
+    <script>
+        import { supabase } from "../../lib/supabase";
+
+        // Debug panel for mobile troubleshooting
+        const debugInfo = document.getElementById("debug-info");
+        const debugTestBtn = document.getElementById(
+            "debug-test-btn",
+        ) as HTMLButtonElement;
+        const debugResult = document.getElementById("debug-result");
+
+        // Detect if mobile device
+        function isMobile() {
+            return (
+                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                    navigator.userAgent,
+                ) || window.innerWidth < 768
+            );
+        }
+
+        // Show debug panel only on mobile or if explicitly requested
+        if (isMobile() || window.location.search.includes("debug=true")) {
+            debugInfo?.classList.remove("hidden");
+
+            // Populate debug info
+            const onlineSpan = document.querySelector("#debug-online span");
+            const storageSpan = document.querySelector("#debug-storage span");
+            const cookiesSpan = document.querySelector("#debug-cookies span");
+            const platformSpan = document.querySelector("#debug-platform span");
+
+            if (onlineSpan)
+                onlineSpan.textContent = navigator.onLine ? "✅ Yes" : "❌ No";
+
+            // Test localStorage
+            if (storageSpan) {
+                try {
+                    localStorage.setItem("test", "test");
+                    localStorage.removeItem("test");
+                    storageSpan.textContent = "✅ Available";
+                } catch {
+                    storageSpan.textContent = "❌ Blocked";
+                }
+            }
+
+            // Test cookies
+            if (cookiesSpan) {
+                cookiesSpan.textContent = navigator.cookieEnabled
+                    ? "✅ Enabled"
+                    : "❌ Disabled";
+            }
+
+            // Platform info
+            if (platformSpan) {
+                const ua = navigator.userAgent;
+                let device = "Unknown";
+                if (/iPhone/i.test(ua)) device = "iPhone";
+                else if (/iPad/i.test(ua)) device = "iPad";
+                else if (/Android/i.test(ua)) device = "Android";
+                platformSpan.textContent = device;
+            }
+        }
+
+        // Test Supabase connection
+        debugTestBtn?.addEventListener("click", async () => {
+            if (!debugResult) return;
+
+            debugTestBtn.disabled = true;
+            debugTestBtn.textContent = "Testing...";
+            debugResult.classList.remove("hidden");
+            debugResult.textContent = "⏳ Probando conexión a Supabase...";
+
+            try {
+                // Try to fetch session
+                const { data, error } = await supabase.auth.getSession();
+
+                if (error) {
+                    debugResult.textContent = `❌ Error: ${error.message}`;
+                } else {
+                    debugResult.textContent = `✅ Conexión OK. Sesión: ${data.session ? "Activa" : "No activa"}`;
+                }
+            } catch (err: any) {
+                debugResult.textContent = `❌ Error de red: ${err.message}`;
+            } finally {
+                debugTestBtn.disabled = false;
+                debugTestBtn.textContent = "Test Supabase Connection";
             }
         });
     </script>
