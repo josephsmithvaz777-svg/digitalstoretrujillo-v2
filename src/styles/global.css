@@ -33,7 +33,7 @@ html {
 }
 
 body {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'Noto Sans', 'Spline Sans', system-ui, -apple-system, sans-serif;
     background-color: #181110;
     color: white;
     overflow-x: hidden;
@@ -45,6 +45,7 @@ body {
         transform: translateX(100%);
         opacity: 0;
     }
+
     to {
         transform: translateX(0);
         opacity: 1;
@@ -55,6 +56,7 @@ body {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }

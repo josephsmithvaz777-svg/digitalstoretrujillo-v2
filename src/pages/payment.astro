@@ -973,6 +973,233 @@ const description = "Choose your payment method";
             </div>
         </div>
 
+        <!-- PayPal Payment Modal -->
+        <div
+            id="paypal-modal"
+            class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+            <div
+                class="bg-card-dark border border-border-dark rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+                <!-- Modal Header -->
+                <div
+                    class="sticky top-0 z-10 bg-card-dark border-b border-border-dark p-6 flex items-center justify-between"
+                >
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-[#0070ba]/20 flex items-center justify-center border border-[#0070ba]/30 p-2"
+                        >
+                            <img
+                                src="/assets/paypal-icon.svg"
+                                alt="PayPal"
+                                class="w-full h-full object-contain"
+                            />
+                        </div>
+                        <h2
+                            class="text-2xl font-black text-white"
+                            data-i18n="pay_paypal_title"
+                        >
+                            Pay with PayPal
+                        </h2>
+                    </div>
+                    <button
+                        id="close-paypal-modal"
+                        class="text-text-muted hover:text-white transition-colors"
+                    >
+                        <span class="material-symbols-outlined text-3xl"
+                            >close</span
+                        >
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6 space-y-6">
+                    <!-- Instructions -->
+                    <div
+                        class="bg-[#0070ba]/10 border border-[#0070ba]/30 rounded-xl p-4"
+                    >
+                        <p
+                            class="text-white text-sm mb-3"
+                            data-i18n="pay_paypal_desc"
+                        >
+                            You will be redirected to PayPal to complete your
+                            payment. Alternatively, you can use manual transfer.
+                        </p>
+                    </div>
+
+                    <!-- Payment Amount -->
+                    <div class="w-full space-y-3">
+                        <div
+                            class="bg-background-dark rounded-lg p-3 border border-border-dark"
+                        >
+                            <p
+                                class="text-text-muted text-xs mb-1"
+                                data-i18n="pay_yape_amount"
+                            >
+                                Amount to Pay
+                            </p>
+                            <p
+                                id="paypal-amount"
+                                class="text-primary font-black text-xl"
+                            >
+                                $ 0.00 USD
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PayPal Checkout Button -->
+                    <button
+                        id="paypal-checkout-btn"
+                        class="w-full bg-[#0070ba] hover:bg-[#005a94] text-white font-bold py-3.5 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-[#0070ba]/20 flex items-center justify-center gap-2"
+                        data-i18n="pay_paypal_button"
+                    >
+                        <span class="material-symbols-outlined"
+                            >open_in_new</span
+                        >
+                        Continue with PayPal
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="flex items-center gap-3">
+                        <div class="flex-1 h-px bg-border-dark"></div>
+                        <span class="text-text-muted text-xs font-medium"
+                            >OR</span
+                        >
+                        <div class="flex-1 h-px bg-border-dark"></div>
+                    </div>
+
+                    <!-- Manual Transfer Section -->
+                    <div
+                        class="bg-background-dark/50 border border-border-dark rounded-xl p-4"
+                    >
+                        <h3
+                            class="text-white font-bold text-sm mb-2"
+                            data-i18n="pay_paypal_manual_title"
+                        >
+                            Manual PayPal Transfer (Optional)
+                        </h3>
+                        <p
+                            class="text-text-muted text-xs mb-4 leading-relaxed"
+                            data-i18n="pay_paypal_manual_desc"
+                        >
+                            If you prefer, you can send money directly to our
+                            PayPal account and upload proof of payment.
+                        </p>
+
+                        <!-- PayPal Email -->
+                        <div
+                            class="bg-background-dark rounded-lg p-3 border border-border-dark mb-4"
+                        >
+                            <p
+                                class="text-text-muted text-xs mb-1"
+                                data-i18n="pay_paypal_email"
+                            >
+                                PayPal Account
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <p class="text-white font-bold text-sm">
+                                    joseph.vasquez@digitalstoretrujillo.store
+                                </p>
+                                <button
+                                    id="copy-paypal-email"
+                                    class="text-[#0070ba] hover:text-[#005a94] transition-colors"
+                                    title="Copy"
+                                >
+                                    <span
+                                        class="material-symbols-outlined text-sm"
+                                        >content_copy</span
+                                    >
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Manual Upload Form -->
+                        <form id="paypal-proof-form" class="space-y-4">
+                            <!-- Screenshot Upload (Optional) -->
+                            <div>
+                                <label
+                                    class="block text-white text-sm font-medium mb-2"
+                                    data-i18n="pay_paypal_screenshot_optional"
+                                >
+                                    Payment Screenshot (Optional)
+                                </label>
+                                <input
+                                    type="file"
+                                    id="paypal-screenshot"
+                                    name="screenshot"
+                                    accept="image/*"
+                                    class="hidden"
+                                />
+                                <button
+                                    type="button"
+                                    id="paypal-screenshot-btn"
+                                    class="w-full border-2 border-dashed border-border-dark hover:border-[#0070ba] rounded-lg p-6 flex flex-col items-center gap-2 transition-colors cursor-pointer group"
+                                >
+                                    <span
+                                        class="material-symbols-outlined text-3xl text-text-muted group-hover:text-[#0070ba]"
+                                        >cloud_upload</span
+                                    >
+                                    <span
+                                        class="text-text-muted group-hover:text-white text-sm"
+                                        >Click to upload</span
+                                    >
+                                </button>
+                                <div id="paypal-preview" class="hidden mt-3">
+                                    <img
+                                        id="paypal-preview-img"
+                                        src=""
+                                        alt="Preview"
+                                        class="w-full max-w-xs mx-auto rounded-lg border border-border-dark"
+                                    />
+                                    <button
+                                        type="button"
+                                        id="paypal-remove"
+                                        class="mt-2 text-primary hover:text-red-700 text-xs flex items-center gap-1 mx-auto"
+                                    >
+                                        <span
+                                            class="material-symbols-outlined text-sm"
+                                            >delete</span
+                                        >
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Transaction ID (Optional) -->
+                            <div>
+                                <label
+                                    for="paypal-txid"
+                                    class="block text-white text-sm font-medium mb-2"
+                                    data-i18n="pay_paypal_transaction_id"
+                                >
+                                    Transaction ID (Optional)
+                                </label>
+                                <input
+                                    type="text"
+                                    id="paypal-txid"
+                                    name="txid"
+                                    placeholder="Enter transaction ID"
+                                    class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 focus:border-[#0070ba] focus:ring-1 focus:ring-[#0070ba] placeholder:text-text-muted transition-colors text-center font-bold"
+                                />
+                            </div>
+
+                            <!-- Submit Manual Proof Button -->
+                            <button
+                                type="submit"
+                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-green-600/20 flex items-center justify-center gap-2"
+                                data-i18n="pay_paypal_submit_proof"
+                            >
+                                <span class="material-symbols-outlined"
+                                    >check_circle</span
+                                >
+                                Submit Manual Proof
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Success Modal -->
         <div
             id="success-modal"
@@ -1010,7 +1237,7 @@ const description = "Choose your payment method";
                 <button
                     id="success-close-btn"
                     class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
-                    data-i18n="nav_home"
+                    data-i18n="pay_success_btn"
                 >
                     Back to Home
                 </button>
@@ -1295,87 +1522,249 @@ const description = "Choose your payment method";
                     continueBtn.innerHTML = originalText;
                 }
             } else if (selectedMethod === "paypal") {
-                // PayPal Integration
-                const originalText = continueBtn.innerHTML;
-                try {
-                    continueBtn.disabled = true;
-                    continueBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...`;
+                // PayPal - Open Modal
+                openPayPalModal();
+            }
+        });
+    }
 
-                    const buyerInfo = JSON.parse(
-                        localStorage.getItem("buyerInfo") || "{}",
-                    );
-                    const items = cartItems.get();
-                    const totalPEN = cartTotalPEN.get();
-                    const totalUSD = cartTotal.get();
-                    const registeredUserId =
-                        localStorage.getItem("registeredUserId");
+    // PayPal Modal Functions
+    const paypalModal = document.getElementById("paypal-modal");
+    const closePayPalModal = document.getElementById("close-paypal-modal");
+    const paypalAmount = document.getElementById("paypal-amount");
+    const paypalCheckoutBtn = document.getElementById("paypal-checkout-btn");
 
-                    const {
-                        data: { session },
-                    } = await supabase.auth.getSession();
-                    const headers: any = { "Content-Type": "application/json" };
-                    if (session) {
-                        headers["Authorization"] =
-                            `Bearer ${session.access_token}`;
-                    }
+    function openPayPalModal() {
+        if (paypalModal && paypalAmount) {
+            const totalUSD = cartTotal.get();
+            paypalAmount.textContent = `$ ${totalUSD.toFixed(2)} USD`;
+            paypalModal.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+    }
 
-                    const response = await fetch(
-                        "/api/payments/paypal/create",
-                        {
-                            method: "POST",
-                            headers,
-                            body: JSON.stringify({
-                                buyerInfo,
-                                cartItems: items,
-                                totalPEN,
-                                totalUSD,
-                                userId: registeredUserId,
-                            }),
-                        },
-                    );
+    function closePayPalModalFn() {
+        if (paypalModal) {
+            paypalModal.classList.add("hidden");
+            document.body.style.overflow = "auto";
+        }
+    }
 
-                    const data = await response.json();
+    // Close PayPal Modal
+    if (closePayPalModal)
+        closePayPalModal.addEventListener("click", closePayPalModalFn);
+    if (paypalModal)
+        paypalModal.addEventListener("click", (e) => {
+            if (e.target === paypalModal) closePayPalModalFn();
+        });
 
-                    if (!response.ok)
-                        throw new Error(
-                            data.error || "Failed to initiate payment",
-                        );
+    // PayPal Checkout Button - Opens PayPal popup
+    if (paypalCheckoutBtn) {
+        paypalCheckoutBtn.addEventListener("click", async () => {
+            const originalText = paypalCheckoutBtn.innerHTML;
+            try {
+                paypalCheckoutBtn.disabled = true;
+                paypalCheckoutBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...`;
 
-                    // Open PayPal Popup
-                    const width = 450;
-                    const height = 700;
-                    const left =
-                        window.screenX + (window.outerWidth - width) / 2;
-                    const top =
-                        window.screenY + (window.outerHeight - height) / 2;
+                const buyerInfo = JSON.parse(
+                    localStorage.getItem("buyerInfo") || "{}",
+                );
+                const items = cartItems.get();
+                const totalPEN = cartTotalPEN.get();
+                const totalUSD = cartTotal.get();
+                const registeredUserId =
+                    localStorage.getItem("registeredUserId");
 
-                    const paypalPopup = window.open(
-                        data.url,
-                        "PayPalCheckout",
-                        `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes,scrollbars=yes`,
-                    );
-
-                    if (
-                        !paypalPopup ||
-                        paypalPopup.closed ||
-                        typeof paypalPopup.closed === "undefined"
-                    ) {
-                        alert(
-                            "Por favor, activa las ventanas emergentes (popups) para completar el pago.",
-                        );
-                    }
-
-                    // Reset button state
-                    continueBtn.disabled = false;
-                    continueBtn.innerHTML = originalText;
-                } catch (error: any) {
-                    console.error("PayPal Error:", error);
-                    alert(
-                        `Error: ${error.message || "No se pudo iniciar el pago con PayPal."}`,
-                    );
-                    continueBtn.disabled = false;
-                    continueBtn.innerHTML = originalText;
+                const {
+                    data: { session },
+                } = await supabase.auth.getSession();
+                const headers: any = { "Content-Type": "application/json" };
+                if (session) {
+                    headers["Authorization"] = `Bearer ${session.access_token}`;
                 }
+
+                const response = await fetch("/api/payments/paypal/create", {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify({
+                        buyerInfo,
+                        cartItems: items,
+                        totalPEN,
+                        totalUSD,
+                        userId: registeredUserId,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok)
+                    throw new Error(data.error || "Failed to initiate payment");
+
+                // Open PayPal Popup
+                const width = 450;
+                const height = 700;
+                const left = window.screenX + (window.outerWidth - width) / 2;
+                const top = window.screenY + (window.outerHeight - height) / 2;
+
+                const paypalPopup = window.open(
+                    data.url,
+                    "PayPalCheckout",
+                    `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes,scrollbars=yes`,
+                );
+
+                if (
+                    !paypalPopup ||
+                    paypalPopup.closed ||
+                    typeof paypalPopup.closed === "undefined"
+                ) {
+                    alert(
+                        "Por favor, activa las ventanas emergentes (popups) para completar el pago.",
+                    );
+                }
+
+                // Reset button state
+                paypalCheckoutBtn.disabled = false;
+                paypalCheckoutBtn.innerHTML = originalText;
+            } catch (error: any) {
+                console.error("PayPal Error:", error);
+                alert(
+                    `Error: ${error.message || "No se pudo iniciar el pago con PayPal."}`,
+                );
+                paypalCheckoutBtn.disabled = false;
+                paypalCheckoutBtn.innerHTML = originalText;
+            }
+        });
+    }
+
+    // Copy PayPal Email
+    const copyPayPalEmail = document.getElementById("copy-paypal-email");
+    if (copyPayPalEmail) {
+        copyPayPalEmail.addEventListener("click", () => {
+            const email = "joseph.vasquez@digitalstoretrujillo.store";
+            navigator.clipboard
+                .writeText(email)
+                .then(() => alert("PayPal email copiado!"));
+        });
+    }
+
+    // PayPal Screenshot handling
+    const paypalScreenshot = document.getElementById(
+        "paypal-screenshot",
+    ) as HTMLInputElement;
+    const paypalScreenshotBtn = document.getElementById(
+        "paypal-screenshot-btn",
+    );
+    const paypalPreview = document.getElementById("paypal-preview");
+    const paypalPreviewImg = document.getElementById(
+        "paypal-preview-img",
+    ) as HTMLImageElement;
+    const paypalRemove = document.getElementById("paypal-remove");
+
+    if (paypalScreenshotBtn && paypalScreenshot) {
+        paypalScreenshotBtn.addEventListener("click", () => {
+            paypalScreenshot.click();
+        });
+
+        paypalScreenshot.addEventListener("change", (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (file && paypalPreviewImg && paypalPreview) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    paypalPreviewImg.src = e.target?.result as string;
+                    paypalPreview.classList.remove("hidden");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (paypalRemove && paypalScreenshot) {
+        paypalRemove.addEventListener("click", () => {
+            paypalScreenshot.value = "";
+            if (paypalPreviewImg) paypalPreviewImg.src = "";
+            if (paypalPreview) paypalPreview.classList.add("hidden");
+        });
+    }
+
+    // PayPal Manual Proof Form Submit
+    const paypalProofForm = document.getElementById("paypal-proof-form");
+    if (paypalProofForm) {
+        paypalProofForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const screenshot = paypalScreenshot?.files?.[0];
+            const txid = (
+                document.getElementById("paypal-txid") as HTMLInputElement
+            )?.value;
+
+            if (!screenshot && !txid) {
+                alert(
+                    "Por favor, sube una captura o ingresa el ID de transacción.",
+                );
+                return;
+            }
+
+            try {
+                const buyerInfo = JSON.parse(
+                    localStorage.getItem("buyerInfo") || "{}",
+                );
+                const items = cartItems.get();
+                const totalPEN = cartTotalPEN.get();
+                const totalUSD = cartTotal.get();
+                const registeredUserId =
+                    localStorage.getItem("registeredUserId");
+
+                const formData = new FormData();
+                formData.append("buyerInfo", JSON.stringify(buyerInfo));
+                formData.append("cartItems", JSON.stringify(items));
+                formData.append("totalPEN", totalPEN.toString());
+                formData.append("totalUSD", totalUSD.toString());
+                formData.append("paymentMethod", "paypal");
+                formData.append("txid", txid || "");
+
+                if (screenshot) {
+                    formData.append("screenshot", screenshot);
+                }
+                if (registeredUserId) {
+                    formData.append("userId", registeredUserId);
+                }
+
+                const {
+                    data: { session },
+                } = await supabase.auth.getSession();
+                const headers: any = {};
+                if (session) {
+                    headers["Authorization"] = `Bearer ${session.access_token}`;
+                }
+
+                const response = await fetch("/api/payments/manual", {
+                    method: "POST",
+                    headers,
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.error || "Error al procesar el pago",
+                    );
+                }
+
+                // Save order ID
+                if (result.orderId) {
+                    localStorage.setItem("lastOrderId", result.orderId);
+                }
+
+                // Close PayPal modal and show success
+                closePayPalModalFn();
+                showSuccessModal();
+            } catch (error: any) {
+                console.error("Error:", error);
+                alert(
+                    error.message ||
+                        "Ocurrió un error al enviar el comprobante",
+                );
             }
         });
     }
