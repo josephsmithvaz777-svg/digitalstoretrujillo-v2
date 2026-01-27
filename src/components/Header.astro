@@ -72,10 +72,13 @@ import CartIcon from "./CartIcon.astro";
             <a
                 id="auth-button"
                 href="/login"
-                class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-red-700 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]"
+                class="flex min-w-[84px] md:min-w-[84px] sm:min-w-[40px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-2 md:px-4 bg-primary hover:bg-red-700 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2"
             >
-                <span class="truncate" id="auth-text" data-i18n="auth_signin"
-                    >Sign In</span
+                <span class="material-symbols-outlined text-xl">person</span>
+                <span
+                    class="hidden md:inline truncate"
+                    id="auth-text"
+                    data-i18n="auth_signin">Sign In</span
                 >
             </a>
 
@@ -90,12 +93,13 @@ import CartIcon from "./CartIcon.astro";
             <!-- Language Switcher -->
             <button
                 id="language-toggle"
-                class="flex items-center gap-2 px-3 h-10 rounded-lg bg-card-dark border border-border-dark hover:border-text-muted transition-all group"
+                class="flex items-center gap-2 px-2 md:px-3 h-10 rounded-lg bg-card-dark border border-border-dark hover:border-text-muted transition-all group"
                 title="Change language / Cambiar idioma"
             >
                 <span
                     id="lang-text"
-                    class="text-xs font-bold text-white uppercase">EN</span
+                    class="text-xs font-bold text-white uppercase hidden md:inline"
+                    >EN</span
                 >
                 <span
                     class="material-symbols-outlined text-[18px] text-text-muted group-hover:text-white transition-colors"
@@ -107,13 +111,15 @@ import CartIcon from "./CartIcon.astro";
             <!-- Currency Switcher -->
             <button
                 id="currency-toggle"
-                class="flex items-center gap-2 px-3 h-10 rounded-lg bg-card-dark border border-border-dark hover:border-text-muted transition-all group"
+                class="flex items-center gap-2 px-2 md:px-3 h-10 rounded-lg bg-card-dark border border-border-dark hover:border-text-muted transition-all group"
                 title="Cambiar moneda"
             >
-                <span id="currency-flag" class="text-lg"></span>
+                <span id="currency-flag" class="text-lg hidden md:inline"
+                ></span>
                 <span
                     id="currency-code"
-                    class="text-xs font-bold text-white uppercase"></span>
+                    class="text-xs font-bold text-white uppercase hidden md:inline"
+                ></span>
                 <span
                     class="material-symbols-outlined text-[18px] text-text-muted group-hover:text-white transition-colors"
                 >

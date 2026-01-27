@@ -15,10 +15,18 @@ const orders = await getAllOrders();
     </div>
 
     <!-- Bulk Actions Bar (Hidden by default) -->
-    <div id="bulk-actions" class="hidden bg-primary/10 border border-primary/20 rounded-xl p-4 mb-6 flex items-center justify-between animate-fade-in">
+    <div
+        id="bulk-actions"
+        class="hidden bg-primary/10 border border-primary/20 rounded-xl p-4 mb-6 flex items-center justify-between animate-fade-in"
+    >
         <div class="flex items-center gap-3">
-            <span class="bg-primary text-white text-xs font-bold px-2 py-1 rounded-md" id="selected-count">0</span>
-            <span class="text-white text-sm font-medium">órdenes seleccionadas</span>
+            <span
+                class="bg-primary text-white text-xs font-bold px-2 py-1 rounded-md"
+                id="selected-count">0</span
+            >
+            <span class="text-white text-sm font-medium"
+                >órdenes seleccionadas</span
+            >
         </div>
         <button
             id="bulk-delete-btn"
@@ -38,7 +46,11 @@ const orders = await getAllOrders();
                 <thead class="bg-background-dark border-b border-border-dark">
                     <tr>
                         <th class="px-6 py-4 w-10">
-                            <input type="checkbox" id="select-all" class="rounded border-border-dark bg-background-dark text-primary focus:ring-primary cursor-pointer w-4 h-4">
+                            <input
+                                type="checkbox"
+                                id="select-all"
+                                class="rounded border-border-dark bg-background-dark text-primary focus:ring-primary cursor-pointer w-4 h-4"
+                            />
                         </th>
                         <th
                             class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
@@ -84,12 +96,12 @@ const orders = await getAllOrders();
                 </thead>
                 <tbody class="divide-y divide-border-dark">
                     {
-                            orders.length === 0 ? (
-                                <tr>
-                                    <td colspan="9" class="px-6 py-12 text-center">
-                                        <span class="material-symbols-outlined text-text-muted text-5xl mb-4 block">
-                                            receipt_long
-                                        </span>
+                        orders.length === 0 ? (
+                            <tr>
+                                <td colspan="9" class="px-6 py-12 text-center">
+                                    <span class="material-symbols-outlined text-text-muted text-5xl mb-4 block">
+                                        receipt_long
+                                    </span>
                                     <p class="text-text-muted">
                                         No hay órdenes aún
                                     </p>
@@ -99,11 +111,11 @@ const orders = await getAllOrders();
                             orders.map((order) => (
                                 <tr class="hover:bg-background-dark/50 transition-colors">
                                     <td class="px-6 py-4">
-                                        <input 
-                                            type="checkbox" 
+                                        <input
+                                            type="checkbox"
                                             class="order-checkbox rounded border-border-dark bg-background-dark text-primary focus:ring-primary cursor-pointer w-4 h-4"
                                             value={order.id}
-                                        >
+                                        />
                                     </td>
                                     <td class="px-6 py-4">
                                         <div>
@@ -132,42 +144,97 @@ const orders = await getAllOrders();
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="space-y-1">
-                                            {order.items && order.items.length > 0 ? (
-                                                order.items.map((item: any, idx: number) => {
-                                                    const delivery = order.delivery_info ? order.delivery_info.find((d: any) => d.title === item.title) : null;
-                                                    let expirationDate = null;
-                                                    if (delivery && delivery.expiration_date) {
-                                                        const [year, month, day] = delivery.expiration_date.split('-');
-                                                        expirationDate = `${day}/${month}/${year}`;
-                                                    }
-                                                    
-                                                    return (
-                                                    <div class="flex flex-col gap-1 mb-2">
-                                                        <div class="flex items-center gap-2">
-                                                            <div class="w-6 h-6 rounded bg-background-dark overflow-hidden flex-shrink-0">
-                                                                <img src={item.image} alt="" class="w-full h-full object-cover" />
+                                            {order.items &&
+                                            order.items.length > 0 ? (
+                                                order.items.map(
+                                                    (
+                                                        item: any,
+                                                        idx: number,
+                                                    ) => {
+                                                        const delivery =
+                                                            order.delivery_info
+                                                                ? order.delivery_info.find(
+                                                                      (
+                                                                          d: any,
+                                                                      ) =>
+                                                                          d.title ===
+                                                                          item.title,
+                                                                  )
+                                                                : null;
+                                                        let expirationDate =
+                                                            null;
+                                                        if (
+                                                            delivery &&
+                                                            delivery.expiration_date
+                                                        ) {
+                                                            const [
+                                                                year,
+                                                                month,
+                                                                day,
+                                                            ] =
+                                                                delivery.expiration_date.split(
+                                                                    "-",
+                                                                );
+                                                            expirationDate = `${day}/${month}/${year}`;
+                                                        }
+
+                                                        return (
+                                                            <div class="flex flex-col gap-1 mb-2">
+                                                                <div class="flex items-center gap-2">
+                                                                    <div class="w-6 h-6 rounded bg-background-dark overflow-hidden flex-shrink-0">
+                                                                        <img
+                                                                            src={
+                                                                                item.image
+                                                                            }
+                                                                            alt=""
+                                                                            class="w-full h-full object-cover"
+                                                                        />
+                                                                    </div>
+                                                                    <p class="text-text-muted text-xs">
+                                                                        <span class="text-white font-medium">
+                                                                            {
+                                                                                item.title
+                                                                            }
+                                                                        </span>{" "}
+                                                                        (x
+                                                                        {
+                                                                            item.quantity
+                                                                        }
+                                                                        )
+                                                                    </p>
+                                                                </div>
+                                                                {expirationDate && (
+                                                                    <div class="pl-8">
+                                                                        <span class="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded border border-red-500/20 font-medium">
+                                                                            Vence:{" "}
+                                                                            {
+                                                                                expirationDate
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                            <p class="text-text-muted text-xs">
-                                                                <span class="text-white font-medium">{item.title}</span> (x{item.quantity})
-                                                            </p>
-                                                        </div>
-                                                        {expirationDate && (
-                                                            <div class="pl-8">
-                                                                <span class="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded border border-red-500/20 font-medium">
-                                                                    Vence: {expirationDate}
-                                                                </span>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )})
+                                                        );
+                                                    },
+                                                )
                                             ) : (
-                                                <p class="text-text-muted text-xs italic">Sin productos</p>
+                                                <p class="text-text-muted text-xs italic">
+                                                    Sin productos
+                                                </p>
                                             )}
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <p class="text-white font-bold">
-                                            S/ {Number(order.total).toFixed(2)}
+                                            {order.payment_method ===
+                                                "paypal" ||
+                                            order.payment_method ===
+                                                "binance" ||
+                                            order.payment_method ===
+                                                "cryptomus" ||
+                                            order.payment_method === "whop"
+                                                ? `$ ${Number(order.total).toFixed(2)} USD`
+                                                : `S/ ${Number(order.total).toFixed(2)}`}
                                         </p>
                                     </td>
                                     <td class="px-6 py-4">
@@ -215,14 +282,20 @@ const orders = await getAllOrders();
                                     </td>
                                     <td class="px-6 py-4">
                                         <p class="text-white text-sm">
-                                            {new Date(order.created_at).toLocaleDateString("es-PE", { timeZone: "America/Lima" })}
+                                            {new Date(
+                                                order.created_at,
+                                            ).toLocaleDateString("es-PE", {
+                                                timeZone: "America/Lima",
+                                            })}
                                         </p>
                                         <p class="text-text-muted text-xs">
-                                            {new Date(order.created_at).toLocaleTimeString("es-PE", {
+                                            {new Date(
+                                                order.created_at,
+                                            ).toLocaleTimeString("es-PE", {
                                                 timeZone: "America/Lima",
                                                 hour: "2-digit",
                                                 minute: "2-digit",
-                                                hour12: true
+                                                hour12: true,
                                             })}
                                         </p>
                                     </td>
@@ -252,15 +325,31 @@ const orders = await getAllOrders();
                                                     </button>
                                                 )}
                                             <button
-                                                class={`deliver-order-btn p-2 rounded-lg transition-all ${order.status === 'completed' && order.delivery_info ? 'text-primary hover:text-white hover:bg-primary/20' : 'text-text-muted hover:text-yellow-500 hover:bg-yellow-500/10'}`}
+                                                class={`deliver-order-btn p-2 rounded-lg transition-all ${order.status === "completed" && order.delivery_info ? "text-primary hover:text-white hover:bg-primary/20" : "text-text-muted hover:text-yellow-500 hover:bg-yellow-500/10"}`}
                                                 data-order-id={order.id}
-                                                data-order-number={order.order_number}
-                                                data-items={JSON.stringify(order.items)}
-                                                data-delivery-info={JSON.stringify(order.delivery_info || [])}
-                                                title={order.status === 'completed' && order.delivery_info ? "Editar Credenciales" : "Entregar Credenciales"}
+                                                data-order-number={
+                                                    order.order_number
+                                                }
+                                                data-items={JSON.stringify(
+                                                    order.items,
+                                                )}
+                                                data-delivery-info={JSON.stringify(
+                                                    order.delivery_info || [],
+                                                )}
+                                                title={
+                                                    order.status ===
+                                                        "completed" &&
+                                                    order.delivery_info
+                                                        ? "Editar Credenciales"
+                                                        : "Entregar Credenciales"
+                                                }
                                             >
                                                 <span class="material-symbols-outlined text-[20px]">
-                                                    {order.status === 'completed' && order.delivery_info ? 'edit_square' : 'key'}
+                                                    {order.status ===
+                                                        "completed" &&
+                                                    order.delivery_info
+                                                        ? "edit_square"
+                                                        : "key"}
                                                 </span>
                                             </button>
                                             <button
@@ -277,7 +366,9 @@ const orders = await getAllOrders();
                                                 data-items={JSON.stringify(
                                                     order.items,
                                                 )}
-                                                data-delivery-info={JSON.stringify(order.delivery_info || [])}
+                                                data-delivery-info={JSON.stringify(
+                                                    order.delivery_info || [],
+                                                )}
                                                 title="Enviar WhatsApp"
                                             >
                                                 <svg
@@ -416,9 +507,14 @@ const orders = await getAllOrders();
                     delete_sweep
                 </span>
             </div>
-            <h2 class="text-white text-xl font-bold mb-2">¿Eliminar Seleccionados?</h2>
+            <h2 class="text-white text-xl font-bold mb-2">
+                ¿Eliminar Seleccionados?
+            </h2>
             <p class="text-text-muted text-sm mb-6">
-                Se eliminarán <span id="bulk-delete-count" class="font-bold text-white">0</span> órdenes permanentemente. Esta acción no se puede deshacer.
+                Se eliminarán <span
+                    id="bulk-delete-count"
+                    class="font-bold text-white">0</span
+                > órdenes permanentemente. Esta acción no se puede deshacer.
             </p>
 
             <div class="flex gap-3">
@@ -447,8 +543,13 @@ const orders = await getAllOrders();
             class="bg-card-dark border border-border-dark rounded-xl max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto"
         >
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-white text-xl font-bold">Entregar Credenciales</h2>
-                <button id="close-delivery-modal" class="text-text-muted hover:text-white">
+                <h2 class="text-white text-xl font-bold">
+                    Entregar Credenciales
+                </h2>
+                <button
+                    id="close-delivery-modal"
+                    class="text-text-muted hover:text-white"
+                >
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
@@ -458,9 +559,18 @@ const orders = await getAllOrders();
                     <!-- Items will be injected here -->
                 </div>
 
-                <div class="flex items-center gap-2 py-4 border-t border-border-dark">
-                    <input type="checkbox" id="mark-completed" class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary focus:ring-primary" checked>
-                    <label for="mark-completed" class="text-sm text-text-muted">Marcar orden como Completada y Verificada</label>
+                <div
+                    class="flex items-center gap-2 py-4 border-t border-border-dark"
+                >
+                    <input
+                        type="checkbox"
+                        id="mark-completed"
+                        class="w-4 h-4 rounded border-border-dark bg-background-dark text-primary focus:ring-primary"
+                        checked
+                    />
+                    <label for="mark-completed" class="text-sm text-text-muted"
+                        >Marcar orden como Completada y Verificada</label
+                    >
                 </div>
 
                 <div class="flex gap-3">
@@ -552,16 +662,35 @@ const orders = await getAllOrders();
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed top-4 right-4 z-[70] transform transition-all duration-300 translate-x-[150%] opacity-0">
-        <div class="bg-card-dark border border-border-dark rounded-xl shadow-2xl p-4 flex items-center gap-3 min-w-[300px]">
-            <div id="toast-icon-container" class="w-10 h-10 rounded-full flex items-center justify-center bg-green-500/20">
-                <span id="toast-icon" class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
+    <div
+        id="toast"
+        class="fixed top-4 right-4 z-[70] transform transition-all duration-300 translate-x-[150%] opacity-0"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl shadow-2xl p-4 flex items-center gap-3 min-w-[300px]"
+        >
+            <div
+                id="toast-icon-container"
+                class="w-10 h-10 rounded-full flex items-center justify-center bg-green-500/20"
+            >
+                <span
+                    id="toast-icon"
+                    class="material-symbols-outlined text-green-500 text-xl"
+                    >check_circle</span
+                >
             </div>
             <div>
-                <h4 id="toast-title" class="text-white font-bold text-sm">Éxito</h4>
-                <p id="toast-message" class="text-text-muted text-xs">Operación realizada correctamente</p>
+                <h4 id="toast-title" class="text-white font-bold text-sm">
+                    Éxito
+                </h4>
+                <p id="toast-message" class="text-text-muted text-xs">
+                    Operación realizada correctamente
+                </p>
             </div>
-            <button id="close-toast" class="ml-auto text-text-muted hover:text-white">
+            <button
+                id="close-toast"
+                class="ml-auto text-text-muted hover:text-white"
+            >
                 <span class="material-symbols-outlined text-lg">close</span>
             </button>
         </div>
@@ -580,35 +709,47 @@ const orders = await getAllOrders();
         const toastTitle = document.getElementById("toast-title");
         const toastMessage = document.getElementById("toast-message");
         const toastIcon = document.getElementById("toast-icon");
-        const toastIconContainer = document.getElementById("toast-icon-container");
+        const toastIconContainer = document.getElementById(
+            "toast-icon-container",
+        );
         const closeToastBtn = document.getElementById("close-toast");
         let toastTimeout: any;
 
-        function showToast(message: string, type: 'success' | 'error' = 'success') {
-            if (!toast || !toastTitle || !toastMessage || !toastIcon || !toastIconContainer) return;
+        function showToast(
+            message: string,
+            type: "success" | "error" = "success",
+        ) {
+            if (
+                !toast ||
+                !toastTitle ||
+                !toastMessage ||
+                !toastIcon ||
+                !toastIconContainer
+            )
+                return;
 
             // Set content
             toastMessage.textContent = message;
-            toastTitle.textContent = type === 'success' ? 'Éxito' : 'Error';
-            
+            toastTitle.textContent = type === "success" ? "Éxito" : "Error";
+
             // Set styles based on type
-            if (type === 'success') {
-                toastIcon.textContent = 'check_circle';
-                toastIcon.classList.remove('text-red-500');
-                toastIcon.classList.add('text-green-500');
-                toastIconContainer.classList.remove('bg-red-500/20');
-                toastIconContainer.classList.add('bg-green-500/20');
+            if (type === "success") {
+                toastIcon.textContent = "check_circle";
+                toastIcon.classList.remove("text-red-500");
+                toastIcon.classList.add("text-green-500");
+                toastIconContainer.classList.remove("bg-red-500/20");
+                toastIconContainer.classList.add("bg-green-500/20");
             } else {
-                toastIcon.textContent = 'error';
-                toastIcon.classList.remove('text-green-500');
-                toastIcon.classList.add('text-red-500');
-                toastIconContainer.classList.remove('bg-green-500/20');
-                toastIconContainer.classList.add('bg-red-500/20');
+                toastIcon.textContent = "error";
+                toastIcon.classList.remove("text-green-500");
+                toastIcon.classList.add("text-red-500");
+                toastIconContainer.classList.remove("bg-green-500/20");
+                toastIconContainer.classList.add("bg-red-500/20");
             }
 
             // Show toast
-            toast.classList.remove('translate-x-[150%]', 'opacity-0');
-            
+            toast.classList.remove("translate-x-[150%]", "opacity-0");
+
             // Hide after 3 seconds
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => {
@@ -617,7 +758,7 @@ const orders = await getAllOrders();
         }
 
         function hideToast() {
-            toast?.classList.add('translate-x-[150%]', 'opacity-0');
+            toast?.classList.add("translate-x-[150%]", "opacity-0");
         }
 
         closeToastBtn?.addEventListener("click", hideToast);
@@ -646,8 +787,11 @@ const orders = await getAllOrders();
             "confirm-delete",
         ) as HTMLButtonElement;
 
-        const cancelBulkDeleteBtn = document.getElementById("cancel-bulk-delete");
-        const confirmBulkDeleteBtn = document.getElementById("confirm-bulk-delete");
+        const cancelBulkDeleteBtn =
+            document.getElementById("cancel-bulk-delete");
+        const confirmBulkDeleteBtn = document.getElementById(
+            "confirm-bulk-delete",
+        );
         const bulkDeleteCount = document.getElementById("bulk-delete-count");
 
         const closeProofBtn = document.getElementById("close-proof-modal");
@@ -661,29 +805,46 @@ const orders = await getAllOrders();
         ) as HTMLAnchorElement;
 
         // Delivery Modal Elements
-        const closeDeliveryBtn = document.getElementById("close-delivery-modal");
+        const closeDeliveryBtn = document.getElementById(
+            "close-delivery-modal",
+        );
         const cancelDeliveryBtn = document.getElementById("cancel-delivery");
-        const deliveryForm = document.getElementById("delivery-form") as HTMLFormElement;
-        const deliveryItemsContainer = document.getElementById("delivery-items-container");
-        const saveDeliveryBtn = document.getElementById("save-delivery") as HTMLButtonElement;
-        const markCompletedCheckbox = document.getElementById("mark-completed") as HTMLInputElement;
+        const deliveryForm = document.getElementById(
+            "delivery-form",
+        ) as HTMLFormElement;
+        const deliveryItemsContainer = document.getElementById(
+            "delivery-items-container",
+        );
+        const saveDeliveryBtn = document.getElementById(
+            "save-delivery",
+        ) as HTMLButtonElement;
+        const markCompletedCheckbox = document.getElementById(
+            "mark-completed",
+        ) as HTMLInputElement;
 
         let orderToUpdate: string | null = null;
         let orderToDelete: string | null = null;
         let orderToDeliver: string | null = null;
 
         // --- Bulk Actions Logic ---
-        const selectAllCheckbox = document.getElementById("select-all") as HTMLInputElement;
-        const orderCheckboxes = document.querySelectorAll(".order-checkbox") as NodeListOf<HTMLInputElement>;
+        const selectAllCheckbox = document.getElementById(
+            "select-all",
+        ) as HTMLInputElement;
+        const orderCheckboxes = document.querySelectorAll(
+            ".order-checkbox",
+        ) as NodeListOf<HTMLInputElement>;
         const bulkActionsBar = document.getElementById("bulk-actions");
         const selectedCountSpan = document.getElementById("selected-count");
         const bulkDeleteBtn = document.getElementById("bulk-delete-btn");
 
         function updateBulkUI() {
-            const selected = Array.from(orderCheckboxes).filter(cb => cb.checked);
+            const selected = Array.from(orderCheckboxes).filter(
+                (cb) => cb.checked,
+            );
             const count = selected.length;
 
-            if (selectedCountSpan) selectedCountSpan.textContent = count.toString();
+            if (selectedCountSpan)
+                selectedCountSpan.textContent = count.toString();
 
             if (count > 0) {
                 bulkActionsBar?.classList.remove("hidden");
@@ -694,25 +855,30 @@ const orders = await getAllOrders();
 
         selectAllCheckbox?.addEventListener("change", (e) => {
             const isChecked = (e.target as HTMLInputElement).checked;
-            orderCheckboxes.forEach(cb => {
+            orderCheckboxes.forEach((cb) => {
                 cb.checked = isChecked;
             });
             updateBulkUI();
         });
 
-        orderCheckboxes.forEach(cb => {
+        orderCheckboxes.forEach((cb) => {
             cb.addEventListener("change", () => {
-                const allChecked = Array.from(orderCheckboxes).every(cb => cb.checked);
+                const allChecked = Array.from(orderCheckboxes).every(
+                    (cb) => cb.checked,
+                );
                 if (selectAllCheckbox) selectAllCheckbox.checked = allChecked;
                 updateBulkUI();
             });
         });
 
         bulkDeleteBtn?.addEventListener("click", () => {
-            const selected = Array.from(orderCheckboxes).filter(cb => cb.checked);
+            const selected = Array.from(orderCheckboxes).filter(
+                (cb) => cb.checked,
+            );
             if (selected.length === 0) return;
 
-            if (bulkDeleteCount) bulkDeleteCount.textContent = selected.length.toString();
+            if (bulkDeleteCount)
+                bulkDeleteCount.textContent = selected.length.toString();
             bulkDeleteModal?.classList.remove("hidden");
         });
 
@@ -721,7 +887,9 @@ const orders = await getAllOrders();
         });
 
         confirmBulkDeleteBtn?.addEventListener("click", async () => {
-            const selected = Array.from(orderCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+            const selected = Array.from(orderCheckboxes)
+                .filter((cb) => cb.checked)
+                .map((cb) => cb.value);
             if (selected.length === 0) return;
 
             if (confirmBulkDeleteBtn) {
@@ -737,7 +905,8 @@ const orders = await getAllOrders();
                 alert("Error al eliminar las órdenes seleccionadas.");
                 if (confirmBulkDeleteBtn) {
                     confirmBulkDeleteBtn.textContent = "Eliminar Todo";
-                    (confirmBulkDeleteBtn as HTMLButtonElement).disabled = false;
+                    (confirmBulkDeleteBtn as HTMLButtonElement).disabled =
+                        false;
                 }
             }
         });
@@ -781,12 +950,17 @@ const orders = await getAllOrders();
                     const items = JSON.parse(itemsRaw);
                     const existingInfo = JSON.parse(deliveryInfoRaw || "[]");
 
-                    deliveryItemsContainer.innerHTML = items.map((item: any, index: number) => {
-                        // Try to find existing data for this item (by product_id or just index)
-                        const saved = existingInfo.find((d: any) => d.product_id === item.id) || {};
-                        const defaultRules = "❌ No usar en 2 dispositivos.\n❌ No prestar su cuenta.\n❌ No cambiar contraseña.\n❌ No cambiar el perfil.";
+                    deliveryItemsContainer.innerHTML = items
+                        .map((item: any, index: number) => {
+                            // Try to find existing data for this item (by product_id or just index)
+                            const saved =
+                                existingInfo.find(
+                                    (d: any) => d.product_id === item.id,
+                                ) || {};
+                            const defaultRules =
+                                "❌ No usar en 2 dispositivos.\n❌ No prestar su cuenta.\n❌ No cambiar contraseña.\n❌ No cambiar el perfil.";
 
-                        return `
+                            return `
                             <div class="p-4 bg-background-dark border border-border-dark rounded-lg">
                                 <div class="flex items-center gap-3 mb-4">
                                     <img src="${item.image}" class="w-10 h-10 rounded object-cover">
@@ -801,24 +975,24 @@ const orders = await getAllOrders();
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs text-text-muted mb-1">Correo / Usuario</label>
-                                        <input type="text" name="items[${index}][account_email]" value="${saved.account_email || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
+                                        <input type="text" name="items[${index}][account_email]" value="${saved.account_email || ""}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-xs text-text-muted mb-1">Contraseña</label>
-                                        <input type="text" name="items[${index}][account_password]" value="${saved.account_password || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
+                                        <input type="text" name="items[${index}][account_password]" value="${saved.account_password || ""}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-xs text-text-muted mb-1">PIN / Perfil</label>
-                                        <input type="text" name="items[${index}][pin]" value="${saved.pin || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm" placeholder="Ej: 5532 (Perfil 3)">
+                                        <input type="text" name="items[${index}][pin]" value="${saved.pin || ""}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm" placeholder="Ej: 5532 (Perfil 3)">
                                     </div>
                                     <div>
                                         <label class="block text-xs text-text-muted mb-1">Vencimiento</label>
-                                        <input type="date" name="items[${index}][expiration_date]" value="${saved.expiration_date || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
+                                        <input type="date" name="items[${index}][expiration_date]" value="${saved.expiration_date || ""}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-xs text-text-muted mb-1">Imagen (URL o Pegar Imagen)</label>
                                         <div class="relative">
-                                            <input type="text" name="items[${index}][image_url]" value="${saved.image_url || ''}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm pr-10 image-input" placeholder="https://... o Ctrl+V para pegar imagen">
+                                            <input type="text" name="items[${index}][image_url]" value="${saved.image_url || ""}" class="w-full bg-black/50 border border-border-dark rounded px-3 py-2 text-white text-sm pr-10 image-input" placeholder="https://... o Ctrl+V para pegar imagen">
                                             <div class="absolute right-3 top-1/2 -translate-y-1/2">
                                                 <span class="material-symbols-outlined text-text-muted text-lg pointer-events-none">image</span>
                                             </div>
@@ -833,65 +1007,94 @@ const orders = await getAllOrders();
                                 </div>
                             </div>
                         `;
-                    }).join("");
+                        })
+                        .join("");
 
                     deliveryModal?.classList.remove("hidden");
-                    
+
                     // Attach Paste Events for Images
-                    document.querySelectorAll(".image-input").forEach((input: any) => {
-                        input.addEventListener("paste", async (e: ClipboardEvent) => {
-                            const items = e.clipboardData?.items;
-                            if (!items) return;
+                    document
+                        .querySelectorAll(".image-input")
+                        .forEach((input: any) => {
+                            input.addEventListener(
+                                "paste",
+                                async (e: ClipboardEvent) => {
+                                    const items = e.clipboardData?.items;
+                                    if (!items) return;
 
-                            for (const item of items) {
-                                if (item.type.indexOf("image") === 0) {
-                                    e.preventDefault();
-                                    const blob = item.getAsFile();
-                                    
-                                    // Show status
-                                    const container = input.parentElement;
-                                    const statusEl = container.querySelector(".upload-status");
-                                    if (statusEl) statusEl.classList.remove("hidden");
-                                    input.disabled = true;
+                                    for (const item of items) {
+                                        if (item.type.indexOf("image") === 0) {
+                                            e.preventDefault();
+                                            const blob = item.getAsFile();
 
-                                    try {
-                                        const formData = new FormData();
-                                        formData.append("file", blob!);
-                                        formData.append("upload_preset", "digitalstore_products"); // Using existing preset
+                                            // Show status
+                                            const container =
+                                                input.parentElement;
+                                            const statusEl =
+                                                container.querySelector(
+                                                    ".upload-status",
+                                                );
+                                            if (statusEl)
+                                                statusEl.classList.remove(
+                                                    "hidden",
+                                                );
+                                            input.disabled = true;
 
-                                        const res = await fetch(
-                                            `https://api.cloudinary.com/v1_1/${import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-                                            {
-                                                method: "POST",
-                                                body: formData,
+                                            try {
+                                                const formData = new FormData();
+                                                formData.append("file", blob!);
+                                                formData.append(
+                                                    "upload_preset",
+                                                    "digitalstore_products",
+                                                ); // Using existing preset
+
+                                                const res = await fetch(
+                                                    `https://api.cloudinary.com/v1_1/${import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                                                    {
+                                                        method: "POST",
+                                                        body: formData,
+                                                    },
+                                                );
+
+                                                const data = await res.json();
+                                                if (data.secure_url) {
+                                                    input.value =
+                                                        data.secure_url;
+                                                    if (statusEl) {
+                                                        statusEl.textContent =
+                                                            "✅ Imagen subida correctamente";
+                                                        statusEl.classList.remove(
+                                                            "text-yellow-500",
+                                                        );
+                                                        statusEl.classList.add(
+                                                            "text-green-500",
+                                                        );
+                                                    }
+                                                } else {
+                                                    throw new Error(
+                                                        "Error subiendo imagen",
+                                                    );
+                                                }
+                                            } catch (err) {
+                                                console.error(err);
+                                                if (statusEl) {
+                                                    statusEl.textContent =
+                                                        "❌ Error al subir imagen";
+                                                    statusEl.classList.remove(
+                                                        "text-yellow-500",
+                                                    );
+                                                    statusEl.classList.add(
+                                                        "text-red-500",
+                                                    );
+                                                }
+                                            } finally {
+                                                input.disabled = false;
                                             }
-                                        );
-
-                                        const data = await res.json();
-                                        if (data.secure_url) {
-                                            input.value = data.secure_url;
-                                            if (statusEl) {
-                                                statusEl.textContent = "✅ Imagen subida correctamente";
-                                                statusEl.classList.remove("text-yellow-500");
-                                                statusEl.classList.add("text-green-500");
-                                            }
-                                        } else {
-                                            throw new Error("Error subiendo imagen");
                                         }
-                                    } catch (err) {
-                                        console.error(err);
-                                        if (statusEl) {
-                                            statusEl.textContent = "❌ Error al subir imagen";
-                                            statusEl.classList.remove("text-yellow-500");
-                                            statusEl.classList.add("text-red-500");
-                                        }
-                                    } finally {
-                                        input.disabled = false;
                                     }
-                                }
-                            }
+                                },
+                            );
                         });
-                    });
                 }
             });
         });
@@ -907,7 +1110,9 @@ const orders = await getAllOrders();
             // Collect Data manually because FormData with arrays is tricky
             const formData = new FormData(deliveryForm);
             const items = [];
-            const itemsContainer = document.getElementById("delivery-items-container");
+            const itemsContainer = document.getElementById(
+                "delivery-items-container",
+            );
             const itemDivs = itemsContainer?.children;
 
             if (itemDivs) {
@@ -915,10 +1120,16 @@ const orders = await getAllOrders();
                     items.push({
                         product_id: formData.get(`items[${i}][product_id]`),
                         title: formData.get(`items[${i}][title]`),
-                        account_email: formData.get(`items[${i}][account_email]`),
-                        account_password: formData.get(`items[${i}][account_password]`),
+                        account_email: formData.get(
+                            `items[${i}][account_email]`,
+                        ),
+                        account_password: formData.get(
+                            `items[${i}][account_password]`,
+                        ),
                         pin: formData.get(`items[${i}][pin]`),
-                        expiration_date: formData.get(`items[${i}][expiration_date]`),
+                        expiration_date: formData.get(
+                            `items[${i}][expiration_date]`,
+                        ),
                         image_url: formData.get(`items[${i}][image_url]`),
                         instructions: formData.get(`items[${i}][instructions]`),
                     });
@@ -936,7 +1147,7 @@ const orders = await getAllOrders();
                     body: JSON.stringify({
                         orderId: orderToDeliver,
                         deliveryInfo: items,
-                        updateStatus: markCompletedCheckbox?.checked
+                        updateStatus: markCompletedCheckbox?.checked,
                     }),
                 });
 
@@ -947,7 +1158,7 @@ const orders = await getAllOrders();
                     throw new Error("Error al guardar credenciales");
                 }
             } catch (error: any) {
-                showToast(error.message, 'error');
+                showToast(error.message, "error");
                 saveDeliveryBtn.disabled = false;
                 saveDeliveryBtn.innerHTML = "Guardar y Entregar";
             }
@@ -957,10 +1168,9 @@ const orders = await getAllOrders();
         const closeDelivery = () => {
             deliveryModal?.classList.add("hidden");
             orderToDeliver = null;
-        }
+        };
         closeDeliveryBtn?.addEventListener("click", closeDelivery);
         cancelDeliveryBtn?.addEventListener("click", closeDelivery);
-
 
         // Open proof modal
         document.querySelectorAll(".view-proof-btn").forEach((btn) => {
@@ -1000,17 +1210,21 @@ const orders = await getAllOrders();
                 // Check if we have delivery info to format the special message
                 if (deliveryInfo.length > 0) {
                     // Create formatted message for delivered items
-                    const formattedItems = deliveryInfo.map((info: any) => {
-                        const date = info.expiration_date ? (() => {
-                            const [y, m, d] = info.expiration_date.split('-');
-                            return `${d}/${m}/${y}`;
-                        })() : 'N/A';
-                        
-                        return `⭕ *${info.title.toUpperCase()}* ⭕\n\n📧 *Correo:* ${info.account_email}\n🔑 *Contraseña:* ${info.account_password}\n\n${info.pin ? `🔒 *PIN/Perfil:* ${info.pin}\n` : ''}\n⚠️ *Reglas de uso* ⚠️\n${info.instructions}\n\n🗓️ *Vencimiento:* ${date}`;
-                    }).join("\n\n------------------\n\n");
+                    const formattedItems = deliveryInfo
+                        .map((info: any) => {
+                            const date = info.expiration_date
+                                ? (() => {
+                                      const [y, m, d] =
+                                          info.expiration_date.split("-");
+                                      return `${d}/${m}/${y}`;
+                                  })()
+                                : "N/A";
+
+                            return `⭕ *${info.title.toUpperCase()}* ⭕\n\n📧 *Correo:* ${info.account_email}\n🔑 *Contraseña:* ${info.account_password}\n\n${info.pin ? `🔒 *PIN/Perfil:* ${info.pin}\n` : ""}\n⚠️ *Reglas de uso* ⚠️\n${info.instructions}\n\n🗓️ *Vencimiento:* ${date}`;
+                        })
+                        .join("\n\n------------------\n\n");
 
                     message = `¡Hola ${name}! 👋\nAquí tienes tu pedido *#${num}*:\n\n${formattedItems}\n\n¡Gracias por tu compra! ✨`;
-
                 } else {
                     // Fallback to standard message
                     let productList = "";
@@ -1097,14 +1311,16 @@ const orders = await getAllOrders();
 
                 if (response.ok) {
                     // Show a quick success alert before reloading
-                    showToast("Estado actualizado y cliente notificado (vía Email/Web).");
+                    showToast(
+                        "Estado actualizado y cliente notificado (vía Email/Web).",
+                    );
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     const data = await response.json();
                     throw new Error(data.error || "Error al actualizar");
                 }
             } catch (error: any) {
-                showToast(error.message, 'error');
+                showToast(error.message, "error");
                 confirmUpdateBtn.disabled = false;
                 confirmUpdateBtn.textContent = "Actualizar";
             }
