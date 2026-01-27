@@ -193,11 +193,11 @@ export const TRANSLATIONS = {
         pay_paypal_desc: 'You will be redirected to PayPal to complete your payment. Alternatively, you can use manual transfer.',
         pay_paypal_button: 'Continue with PayPal',
         pay_paypal_manual_title: 'Manual PayPal Transfer (Optional)',
-        pay_paypal_manual_desc: 'If you prefer, you can send money directly to our PayPal account and upload proof of payment.',
+        pay_paypal_manual_desc: 'If you already sent money to our PayPal account, click submit to notify us. You can optionally include your transaction details.',
         pay_paypal_email: 'PayPal Account',
         pay_paypal_screenshot_optional: 'Payment Screenshot (Optional)',
         pay_paypal_transaction_id: 'Transaction ID (Optional)',
-        pay_paypal_submit_proof: 'Submit Manual Proof',
+        pay_paypal_submit_proof: 'Notify Payment',
 
         // Auth
         auth_login_title: 'Welcome Back',
@@ -340,11 +340,11 @@ export const TRANSLATIONS = {
         pay_paypal_desc: 'Serás redirigido a PayPal para completar tu pago. Alternativamente, puedes usar transferencia manual.',
         pay_paypal_button: 'Continuar con PayPal',
         pay_paypal_manual_title: 'Transferencia Manual PayPal (Opcional)',
-        pay_paypal_manual_desc: 'Si prefieres, puedes enviar dinero directamente a nuestra cuenta PayPal y subir comprobante de pago.',
+        pay_paypal_manual_desc: 'Si ya enviaste dinero a nuestra cuenta PayPal, haz clic en enviar para notificarnos. Opcionalmente puedes incluir los detalles de tu transacción.',
         pay_paypal_email: 'Cuenta PayPal',
         pay_paypal_screenshot_optional: 'Captura de Pago (Opcional)',
         pay_paypal_transaction_id: 'ID de Transacción (Opcional)',
-        pay_paypal_submit_proof: 'Enviar Comprobante Manual',
+        pay_paypal_submit_proof: 'Notificar Pago',
 
         // Auth
         auth_login_title: 'Bienvenido de Nuevo',

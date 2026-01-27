@@ -1186,13 +1186,13 @@ const description = "Choose your payment method";
                             <!-- Submit Manual Proof Button -->
                             <button
                                 type="submit"
-                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-green-600/20 flex items-center justify-center gap-2"
+                                class="w-full bg-[#0070ba] hover:bg-[#005a94] text-white font-bold py-3 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-[#0070ba]/20 flex items-center justify-center gap-2"
                                 data-i18n="pay_paypal_submit_proof"
                             >
                                 <span class="material-symbols-outlined"
-                                    >check_circle</span
+                                    >notifications_active</span
                                 >
-                                Submit Manual Proof
+                                Notify Payment
                             </button>
                         </form>
                     </div>
@@ -1697,12 +1697,7 @@ const description = "Choose your payment method";
                 document.getElementById("paypal-txid") as HTMLInputElement
             )?.value;
 
-            if (!screenshot && !txid) {
-                alert(
-                    "Por favor, sube una captura o ingresa el ID de transacción.",
-                );
-                return;
-            }
+            // No validation - admin will verify manually in PayPal
 
             try {
                 const buyerInfo = JSON.parse(
