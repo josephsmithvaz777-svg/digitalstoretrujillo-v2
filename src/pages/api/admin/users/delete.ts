@@ -5,9 +5,9 @@ export const POST: APIRoute = async ({ request }) => {
     // Security Check: Verify admin session via token
     const authHeader = request.headers.get('Authorization');
     const user = await getAdminUserFromToken(authHeader);
-    
+
     // Strict admin check - match email or custom role
-    if (!user || user.email !== 'admin@digitalstoretrujillo.com') {
+    if (!user || user.email !== 'admin@digitalstoretrujillo.store') {
         return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 

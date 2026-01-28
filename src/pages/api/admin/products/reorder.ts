@@ -5,7 +5,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Security Check: Verify admin session via token
     const authHeader = request.headers.get('Authorization');
     const user = await getAdminUserFromToken(authHeader);
-    if (!user || user.email !== 'admin@digitalstoretrujillo.com') {
+    if (!user || user.email !== 'admin@digitalstoretrujillo.store') {
         return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
 
@@ -21,7 +21,7 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         // Perform updates in parallel
-        const updatePromises = items.map(item => 
+        const updatePromises = items.map(item =>
             supabaseAdmin
                 .from('products')
                 .update({ sort_order: item.sort_order })

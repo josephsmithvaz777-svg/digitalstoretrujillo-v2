@@ -8,7 +8,7 @@ export const POST: APIRoute = async ({ request }) => {
         const adminUser = await getAdminUserFromToken(authHeader);
 
         // Simple check - you might want to verify if the user email matches your admin email
-        if (!adminUser || adminUser.email !== 'admin@digitalstoretrujillo.com') {
+        if (!adminUser || adminUser.email !== 'admin@digitalstoretrujillo.store') {
             return new Response(JSON.stringify({ error: 'No autorizado' }), { status: 401 });
         }
 

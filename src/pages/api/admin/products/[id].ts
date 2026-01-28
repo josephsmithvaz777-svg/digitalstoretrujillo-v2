@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ params, request }) => {
     const user = await getAdminUserFromToken(authHeader);
     console.log('👤 [GET] User from token:', user ? user.email : 'No user');
 
-    if (!user || user.email !== 'admin@digitalstoretrujillo.com') {
+    if (!user || user.email !== 'admin@digitalstoretrujillo.store') {
         console.error('❌ [GET] Unauthorized access attempt');
         return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
@@ -54,15 +54,15 @@ export const PUT: APIRoute = async ({ params, request }) => {
 
     const user = await getAdminUserFromToken(authHeader);
     console.log('👤 User from token:', user ? user.email : 'No user');
-    console.log('✅ Expected admin email: admin@digitalstoretrujillo.com');
+    console.log('✅ Expected admin email: admin@digitalstoretrujillo.store');
 
     if (!user) {
         console.error('❌ No user found from token');
         return new Response(JSON.stringify({ error: 'Unauthorized - No user found' }), { status: 401 });
     }
 
-    if (user.email !== 'admin@digitalstoretrujillo.com') {
-        console.error('❌ User email mismatch:', user.email, '!== admin@digitalstoretrujillo.com');
+    if (user.email !== 'admin@digitalstoretrujillo.store') {
+        console.error('❌ User email mismatch:', user.email, '!== admin@digitalstoretrujillo.store');
         return new Response(JSON.stringify({
             error: 'Unauthorized - Invalid admin user',
             userEmail: user.email
