@@ -457,7 +457,10 @@ const description = "Choose your payment method";
                                 >qr_code_2</span
                             >
                         </div>
-                        <h2 class="text-2xl font-black text-white">
+                        <h2
+                            class="text-2xl font-black text-white"
+                            data-i18n="pay_yape_title"
+                        >
                             Pay with Yape
                         </h2>
                     </div>
@@ -479,6 +482,7 @@ const description = "Choose your payment method";
                     >
                         <h3
                             class="text-white font-bold text-sm mb-3 flex items-center gap-2"
+                            data-i18n="pay_yape_how_to_pay"
                         >
                             <span
                                 class="material-symbols-outlined text-[#722F91] text-lg"
@@ -489,20 +493,20 @@ const description = "Choose your payment method";
                         <ol class="space-y-2 text-text-muted text-xs">
                             <li class="flex gap-2">
                                 <span class="text-[#722F91] font-bold">1.</span>
-                                <span
+                                <span data-i18n="pay_yape_step1"
                                     >Scan the QR code or send to the phone
                                     number</span
                                 >
                             </li>
                             <li class="flex gap-2">
                                 <span class="text-[#722F91] font-bold">2.</span>
-                                <span
+                                <span data-i18n="pay_yape_step2"
                                     >Complete the payment in your Yape app</span
                                 >
                             </li>
                             <li class="flex gap-2">
                                 <span class="text-[#722F91] font-bold">3.</span>
-                                <span
+                                <span data-i18n="pay_yape_step3"
                                     >Upload screenshot and reference code below</span
                                 >
                             </li>
@@ -524,6 +528,7 @@ const description = "Choose your payment method";
                             </div>
                             <div
                                 class="absolute -top-2 -right-2 bg-[#722F91] text-white px-2 py-1 rounded-full text-xs font-bold"
+                                data-i18n="pay_yape_scan_me"
                             >
                                 Scan Me
                             </div>
@@ -534,7 +539,10 @@ const description = "Choose your payment method";
                             <div
                                 class="bg-background-dark rounded-lg p-3 border border-border-dark"
                             >
-                                <p class="text-text-muted text-xs mb-1">
+                                <p
+                                    class="text-text-muted text-xs mb-1"
+                                    data-i18n="pay_yape_number"
+                                >
                                     Yape Number
                                 </p>
                                 <div class="flex items-center justify-between">
@@ -557,7 +565,10 @@ const description = "Choose your payment method";
                             <div
                                 class="bg-background-dark rounded-lg p-3 border border-border-dark"
                             >
-                                <p class="text-text-muted text-xs mb-1">
+                                <p
+                                    class="text-text-muted text-xs mb-1"
+                                    data-i18n="pay_yape_account_holder"
+                                >
                                     Account Holder
                                 </p>
                                 <p class="text-white font-bold text-sm">
@@ -568,7 +579,10 @@ const description = "Choose your payment method";
                             <div
                                 class="bg-background-dark rounded-lg p-3 border border-border-dark"
                             >
-                                <p class="text-text-muted text-xs mb-1">
+                                <p
+                                    class="text-text-muted text-xs mb-1"
+                                    data-i18n="pay_yape_amount"
+                                >
                                     Amount to Pay
                                 </p>
                                 <p
@@ -587,6 +601,7 @@ const description = "Choose your payment method";
                         <div>
                             <label
                                 class="block text-white text-sm font-medium mb-2"
+                                data-i18n="pay_yape_screenshot"
                             >
                                 Payment Screenshot <span class="text-primary"
                                     >*</span
@@ -611,6 +626,7 @@ const description = "Choose your payment method";
                                 >
                                 <span
                                     class="text-text-muted group-hover:text-white text-sm"
+                                    data-i18n="pay_yape_click_upload"
                                     >Click to upload</span
                                 >
                             </button>
@@ -630,7 +646,9 @@ const description = "Choose your payment method";
                                         class="material-symbols-outlined text-sm"
                                         >delete</span
                                     >
-                                    Remove
+                                    <span data-i18n="pay_yape_remove"
+                                        >Remove</span
+                                    >
                                 </button>
                             </div>
                         </div>
@@ -640,8 +658,9 @@ const description = "Choose your payment method";
                             <label
                                 for="yape-reference"
                                 class="block text-white text-sm font-medium mb-2"
+                                data-i18n="pay_yape_reference"
                             >
-                                Reference Code (6 digits) <span
+                                Security Code (3 digits) <span
                                     class="text-primary">*</span
                                 >
                             </label>
@@ -649,10 +668,10 @@ const description = "Choose your payment method";
                                 type="text"
                                 id="yape-reference"
                                 name="referenceCode"
-                                placeholder="000000"
+                                placeholder="000"
                                 class="w-full rounded-lg bg-background-dark border border-border-dark text-white px-4 py-3 focus:border-[#722F91] focus:ring-1 focus:ring-[#722F91] placeholder:text-text-muted transition-colors text-center text-lg font-bold tracking-widest"
-                                maxlength="6"
-                                pattern="[0-9]{6}"
+                                maxlength="3"
+                                pattern="[0-9]{3}"
                                 required
                             />
                         </div>
@@ -666,7 +685,10 @@ const description = "Choose your payment method";
                                 >schedule</span
                             >
                             <div class="flex-1">
-                                <p class="text-white text-xs font-bold">
+                                <p
+                                    class="text-white text-xs font-bold"
+                                    data-i18n="pay_yape_timer"
+                                >
                                     Time remaining
                                 </p>
                                 <p
@@ -686,7 +708,9 @@ const description = "Choose your payment method";
                             <span class="material-symbols-outlined"
                                 >check_circle</span
                             >
-                            Submit Payment Proof
+                            <span data-i18n="pay_yape_submit"
+                                >Submit Payment Proof</span
+                            >
                         </button>
                     </form>
                 </div>
