@@ -132,6 +132,7 @@ const description = `Search results for ${query} in our digital store.`;
                                     seller={product.seller ?? undefined}
                                     rating={product.rating}
                                     reviewCount={product.review_count}
+										stockQuantity={product.stock_quantity}
                                     productUrl={`/product/${product.slug}`}
                                     inStock={product.in_stock}
                                 />

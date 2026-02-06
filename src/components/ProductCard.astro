@@ -21,6 +21,7 @@ interface Props {
     seller?: string;
     rating?: number;
     reviewCount?: number;
+    stockQuantity?: number;
     inStock?: boolean;
     productUrl?: string;
 }
@@ -47,6 +48,7 @@ const {
     seller = "DigitalStore",
     rating = 5,
     reviewCount = 0,
+    stockQuantity = 0,
     inStock = true,
     productUrl = "/product",
 } = Astro.props;
@@ -123,7 +125,7 @@ const {
                 <span class="material-symbols-outlined text-sm"
                     >inventory_2</span
                 >
-                {reviewCount}
+                {stockQuantity}
             </span>
         </div>
 
