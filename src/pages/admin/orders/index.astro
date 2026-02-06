@@ -226,13 +226,7 @@ const orders = await getAllOrders();
                                     </td>
                                     <td class="px-6 py-4">
                                         <p class="text-white font-bold">
-                                            {order.payment_method ===
-                                                "paypal" ||
-                                            order.payment_method ===
-                                                "binance" ||
-                                            order.payment_method ===
-                                                "cryptomus" ||
-                                            order.payment_method === "whop"
+                                            {order.currency === "USD"
                                                 ? `$ ${Number(order.total).toFixed(2)} USD`
                                                 : `S/ ${Number(order.total).toFixed(2)}`}
                                         </p>

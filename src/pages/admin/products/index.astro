@@ -14,7 +14,9 @@ const products = await getAllProducts();
     </div>
 
     <!-- Header with Actions -->
-    <div class="flex items-center justify-between mb-6">
+    <div
+        class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4"
+    >
         <div>
             <h1 class="text-white text-2xl font-bold mb-1">Productos</h1>
             <p class="text-text-muted text-sm">
@@ -23,10 +25,11 @@ const products = await getAllProducts();
         </div>
         <a
             href="/admin/products/new"
-            class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20"
+            class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-red-700 text-white font-bold rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-primary/20 w-full sm:w-auto justify-center"
         >
             <span class="material-symbols-outlined">add</span>
-            Nuevo Producto
+            <span class="hidden sm:inline">Nuevo Producto</span>
+            <span class="sm:hidden">Nuevo</span>
         </a>
     </div>
 
@@ -38,24 +41,24 @@ const products = await getAllProducts();
             <table class="w-full">
                 <thead class="bg-background-dark border-b border-border-dark">
                     <tr>
-                        <th class="w-10 px-6 py-4"></th>
+                        <th class="w-10 px-2 sm:px-6 py-4"></th>
                         <th
-                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                            class="px-2 sm:px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
                             Producto
                         </th>
                         <th
-                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                            class="hidden md:table-cell px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
                             Categoría
                         </th>
                         <th
-                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                            class="px-2 sm:px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
                             Precio
                         </th>
                         <th
-                            class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+                            class="hidden lg:table-cell px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
                             Stock
                         </th>
@@ -65,7 +68,7 @@ const products = await getAllProducts();
                             Orden
                         </th>
                         <th
-                            class="px-6 py-4 text-right text-xs font-bold text-text-muted uppercase tracking-wider"
+                            class="px-2 sm:px-6 py-4 text-right text-xs font-bold text-text-muted uppercase tracking-wider"
                         >
                             Acciones
                         </th>
@@ -95,51 +98,81 @@ const products = await getAllProducts();
                             </tr>
                         ) : (
                             products.map((product) => (
-                                <tr class="hover:bg-background-dark/50 transition-colors group draggable-row cursor-grab active:cursor-grabbing" draggable="true" data-id={product.id}>
-                                    <td class="px-6 py-4 text-text-muted">
-                                        <span class="material-symbols-outlined cursor-grab active:cursor-grabbing hover:text-white transition-colors">drag_indicator</span>
+                                <tr
+                                    class="hover:bg-background-dark/50 transition-colors group draggable-row cursor-grab active:cursor-grabbing"
+                                    draggable="true"
+                                    data-id={product.id}
+                                >
+                                    <td class="px-2 sm:px-6 py-4 text-text-muted">
+                                        <span class="material-symbols-outlined cursor-grab active:cursor-grabbing hover:text-white transition-colors text-[20px]">
+                                            drag_indicator
+                                        </span>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-3">
+                                    <td class="px-2 sm:px-6 py-4">
+                                        <div class="flex items-center gap-2 sm:gap-3">
                                             <img
                                                 src={product.image}
                                                 alt={product.title}
-                                                class="w-12 h-12 object-cover rounded-lg"
+                                                class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg"
                                             />
-                                            <div>
-                                                <p class="text-white font-medium flex items-center gap-2">
-                                                    {product.title}
+                                            <div class="min-w-0">
+                                                <p class="text-white font-medium flex items-center gap-1 sm:gap-2 text-sm sm:text-base truncate">
+                                                    <span class="truncate">
+                                                        {product.title}
+                                                    </span>
                                                     {product.is_featured && (
-                                                        <span class="material-symbols-outlined text-yellow-400 text-[16px]" title="Destacado">star</span>
+                                                        <span
+                                                            class="material-symbols-outlined text-yellow-400 text-[16px] flex-shrink-0"
+                                                            title="Destacado"
+                                                        >
+                                                            star
+                                                        </span>
                                                     )}
                                                 </p>
-                                                <p class="text-text-muted text-sm">
+                                                <p class="text-text-muted text-xs hidden sm:block truncate">
                                                     {product.slug}
                                                 </p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="hidden md:table-cell px-6 py-4">
                                         <span class="text-white">
                                             {product.category}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-2 sm:px-6 py-4">
                                         <div>
-                                            <p class="text-white font-bold">
-                                                S/ {product.price.toFixed(2)}
-                                            </p>
-                                            {product.original_price && (
-                                                <p class="text-text-muted text-sm line-through">
+                                            {product.price_pen && (
+                                                <p class="text-white font-bold text-sm sm:text-base">
                                                     S/{" "}
-                                                    {product.original_price.toFixed(
+                                                    {product.price_pen.toFixed(
                                                         2,
                                                     )}
                                                 </p>
                                             )}
+                                            <p class="text-text-muted text-xs">
+                                                $ {product.price.toFixed(2)}
+                                            </p>
+                                            {product.original_price_pen && (
+                                                <p class="text-text-muted text-xs line-through hidden sm:block">
+                                                    S/{" "}
+                                                    {product.original_price_pen.toFixed(
+                                                        2,
+                                                    )}
+                                                </p>
+                                            )}
+                                            {product.original_price &&
+                                                !product.original_price_pen && (
+                                                    <p class="text-text-muted text-xs line-through hidden sm:block">
+                                                        ${" "}
+                                                        {product.original_price.toFixed(
+                                                            2,
+                                                        )}
+                                                    </p>
+                                                )}
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="hidden lg:table-cell px-6 py-4">
                                         <span
                                             class={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${
                                                 product.stock_quantity === 0
@@ -199,38 +232,38 @@ const products = await getAllProducts();
                                                 : "Inactivo"}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center justify-end gap-2">
+                                    <td class="px-2 sm:px-6 py-4">
+                                        <div class="flex items-center justify-end gap-1 sm:gap-2">
                                             <a
                                                 href={`/admin/products/${product.id}/edit`}
-                                                class="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
+                                                class="p-1.5 sm:p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                                                 title="Editar"
                                             >
-                                                <span class="material-symbols-outlined text-[20px]">
+                                                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">
                                                     edit
                                                 </span>
                                             </a>
                                             <button
-                                                class="duplicate-btn p-2 text-text-muted hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-all"
+                                                class="duplicate-btn p-1.5 sm:p-2 text-text-muted hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-all"
                                                 data-product-id={product.id}
                                                 data-product-name={
                                                     product.title
                                                 }
                                                 title="Duplicar"
                                             >
-                                                <span class="material-symbols-outlined text-[20px]">
+                                                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">
                                                     content_copy
                                                 </span>
                                             </button>
                                             <button
-                                                class="delete-btn p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                                                class="delete-btn p-1.5 sm:p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                                                 data-product-id={product.id}
                                                 data-product-name={
                                                     product.title
                                                 }
                                                 title="Eliminar"
                                             >
-                                                <span class="material-symbols-outlined text-[20px]">
+                                                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">
                                                     delete
                                                 </span>
                                             </button>
@@ -299,8 +332,8 @@ const products = await getAllProducts();
         // Toast functionality
         function showToast(
             message: string,
-            type: "success" | "error" = "success",
-            duration: number = 3000
+            type: "success" | "error" | "info" = "success",
+            duration: number = 3000,
         ) {
             const container = document.getElementById("toast-container");
             if (!container) return;
@@ -312,13 +345,18 @@ const products = await getAllProducts();
                 ${
                     type === "success"
                         ? "bg-green-500/10 border-green-500/20 text-green-400"
-                        : type === "info" 
+                        : type === "info"
                           ? "bg-blue-500/10 border-blue-500/20 text-blue-400"
                           : "bg-red-500/10 border-red-500/20 text-red-400"
                 }
             `;
 
-            const icon = type === "success" ? "check_circle" : type === "info" ? "info" : "error";
+            const icon =
+                type === "success"
+                    ? "check_circle"
+                    : type === "info"
+                      ? "info"
+                      : "error";
 
             toast.innerHTML = `
                 <span class="material-symbols-outlined">${icon}</span>
@@ -345,73 +383,76 @@ const products = await getAllProducts();
         }
 
         // --- DRAG AND DROP LOGIC (Optimized) ---
-        const tableBody = document.querySelector('tbody');
+        const tableBody = document.querySelector("tbody");
         let draggedItem: HTMLElement | null = null;
         let placeholder: HTMLElement | null = null;
         let isDragging = false;
 
         if (tableBody) {
             // Drag Start
-            tableBody.addEventListener('dragstart', (e) => {
+            tableBody.addEventListener("dragstart", (e) => {
                 const target = e.target as HTMLElement;
                 // Allow dragging from the handle OR the row
-                const row = target.closest('tr');
-                
-                if (!row || !row.classList.contains('draggable-row')) {
+                const row = target.closest("tr");
+
+                if (!row || !row.classList.contains("draggable-row")) {
                     e.preventDefault();
                     return;
                 }
 
                 isDragging = true;
                 draggedItem = row;
-                
+
                 // Important: Set dataTransfer to allow drag
-                e.dataTransfer!.effectAllowed = 'move';
-                e.dataTransfer!.setData('text/plain', row.dataset.id || '');
-                
+                e.dataTransfer!.effectAllowed = "move";
+                e.dataTransfer!.setData("text/plain", row.dataset.id || "");
+
                 // Create custom ghost image to avoid the "transparent row" effect being too confusing
                 // or just rely on browser default but style the original row
-                
+
                 // Defer style change to keep the drag image opaque
                 requestAnimationFrame(() => {
                     if (draggedItem) {
-                        draggedItem.classList.add('opacity-0'); // Hide original while dragging
+                        draggedItem.classList.add("opacity-0"); // Hide original while dragging
                         // Create placeholder
-                        placeholder = document.createElement('tr');
+                        placeholder = document.createElement("tr");
                         placeholder.innerHTML = `<td colspan="100%" class="h-[80px] bg-primary/10 border-2 border-dashed border-primary/50 rounded-lg"></td>`;
                         // Insert placeholder after current item
-                        draggedItem.parentNode?.insertBefore(placeholder, draggedItem.nextSibling);
+                        draggedItem.parentNode?.insertBefore(
+                            placeholder,
+                            draggedItem.nextSibling,
+                        );
                     }
                 });
             });
 
             // Drag End
-            tableBody.addEventListener('dragend', (e) => {
+            tableBody.addEventListener("dragend", (e) => {
                 isDragging = false;
                 if (draggedItem) {
-                    draggedItem.classList.remove('opacity-0');
-                    draggedItem.style.display = ''; // Ensure visibility
+                    draggedItem.classList.remove("opacity-0");
+                    draggedItem.style.display = ""; // Ensure visibility
                 }
-                
+
                 // Remove placeholder
                 if (placeholder && placeholder.parentNode) {
                     placeholder.parentNode.removeChild(placeholder);
                 }
-                
+
                 draggedItem = null;
                 placeholder = null;
-                
+
                 // Trigger save
                 saveNewOrder();
             });
 
             // Drag Over
-            tableBody.addEventListener('dragover', (e) => {
+            tableBody.addEventListener("dragover", (e) => {
                 e.preventDefault(); // Allow drop
                 if (!isDragging || !draggedItem || !placeholder) return;
 
                 const afterElement = getDragAfterElement(tableBody, e.clientY);
-                
+
                 // Move placeholder, not the dragged item itself yet
                 if (afterElement == null) {
                     tableBody.appendChild(draggedItem);
@@ -419,39 +460,46 @@ const products = await getAllProducts();
                     tableBody.insertBefore(draggedItem, afterElement);
                 }
             });
-            
+
             // Drop (safeguard)
-            tableBody.addEventListener('drop', (e) => {
+            tableBody.addEventListener("drop", (e) => {
                 e.preventDefault();
             });
         }
 
         function getDragAfterElement(container: Element, y: number) {
-            const draggableElements = [...container.querySelectorAll('.draggable-row:not(.opacity-0)')];
+            const draggableElements = [
+                ...container.querySelectorAll(".draggable-row:not(.opacity-0)"),
+            ];
 
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
+            return draggableElements.reduce(
+                (closest: any, child: any) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                },
+                { offset: Number.NEGATIVE_INFINITY },
+            ).element;
         }
 
         async function saveNewOrder() {
-            const items: { id: string, sort_order: number }[] = [];
-            const rows = document.querySelectorAll('.draggable-row');
-            
+            const items: { id: string; sort_order: number }[] = [];
+            const rows = document.querySelectorAll(".draggable-row");
+
             rows.forEach((row, index) => {
-                const input = row.querySelector('.sort-order-input') as HTMLInputElement;
+                const input = row.querySelector(
+                    ".sort-order-input",
+                ) as HTMLInputElement;
                 if (input) {
                     // Update the visual input too, for consistency
                     input.value = index.toString();
-                    
-                    const productId = input.getAttribute('data-product-id');
+
+                    const productId = input.getAttribute("data-product-id");
                     if (productId) {
                         items.push({ id: productId, sort_order: index });
                     }
@@ -461,16 +509,18 @@ const products = await getAllProducts();
             if (items.length === 0) return;
 
             showToast("Guardando nuevo orden...", "info", 2000);
-            
+
             try {
-                const { data: { session } } = await supabase.auth.getSession();
-                const res = await fetch('/api/admin/products/reorder', {
-                    method: 'POST',
+                const {
+                    data: { session },
+                } = await supabase.auth.getSession();
+                const res = await fetch("/api/admin/products/reorder", {
+                    method: "POST",
                     headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${session?.access_token}`
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session?.access_token}`,
                     },
-                    body: JSON.stringify({ items })
+                    body: JSON.stringify({ items }),
                 });
 
                 if (res.ok) {

@@ -86,6 +86,7 @@ export interface Order {
   created_at: string;
   updated_at: string;
   completed_at: string | null;
+  delivery_info: any | null;
 }
 
 // ============================================

@@ -125,7 +125,23 @@ const description = "Acceso al panel de administración";
     </main>
 
     <script>
-        import { signInAdmin } from "../../lib/supabase";
+        import { signInAdmin, supabase } from "../../lib/supabase";
+
+        // Check if admin is already logged in
+        (async () => {
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+            if (session) {
+                const {
+                    data: { user },
+                } = await supabase.auth.getUser();
+                if (user?.email === "admin@digitalstoretrujillo.store") {
+                    // Already logged in as admin, redirect to panel
+                    window.location.href = "/admin/products";
+                }
+            }
+        })();
 
         const form = document.getElementById("login-form") as HTMLFormElement;
         const emailInput = document.getElementById("email") as HTMLInputElement;
@@ -227,10 +243,10 @@ const description = "Acceso al panel de administración";
 
                 console.log("✅ Login successful for:", user.email);
 
-                // Success - redirect to store homepage
+                // Success - redirect to admin panel
                 // Add a small delay to ensure session is saved
                 setTimeout(() => {
-                    window.location.href = "/";
+                    window.location.href = "/admin/products";
                 }, 500);
             } catch (error: any) {
                 console.error("❌ Login failed:", error);

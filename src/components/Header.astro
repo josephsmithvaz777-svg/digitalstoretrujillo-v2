@@ -67,6 +67,17 @@ import CartIcon from "./CartIcon.astro";
                 data-i18n="nav_services"
                 href="/category/services">Services</a
             >
+            <!-- Admin Panel Link (Only visible for admin) -->
+            <a
+                id="admin-panel-link"
+                class="hidden text-primary text-sm font-bold leading-normal hover:text-red-400 transition-colors items-center gap-1"
+                href="/admin/products"
+            >
+                <span class="material-symbols-outlined text-[18px]"
+                    >admin_panel_settings</span
+                >
+                Admin
+            </a>
         </div>
         <div class="flex gap-2 items-center">
             <a
@@ -141,10 +152,11 @@ import CartIcon from "./CartIcon.astro";
     ) as HTMLAnchorElement;
     const authText = document.getElementById("auth-text");
     const logoutBtn = document.getElementById("header-logout-btn");
+    const adminPanelLink = document.getElementById("admin-panel-link");
 
     if (authButton && authText && logoutBtn) {
         // Function to update UI state
-        const updateUI = (session: any) => {
+        const updateUI = async (session: any) => {
             const t = useTranslation();
             if (session) {
                 authText.textContent = t("auth_account");
@@ -161,6 +173,18 @@ import CartIcon from "./CartIcon.astro";
                 // Show logout button
                 logoutBtn.classList.remove("hidden");
                 logoutBtn.classList.add("flex");
+
+                // Check if user is admin
+                const {
+                    data: { user },
+                } = await supabase.auth.getUser();
+                const isAdmin =
+                    user?.email === "admin@digitalstoretrujillo.store";
+
+                if (isAdmin && adminPanelLink) {
+                    adminPanelLink.classList.remove("hidden");
+                    adminPanelLink.classList.add("flex");
+                }
             } else {
                 authText.textContent = t("auth_signin");
                 authText.setAttribute("data-i18n", "auth_signin");
@@ -176,6 +200,12 @@ import CartIcon from "./CartIcon.astro";
                 // Hide logout button
                 logoutBtn.classList.add("hidden");
                 logoutBtn.classList.remove("flex");
+
+                // Hide admin panel link
+                if (adminPanelLink) {
+                    adminPanelLink.classList.add("hidden");
+                    adminPanelLink.classList.remove("flex");
+                }
             }
         };
 
