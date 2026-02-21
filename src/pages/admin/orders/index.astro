@@ -385,6 +385,21 @@ const orders = await getAllOrders();
                                                 </span>
                                             </button>
                                             <button
+                                                class="transfer-order-btn p-2 text-text-muted hover:text-blue-400 hover:bg-blue-400/10 rounded-lg transition-all"
+                                                data-order-id={order.id}
+                                                data-order-number={
+                                                    order.order_number
+                                                }
+                                                data-customer-name={
+                                                    order.customer_name
+                                                }
+                                                title="Transferir a otro usuario"
+                                            >
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    manage_accounts
+                                                </span>
+                                            </button>
+                                            <button
                                                 class="delete-order-btn p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                                                 data-order-id={order.id}
                                                 title="Eliminar Orden"
@@ -655,6 +670,94 @@ const orders = await getAllOrders();
         </div>
     </div>
 
+    <!-- Transfer Order Modal -->
+    <div
+        id="transfer-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            class="bg-card-dark border border-border-dark rounded-xl max-w-md w-full p-6"
+        >
+            <div class="flex items-center gap-3 mb-5">
+                <div
+                    class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center"
+                >
+                    <span
+                        class="material-symbols-outlined text-blue-400 text-xl"
+                        >manage_accounts</span
+                    >
+                </div>
+                <div>
+                    <h2 class="text-white text-lg font-bold">
+                        Transferir Orden
+                    </h2>
+                    <p
+                        id="transfer-order-label"
+                        class="text-text-muted text-xs"
+                    >
+                        Orden #—
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="bg-background-dark border border-border-dark rounded-lg p-4 mb-5"
+            >
+                <p class="text-text-muted text-xs leading-relaxed">
+                    Ingresa el <strong class="text-white">email exacto</strong> de
+                    la cuenta del cliente. La orden se vinculará a ese usuario y aparecerá
+                    en su
+                    <strong class="text-white">historial de órdenes</strong>.
+                </p>
+            </div>
+
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-white mb-2">
+                    Email del usuario destino
+                </label>
+                <div class="relative">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-muted text-[18px]"
+                        >email</span
+                    >
+                    <input
+                        type="email"
+                        id="transfer-email-input"
+                        placeholder="cliente@email.com"
+                        class="w-full pl-10 pr-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    />
+                </div>
+                <p
+                    id="transfer-error"
+                    class="hidden mt-2 text-xs text-red-400 flex items-center gap-1"
+                >
+                    <span class="material-symbols-outlined text-[14px]"
+                        >error</span
+                    >
+                    <span id="transfer-error-msg"></span>
+                </p>
+            </div>
+
+            <div class="flex gap-3">
+                <button
+                    id="cancel-transfer"
+                    class="flex-1 px-4 py-2.5 bg-background-dark hover:bg-background-dark/50 text-white font-medium rounded-lg transition-all"
+                >
+                    Cancelar
+                </button>
+                <button
+                    id="confirm-transfer"
+                    class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2"
+                >
+                    <span class="material-symbols-outlined text-[18px]"
+                        >sync_alt</span
+                    >
+                    Transferir
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div
         id="toast"
@@ -819,6 +922,7 @@ const orders = await getAllOrders();
         let orderToUpdate: string | null = null;
         let orderToDelete: string | null = null;
         let orderToDeliver: string | null = null;
+        let orderToTransfer: string | null = null;
 
         // --- Bulk Actions Logic ---
         const selectAllCheckbox = document.getElementById(
@@ -1338,6 +1442,93 @@ const orders = await getAllOrders();
             }
         });
 
+        // --- Transfer Order Logic ---
+        const transferModal = document.getElementById("transfer-modal");
+        const transferEmailInput = document.getElementById(
+            "transfer-email-input",
+        ) as HTMLInputElement;
+        const transferOrderLabel = document.getElementById(
+            "transfer-order-label",
+        );
+        const transferError = document.getElementById("transfer-error");
+        const transferErrorMsg = document.getElementById("transfer-error-msg");
+        const cancelTransferBtn = document.getElementById("cancel-transfer");
+        const confirmTransferBtn = document.getElementById(
+            "confirm-transfer",
+        ) as HTMLButtonElement;
+
+        document.querySelectorAll(".transfer-order-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const orderId = btn.getAttribute("data-order-id");
+                const orderNum = btn.getAttribute("data-order-number");
+                const customerName = btn.getAttribute("data-customer-name");
+                if (orderId) {
+                    orderToTransfer = orderId;
+                    if (transferOrderLabel)
+                        transferOrderLabel.textContent = `Orden ${orderNum} · ${customerName}`;
+                    if (transferEmailInput) transferEmailInput.value = "";
+                    if (transferError) transferError.classList.add("hidden");
+                    transferModal?.classList.remove("hidden");
+                    setTimeout(() => transferEmailInput?.focus(), 100);
+                }
+            });
+        });
+
+        const closeTransferModal = () => {
+            transferModal?.classList.add("hidden");
+            orderToTransfer = null;
+        };
+        cancelTransferBtn?.addEventListener("click", closeTransferModal);
+
+        confirmTransferBtn?.addEventListener("click", async () => {
+            if (!orderToTransfer) return;
+            const email = transferEmailInput?.value.trim();
+            if (!email) {
+                if (transferError) transferError.classList.remove("hidden");
+                if (transferErrorMsg)
+                    transferErrorMsg.textContent =
+                        "Por favor ingresa el email del usuario destino.";
+                return;
+            }
+
+            const originalHTML = confirmTransferBtn.innerHTML;
+            confirmTransferBtn.disabled = true;
+            confirmTransferBtn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span> Transfiriendo...`;
+            if (transferError) transferError.classList.add("hidden");
+
+            try {
+                const session = await supabase.auth.getSession();
+                const response = await fetch("/api/admin/orders/transfer", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session.data.session?.access_token}`,
+                    },
+                    body: JSON.stringify({
+                        orderId: orderToTransfer,
+                        targetEmail: email,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error || "Error al transferir la orden",
+                    );
+                }
+
+                closeTransferModal();
+                showToast(data.message || "Orden transferida correctamente.");
+            } catch (error: any) {
+                if (transferError) transferError.classList.remove("hidden");
+                if (transferErrorMsg)
+                    transferErrorMsg.textContent = error.message;
+                confirmTransferBtn.disabled = false;
+                confirmTransferBtn.innerHTML = originalHTML;
+            }
+        });
+
         // Close modals on backdrop click
         window.addEventListener("click", (e) => {
             if (e.target === statusModal) {
@@ -1358,6 +1549,9 @@ const orders = await getAllOrders();
             if (e.target === deliveryModal) {
                 deliveryModal?.classList.add("hidden");
                 orderToDeliver = null;
+            }
+            if (e.target === transferModal) {
+                closeTransferModal();
             }
         });
 
