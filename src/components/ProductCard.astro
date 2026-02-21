@@ -123,7 +123,7 @@ const {
             <span class="text-border-dark">•</span>
             <span class="text-text-muted flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm"
-                    >inventory_2</span
+                    >deployed_code</span
                 >
                 {stockQuantity}
             </span>
@@ -145,8 +145,15 @@ const {
                 <div class="flex items-center gap-2">
                     <div class="flex text-[#FFD700]">
                         {[...Array(5)].map((_, i) => (
-                            <span class="material-symbols-outlined text-sm fill-1">
-                                {i < rating ? "star" : "star_outline"}
+                            <span
+                                class="material-symbols-outlined text-sm"
+                                style={
+                                    i < rating
+                                        ? "font-variation-settings: 'FILL' 1"
+                                        : ""
+                                }
+                            >
+                                star
                             </span>
                         ))}
                     </div>
