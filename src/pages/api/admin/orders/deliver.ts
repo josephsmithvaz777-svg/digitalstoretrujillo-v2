@@ -20,8 +20,9 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await request.json();
     const { orderId, deliveryInfo, updateStatus } = body;
 
-    if (!orderId || !deliveryInfo) {
-      return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400 });
+    // deliveryInfo can be null (to clear credentials) — only orderId is required
+    if (!orderId) {
+      return new Response(JSON.stringify({ error: "Missing orderId" }), { status: 400 });
     }
 
     // 3. Prepare Update Data

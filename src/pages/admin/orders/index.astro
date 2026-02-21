@@ -555,12 +555,67 @@ const orders = await getAllOrders();
                 <h2 class="text-white text-xl font-bold">
                     Entregar Credenciales
                 </h2>
-                <button
-                    id="close-delivery-modal"
-                    class="text-text-muted hover:text-white"
-                >
-                    <span class="material-symbols-outlined">close</span>
-                </button>
+                <div class="flex items-center gap-2">
+                    <!-- Clear credentials button - only shown when order already has delivery info -->
+                    <button
+                        type="button"
+                        id="clear-credentials-btn"
+                        class="hidden items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-orange-400 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/20 rounded-lg transition-all"
+                        title="Limpiar credenciales vencidas"
+                    >
+                        <span class="material-symbols-outlined text-[16px]"
+                            >cleaning_services</span
+                        >
+                        Limpiar Credenciales
+                    </button>
+                    <button
+                        id="close-delivery-modal"
+                        class="text-text-muted hover:text-white"
+                    >
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inline clear confirmation (hidden by default) -->
+            <div
+                id="clear-credentials-confirm"
+                class="hidden mb-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl"
+            >
+                <div class="flex items-start gap-3">
+                    <span
+                        class="material-symbols-outlined text-orange-400 text-xl mt-0.5"
+                        >warning</span
+                    >
+                    <div class="flex-1">
+                        <p class="text-white font-bold text-sm mb-1">
+                            ¿Limpiar credenciales de esta orden?
+                        </p>
+                        <p class="text-text-muted text-xs mb-3">
+                            Esto elimina las credenciales vencidas del historial
+                            del cliente. La orden quedará sin credenciales hasta
+                            que entregues las nuevas.
+                        </p>
+                        <div class="flex gap-2">
+                            <button
+                                id="confirm-clear-credentials"
+                                class="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg transition-all flex items-center gap-1"
+                            >
+                                <span
+                                    class="material-symbols-outlined text-[14px]"
+                                    >check</span
+                                >
+                                Sí, limpiar
+                            </button>
+                            <button
+                                id="cancel-clear-credentials"
+                                class="px-3 py-1.5 bg-background-dark hover:bg-border-dark text-white text-xs font-medium rounded-lg transition-all"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <form id="delivery-form" class="space-y-6">
@@ -1037,6 +1092,19 @@ const orders = await getAllOrders();
         });
 
         // Open Delivery Modal
+        const clearCredentialsBtn = document.getElementById(
+            "clear-credentials-btn",
+        );
+        const clearCredentialsConfirm = document.getElementById(
+            "clear-credentials-confirm",
+        );
+        const confirmClearBtn = document.getElementById(
+            "confirm-clear-credentials",
+        );
+        const cancelClearBtn = document.getElementById(
+            "cancel-clear-credentials",
+        );
+
         document.querySelectorAll(".deliver-order-btn").forEach((btn) => {
             btn.addEventListener("click", () => {
                 const orderId = btn.getAttribute("data-order-id");
@@ -1047,6 +1115,24 @@ const orders = await getAllOrders();
                     orderToDeliver = orderId;
                     const items = JSON.parse(itemsRaw);
                     const existingInfo = JSON.parse(deliveryInfoRaw || "[]");
+
+                    // Show/hide 'Limpiar Credenciales' button based on whether info exists
+                    const hasExistingInfo =
+                        existingInfo.length > 0 &&
+                        existingInfo.some(
+                            (d: any) => d.account_email || d.account_password,
+                        );
+                    if (clearCredentialsBtn) {
+                        if (hasExistingInfo) {
+                            clearCredentialsBtn.classList.remove("hidden");
+                            clearCredentialsBtn.classList.add("flex");
+                        } else {
+                            clearCredentialsBtn.classList.add("hidden");
+                            clearCredentialsBtn.classList.remove("flex");
+                        }
+                    }
+                    // Hide confirm panel if it was left open
+                    clearCredentialsConfirm?.classList.add("hidden");
 
                     deliveryItemsContainer.innerHTML = items
                         .map((item: any, index: number) => {
@@ -1266,9 +1352,58 @@ const orders = await getAllOrders();
         const closeDelivery = () => {
             deliveryModal?.classList.add("hidden");
             orderToDeliver = null;
+            clearCredentialsConfirm?.classList.add("hidden");
+            clearCredentialsBtn?.classList.add("hidden");
+            clearCredentialsBtn?.classList.remove("flex");
         };
         closeDeliveryBtn?.addEventListener("click", closeDelivery);
         cancelDeliveryBtn?.addEventListener("click", closeDelivery);
+
+        // Clear credentials logic
+        clearCredentialsBtn?.addEventListener("click", () => {
+            clearCredentialsConfirm?.classList.remove("hidden");
+        });
+
+        cancelClearBtn?.addEventListener("click", () => {
+            clearCredentialsConfirm?.classList.add("hidden");
+        });
+
+        confirmClearBtn?.addEventListener("click", async () => {
+            if (!orderToDeliver) return;
+
+            const originalHTML = confirmClearBtn.innerHTML;
+            (confirmClearBtn as HTMLButtonElement).disabled = true;
+            confirmClearBtn.innerHTML = `<span class="material-symbols-outlined text-[14px]">progress_activity</span> Limpiando...`;
+
+            try {
+                const session = await supabase.auth.getSession();
+                const response = await fetch("/api/admin/orders/deliver", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session.data.session?.access_token}`,
+                    },
+                    body: JSON.stringify({
+                        orderId: orderToDeliver,
+                        deliveryInfo: null,
+                        updateStatus: false,
+                    }),
+                });
+
+                if (response.ok) {
+                    closeDelivery();
+                    showToast(
+                        "Credenciales eliminadas correctamente. El cliente ya no las verá.",
+                    );
+                } else {
+                    throw new Error("Error al limpiar credenciales");
+                }
+            } catch (error: any) {
+                showToast(error.message, "error");
+                (confirmClearBtn as HTMLButtonElement).disabled = false;
+                confirmClearBtn.innerHTML = originalHTML;
+            }
+        });
 
         // Open proof modal
         document.querySelectorAll(".view-proof-btn").forEach((btn) => {
