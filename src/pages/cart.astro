@@ -212,6 +212,92 @@ const description = "Review your digital items before checkout";
         </div>
     </main>
 
+    <!-- Login Required Modal -->
+    <div
+        id="auth-required-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+        <div
+            id="auth-modal-content"
+            class="bg-card-dark border border-border-dark rounded-2xl max-w-sm w-full p-6 shadow-2xl transform transition-all duration-300 scale-95 opacity-0"
+        >
+            <!-- Icon -->
+            <div class="flex flex-col items-center text-center mb-5">
+                <div
+                    class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4"
+                >
+                    <span
+                        class="material-symbols-outlined text-primary text-3xl"
+                        >account_circle</span
+                    >
+                </div>
+                <h2 class="text-white text-xl font-bold mb-2">
+                    ¡Crea una cuenta primero!
+                </h2>
+                <p class="text-text-muted text-sm leading-relaxed">
+                    Para comprar necesitas tener una cuenta. Así podrás ver tu
+                    historial de órdenes y recibir tus credenciales
+                    directamente.
+                </p>
+            </div>
+
+            <!-- Benefits -->
+            <div
+                class="bg-background-dark border border-border-dark rounded-xl p-4 mb-5 space-y-2"
+            >
+                <div class="flex items-center gap-2 text-sm text-text-muted">
+                    <span
+                        class="material-symbols-outlined text-green-400 text-[18px]"
+                        >check_circle</span
+                    >
+                    <span>Accede a tu historial de órdenes</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-text-muted">
+                    <span
+                        class="material-symbols-outlined text-green-400 text-[18px]"
+                        >check_circle</span
+                    >
+                    <span>Recibe tus credenciales al instante</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-text-muted">
+                    <span
+                        class="material-symbols-outlined text-green-400 text-[18px]"
+                        >check_circle</span
+                    >
+                    <span>Proceso de compra más rápido</span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col gap-3">
+                <a
+                    href="/register"
+                    class="w-full py-3 bg-primary hover:bg-red-700 text-white rounded-xl font-bold text-center transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                >
+                    <span class="material-symbols-outlined text-[18px]"
+                        >person_add</span
+                    >
+                    Crear Cuenta Gratis
+                </a>
+                <a
+                    href="/login"
+                    class="w-full py-3 bg-background-dark hover:bg-border-dark text-white rounded-xl font-medium text-center transition-all border border-border-dark flex items-center justify-center gap-2"
+                >
+                    <span class="material-symbols-outlined text-[18px]"
+                        >login</span
+                    >
+                    Ya tengo cuenta — Iniciar Sesión
+                </a>
+                <button
+                    id="close-auth-modal"
+                    class="text-text-muted hover:text-white text-sm transition-colors"
+                >
+                    Continuar explorando
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Remove Item Confirmation Modal -->
     <div
         id="remove-item-modal"
@@ -268,7 +354,7 @@ const description = "Review your digital items before checkout";
         cartTotal,
         addToCart,
     } from "../stores/cart";
-    import { getFeaturedProducts } from "../lib/supabase";
+    import { getFeaturedProducts, supabase } from "../lib/supabase";
     import { initializeCurrency, userCurrency } from "../stores/currencyStore";
     import { getPrice, CURRENCIES } from "../lib/currency";
     import {
@@ -645,15 +731,53 @@ const description = "Review your digital items before checkout";
         updateTranslations();
     });
 
-    // Checkout button
+    // Auth-required modal
+    const authModal = document.getElementById("auth-required-modal");
+    const authModalContent = document.getElementById("auth-modal-content");
+    const closeAuthModalBtn = document.getElementById("close-auth-modal");
+
+    function openAuthModal() {
+        if (!authModal || !authModalContent) return;
+        authModal.classList.remove("hidden");
+        void authModalContent.offsetWidth;
+        setTimeout(() => {
+            authModalContent.classList.remove("scale-95", "opacity-0");
+            authModalContent.classList.add("scale-100", "opacity-100");
+        }, 10);
+    }
+
+    function closeAuthModal() {
+        if (!authModal || !authModalContent) return;
+        authModalContent.classList.remove("scale-100", "opacity-100");
+        authModalContent.classList.add("scale-95", "opacity-0");
+        setTimeout(() => authModal.classList.add("hidden"), 300);
+    }
+
+    closeAuthModalBtn?.addEventListener("click", closeAuthModal);
+    authModal?.addEventListener("click", (e) => {
+        if (e.target === authModal) closeAuthModal();
+    });
+
+    // Checkout button — verify session before proceeding
     const checkoutBtn = document.getElementById("checkout-btn");
     if (checkoutBtn) {
-        checkoutBtn.addEventListener("click", () => {
+        checkoutBtn.addEventListener("click", async () => {
             const items = cartItems.get();
             if (items.length === 0) {
                 alert("Your cart is empty!");
                 return;
             }
+
+            // Check if user is logged in
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+            if (!session) {
+                // Not logged in — show modal
+                openAuthModal();
+                return;
+            }
+
             window.location.href = "/checkout";
         });
     }
