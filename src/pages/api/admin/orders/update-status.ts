@@ -3,7 +3,7 @@ import { supabaseAdmin, getAdminUserFromToken } from '../../../../lib/supabase';
 
 export const POST: APIRoute = async ({ request }) => {
     try {
-        const { orderId, status, paymentStatus } = await request.json();
+        const { orderId, status, paymentStatus, paymentMethod } = await request.json();
         const authHeader = request.headers.get('Authorization');
         const adminUser = await getAdminUserFromToken(authHeader);
 
@@ -17,9 +17,13 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         // 1. Update Order in Database
+        const VALID_PAYMENT_METHODS = ['yape', 'binance', 'cryptomus', 'paypal'];
         const updateData: any = {};
         if (status) updateData.status = status;
         if (paymentStatus) updateData.payment_status = paymentStatus;
+        if (paymentMethod && VALID_PAYMENT_METHODS.includes(paymentMethod)) {
+            updateData.payment_method = paymentMethod;
+        }
 
         const { data: order, error: updateError } = await supabaseAdmin
             .from('orders')

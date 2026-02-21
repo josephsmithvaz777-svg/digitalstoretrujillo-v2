@@ -378,6 +378,9 @@ const orders = await getAllOrders();
                                                 data-current-status={
                                                     order.status
                                                 }
+                                                data-payment-method={
+                                                    order.payment_method
+                                                }
                                                 title="Actualizar Estado"
                                             >
                                                 <span class="material-symbols-outlined text-[20px]">
@@ -442,6 +445,21 @@ const orders = await getAllOrders();
                         <option value="processing">Procesando</option>
                         <option value="completed">Completado</option>
                         <option value="cancelled">Cancelado</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-white mb-2">
+                        Método de Pago
+                    </label>
+                    <select
+                        id="order-payment-method"
+                        class="w-full px-4 py-3 bg-background-dark border border-border-dark rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                        <option value="yape">Yape</option>
+                        <option value="binance">Binance Pay</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="cryptomus">Cryptomus</option>
                     </select>
                 </div>
             </div>
@@ -925,6 +943,10 @@ const orders = await getAllOrders();
             "order-status",
         ) as HTMLSelectElement;
 
+        const orderPaymentMethodSelect = document.getElementById(
+            "order-payment-method",
+        ) as HTMLSelectElement;
+
         const cancelUpdateBtn = document.getElementById(
             "cancel-update",
         ) as HTMLButtonElement;
@@ -1071,10 +1093,16 @@ const orders = await getAllOrders();
             btn.addEventListener("click", () => {
                 const orderId = btn.getAttribute("data-order-id");
                 const currentStatus = btn.getAttribute("data-current-status");
+                const currentPaymentMethod = btn.getAttribute(
+                    "data-payment-method",
+                );
 
                 if (orderId && currentStatus && orderStatusSelect) {
                     orderToUpdate = orderId;
                     orderStatusSelect.value = currentStatus;
+                    if (orderPaymentMethodSelect && currentPaymentMethod) {
+                        orderPaymentMethodSelect.value = currentPaymentMethod;
+                    }
                     statusModal?.classList.remove("hidden");
                 }
             });
@@ -1533,6 +1561,7 @@ const orders = await getAllOrders();
                         body: JSON.stringify({
                             orderId: orderToUpdate,
                             status: orderStatusSelect.value,
+                            paymentMethod: orderPaymentMethodSelect?.value,
                             // If we set to completed, we usually assume payment is verified
                             paymentStatus:
                                 orderStatusSelect.value === "completed"
