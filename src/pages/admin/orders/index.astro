@@ -867,12 +867,7 @@ const orders = await getAllOrders();
     </div>
 
     <script>
-        import {
-            supabase,
-            updateOrderStatus,
-            deleteOrder,
-            deleteOrders,
-        } from "../../../lib/supabase";
+        import { supabase, updateOrderStatus } from "../../../lib/supabase";
 
         // Toast Elements
         const toast = document.getElementById("toast");
@@ -1073,6 +1068,23 @@ const orders = await getAllOrders();
             }
 
             const success = await deleteOrders(selected);
+
+            async function deleteOrders(ids: string[]) {
+                try {
+                    const session = await supabase.auth.getSession();
+                    const res = await fetch("/api/admin/orders/delete", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${session.data.session?.access_token}`,
+                        },
+                        body: JSON.stringify({ orderIds: ids }),
+                    });
+                    return res.ok;
+                } catch {
+                    return false;
+                }
+            }
 
             if (success) {
                 window.location.reload();
@@ -1594,6 +1606,23 @@ const orders = await getAllOrders();
 
             confirmDeleteBtn.disabled = true;
             confirmDeleteBtn.textContent = "Eliminando...";
+
+            async function deleteOrder(id: string) {
+                try {
+                    const session = await supabase.auth.getSession();
+                    const res = await fetch("/api/admin/orders/delete", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${session.data.session?.access_token}`,
+                        },
+                        body: JSON.stringify({ orderIds: [id] }),
+                    });
+                    return res.ok;
+                } catch {
+                    return false;
+                }
+            }
 
             const success = await deleteOrder(orderToDelete);
 
