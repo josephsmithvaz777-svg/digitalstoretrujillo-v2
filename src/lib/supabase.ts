@@ -359,12 +359,17 @@ export async function uploadPaymentProof(
 }
 
 /**
- * Get orders for the current user
+ * Get orders for the currently authenticated user (filtered by user_id)
  */
 export async function getUserOrders(): Promise<Order[]> {
+  // Get the current session to know who is logged in
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.user) return [];
+
   const { data, error } = await supabase
     .from('orders')
     .select('*')
+    .eq('user_id', session.user.id)
     .order('created_at', { ascending: false });
 
   if (error) {
